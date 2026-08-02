@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:micro-finance;DB_CLOSE_DELAY=-1
+  h2:
+    console:
+      enabled: true
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop

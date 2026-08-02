@@ -1,0 +1,131 @@
+<div
+  class="w-full max-w-md bg-white rounded-2xl overflow-hidden shadow-2xl flex flex-col"
+>
+  <div
+    class="bg-slate-900 px-6 py-5 flex items-center justify-between text-white border-b border-slate-800"
+  >
+    <div class="flex items-center gap-3">
+      <div class="p-2 bg-amber-500/10 text-amber-500 rounded-xl">
+        <mat-icon class="scale-110">rule_folder</mat-icon>
+      </div>
+      <div>
+        <h2
+          class="text-xs font-black tracking-widest text-slate-400 uppercase m-0"
+        >
+          Mutation de Dossier
+        </h2>
+        <span class="text-sm font-mono font-bold text-white tracking-wider">{{
+          data?.accountNumber || "ACC-TEST"
+        }}</span>
+      </div>
+    </div>
+
+    <button
+      mat-icon-button
+      (click)="onCancel()"
+      class="text-slate-400 hover:text-white transition-colors"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  @if(errorMsg()){
+  <div class="w-full my-3 mx-3">
+    <app-message-box
+      [type]="'error'"
+      [message]="errorMsg()"
+      (onClose)="closeErrorMsg($event)"
+    ></app-message-box>
+  </div>
+  }
+
+  <form
+    [formGroup]="statusForm"
+    (ngSubmit)="onSubmit()"
+    class="p-6 flex flex-col gap-3 overflow-y-auto max-h-[75vh]"
+  >
+    <p class="text-xs text-slate-500 font-medium leading-relaxed m-0">
+      Toute modification du cycle de vie du compte bloque ou débloque
+      immédiatement les mouvements de fonds de l'adhérent. Cette action est
+      auditée.
+    </p>
+
+    <div class="flex flex-col">
+      <label
+        class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-3 flex items-center gap-1"
+      >
+        <mat-icon class="text-[14px] !w-[14px] !h-[14px]">toggle_on</mat-icon>
+        Choisir le nouveau statut
+      </label>
+
+      <mat-radio-group formControlName="newStatus" class="flex flex-col gap-3">
+        <div
+          *ngFor="let option of statusOptions"
+          [ngClass]="
+            statusForm.get('newStatus')?.value === option.value
+              ? 'bg-indigo-50/60 border-indigo-200'
+              : 'bg-slate-50 border-slate-100'
+          "
+          class="flex flex-col p-3 rounded-xl border transition-all duration-150"
+        >
+          <mat-radio-button
+            [value]="option.value"
+            color="primary"
+            class="font-bold text-xs text-slate-800"
+          >
+            {{ option.label }}
+          </mat-radio-button>
+
+          <span class="text-[11px] text-slate-400 font-medium pl-7 mt-0.5">
+            {{ option.desc }}
+          </span>
+        </div>
+      </mat-radio-group>
+    </div>
+
+    <div class="flex flex-col">
+      <label
+        class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2 flex items-center gap-1"
+      >
+        <mat-icon class="text-[14px] !w-[14px] !h-[14px]">gavel</mat-icon> Motif
+        du changement (Raison)
+      </label>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Saisir l'explication réglementaire...</mat-label>
+        <textarea
+          matInput
+          formControlName="reason"
+          rows="3"
+          placeholder="Ex: Pièce d'identité reçue et validée par la conformité..."
+        ></textarea>
+        <mat-hint class="text-[10px]"
+          >Minimum 10 caractères requis pour l'audit.</mat-hint
+        >
+      </mat-form-field>
+    </div>
+
+    <div
+      class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 mt-2"
+    >
+      <button
+        mat-button
+        type="button"
+        (click)="onCancel()"
+        class="!px-5 !py-5.5 !rounded-xl !text-slate-500 hover:!bg-slate-100 font-bold text-xs uppercase tracking-wider"
+      >
+        Annuler
+      </button>
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="statusForm.invalid || submiting()"
+        class="!px-6 !py-5.5 !rounded-xl shadow-lg shadow-indigo-100 font-bold text-xs uppercase tracking-wider"
+      >
+        <mat-icon class="mr-1.5 scale-90">save</mat-icon>
+        Sauvegarder
+      </button>
+    </div>
+  </form>
+</div>

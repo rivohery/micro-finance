@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    # Si la variable DB_NAME n'existe pas, Spring utilisera "db_micro_finance" par défaut
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:db_micro_finance}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASS:rivohery}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: false
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    contexts: dev
+
+application:
+  security:
+    jwt:
+      secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      expiration: 86400000 # one day
+  mailing:
+    frontend:
+      activation-url: http://localhost:4200/activate-account
+
+

@@ -1,0 +1,58 @@
+@if(pages().length){
+<nav
+  class="flex items-center justify-center space-x-1 md:space-x-2 my-8"
+  aria-label="Pagination"
+>
+  <button
+    (click)="goToPage(0)"
+    [disabled]="currentPage() === 0"
+    class="flex items-center justify-center p-2 rounded-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+  >
+    <mat-icon>first_page</mat-icon>
+  </button>
+
+  <button
+    (click)="previousPage()"
+    [disabled]="currentPage() === 0"
+    class="flex items-center justify-center p-2 rounded-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+  >
+    <mat-icon>chevron_left</mat-icon>
+  </button>
+
+  <div class="hidden sm:flex space-x-1 md:space-x-2">
+    @for(page of pages(); track page){
+    <button
+      (click)="goToPage(page)"
+      [ngClass]="{
+        'bg-indigo-600 text-white border-indigo-600': currentPage() === page,
+        'bg-white text-gray-700 border-gray-300 hover:bg-gray-50':
+          currentPage() !== page
+      }"
+      class="px-4 py-2 text-sm font-medium border rounded-md transition-colors"
+    >
+      {{ page + 1 }}
+    </button>
+    }
+  </div>
+
+  <span class="sm:hidden px-4 py-2 text-sm font-medium text-gray-700">
+    Page {{ currentPage() + 1 }} sur {{ totalPages() }}
+  </span>
+
+  <button
+    (click)="nextPage()"
+    [disabled]="currentPage() === totalPages() - 1"
+    class="flex items-center justify-center p-2 rounded-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+  >
+    <mat-icon>chevron_right</mat-icon>
+  </button>
+
+  <button
+    (click)="goToPage(totalPages() - 1)"
+    [disabled]="currentPage() === totalPages() - 1"
+    class="flex items-center justify-center p-2 rounded-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+  >
+    <mat-icon>last_page</mat-icon>
+  </button>
+</nav>
+}

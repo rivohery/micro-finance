@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  # --- 1. LE FRONTEND (ANGULAR) ---
+  frontend-service:
+    build: ./frontend
+    container_name: angular-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend-service # Attend que le backend tourne
+    networks:
+      - network-public
+
+  # --- 2. LE BACKEND (SPRING BOOT) ---
+  backend-service:
+    build: ./backend
+    container_name: spring-backend
+    ports:
+      - "8088:8088"
+    depends_on:
+      - db-service # attend que la base de données soit prête avant de démarrer
+      - maildev-service
+    environment:
+      - DB_HOST=db-service
+      - DB_PORT=5432
+      - DB_NAME=db_micro_finance
+      - DB_USER=postgres
+      - DB_PASS=secret
+      - SPRING_MAIL_HOST=maildev-service
+      - SPRING_MAIL_PORT=1025
+      - SPRING_MAIL_USERNAME=test
+      - SPRING_MAIL_PSW=test
+    networks:
+      - network-public
+      - network-private
+
+  # --- 3. LA BASE DE DONNÉES (POSTGRESQL) ---
+  db-service:
+    image: postgres:15-alpine
+    container_name: postgres-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=db_micro_finance
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - network-private
+
+  # --- 4 . Service pour tester l'envoie d'email
+  maildev-service:
+    container_name: mail-dev-mf
+    image: maildev/maildev
+    ports:
+      - "1080:1080"      # Interface Web (accessible sur PC)
+      - "1025:1025"      # Port SMTP pour Spring Boot
+    networks:
+      - network-public # on partage ce réseau pour que le backend puisse lui parler
+
+# --- DÉCLARATION DES RÉSEAUX ET DES VOLUMES ---
+networks:
+  network-public:  # réseau entre conteneur backend et frontend
+    driver: bridge
+  network-private: # réseau entre conteneur backend et base de donnée
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local

@@ -1,0 +1,104 @@
+package com.alibou.finance.customer.domain.model;
+
+import com.alibou.finance.auth.domain.model.User;
+import com.alibou.finance.auth.domain.vo.Address;
+import com.alibou.finance.customer.domain.vo.*;
+import com.alibou.finance.shared.error.domain.OperationNotPermittedException;
+import com.alibou.finance.shared.vo.domain.Email;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+
+import java.time.LocalDate;
+import java.util.UUID;
+
+@Builder
+@Getter
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class Customer {
+    private CustomerId customerId;
+    private FirstName firstName;
+    private LastName lastName;
+    private DateOfBirth dateOfBirth;
+    private PhoneNumber phoneNumber;
+    private Email email;
+    private Cin cin;
+    private Status status;
+    private Address address;
+    private Occupation occupation;
+    private ImageUrl imageUrl;
+    private LocalDate createdDate;
+    private LocalDate lastModifiedDate;
+    private UUID createdBy;
+    private UUID lastModifiedBy;
+    private User user;
+
+    public void setCustomerId(CustomerId customerId){
+        this.customerId = customerId;
+    }
+
+    public void setImageUrl(String filePath){
+        this.imageUrl = new ImageUrl(filePath);
+    }
+    public void updateUser(User user){
+        this.user = user;
+    }
+
+    public void setCin(Cin cin){
+        this.cin = cin;
+    }
+
+    public void updatePhoneNumber(PhoneNumber phoneNumber){
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void updateFirstName(FirstName firstName){
+        this.firstName = firstName;
+    }
+
+    public void updateLastName(LastName lastName){
+        this.lastName = lastName;
+    }
+
+    public void updateAdresse(Address adresse){
+       this.address = adresse;
+    }
+    public void updateDateOfBirth(DateOfBirth dateOfBirth){
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public void updateEmail(Email email){
+        this.email = email;
+    }
+    public void updateOccupation(Occupation occupation){
+        this.occupation = occupation;
+    }
+
+    public void initCustomer(){
+        this.customerId =  CustomerId.generate();
+        this.status = Status.pending();
+    }
+
+    public void suspend(){
+        if(this.status.value() == CustomerStatus.ACTIVE){
+            this.status = Status.suspended();
+        } else {
+            throw new OperationNotPermittedException("Le status de ce client être encore 'PENDING'");
+        }
+    }
+
+    public void active(){
+        if(this.status.value() == CustomerStatus.PENDING || this.status.value() == CustomerStatus.SUSPENDED){
+            this.status = Status.active();
+        }
+    }
+
+    public void close(){
+        if(this.status.value() != CustomerStatus.SUSPENDED){
+            throw new OperationNotPermittedException("Clôture du compte client interrompu: soit le client est active ou encore en attente");
+        }
+        this.status = Status.close();
+    }
+
+}

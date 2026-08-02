@@ -1,0 +1,111 @@
+<div class="w-full max-w-6xl mx-auto">
+  <!-- Titre de la section des comptes -->
+  <div class="flex items-center gap-3 mb-6">
+    <div class="p-2 bg-blue-50 text-blue-600 rounded-xl">
+      <mat-icon>account_balance_wallet</mat-icon>
+    </div>
+    <div>
+      <h2 class="text-lg font-extrabold text-slate-800 tracking-tight m-0">
+        Comptes Bancaires Rationnels
+      </h2>
+      <p class="text-xs text-slate-400 font-medium">
+        Vue d'ensemble des soldes et comptes actifs de l'adhérent.
+      </p>
+    </div>
+  </div>
+
+  <!-- Grille adaptative de cartes -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <mat-card
+      *ngFor="let account of accounts()"
+      class="!rounded-2xl border border-slate-100 !shadow-sm hover:!shadow-md transition-all duration-200 overflow-hidden flex flex-col justify-between group bg-white"
+    >
+      <!-- Corps de la carte -->
+      <div class="p-5">
+        <div class="flex justify-between items-start mb-4">
+          <div>
+            <span
+              class="text-[10px] font-black uppercase tracking-wider text-indigo-600 block mb-0.5"
+            >
+              {{ account.accountType }}
+            </span>
+            <span
+              class="text-xs font-mono font-bold text-slate-700 group-hover:text-slate-800 transition-colors"
+            >
+              {{ account.accountNumber }}
+            </span>
+          </div>
+          <div
+            class="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-500 group-hover:bg-indigo-50 group-hover:text-indigo-700 transition-colors"
+          >
+            <mat-icon class="text-[20px] !w-[20px] !h-[20px]"
+              >credit_card</mat-icon
+            >
+          </div>
+        </div>
+
+        <!-- Section du Solde -->
+        <div class="mt-4">
+          <span
+            class="text-[10px] font-extrabold text-slate-600 uppercase tracking-tight block"
+            >Solde disponible</span
+          >
+          <div class="flex items-baseline gap-1.5">
+            <span class="text-2xl font-black text-slate-800 tracking-tight">
+              {{ account.balance | number : "1.0-2" }}
+            </span>
+            <span
+              class="text-xs font-extrabold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md"
+            >
+              {{ account.currencyCode }}
+            </span>
+          </div>
+        </div>
+
+        <!--section date -->
+        <div
+          class="mt-4 flex items-center justify-center gap-5 text-gray-600 hover:text-gray-700"
+        >
+          <span class="text-xs font-normal">Dernière modification:</span>
+          @if(account.lastModifiedDate){
+          <span class="text-sm font-medium">{{
+            account.lastModifiedDate | date : "mediumDate"
+          }}</span>
+          } @else {
+          <span class="text-sm font-medium">{{
+            account.createdDate | date : "mediumDate"
+          }}</span>
+          }
+        </div>
+      </div>
+
+      <!-- Pied de la carte avec l'action -->
+      <div
+        class="bg-slate-50 px-5 py-3 border-t border-slate-100 flex justify-end items-center group-hover:bg-slate-100/50 transition-colors"
+      >
+        <button
+          mat-button
+          color="primary"
+          (click)="onViewDetails(account)"
+          class="!text-xs !font-bold !rounded-lg hover:bg-white"
+        >
+          Consulter les détails
+          <mat-icon class="ml-1 scale-90">arrow_forward</mat-icon>
+        </button>
+      </div>
+    </mat-card>
+  </div>
+
+  <!-- État vide si aucun compte -->
+  <div
+    *ngIf="accounts().length === 0"
+    class="bg-white rounded-2xl p-12 text-center border border-dashed border-slate-200"
+  >
+    <mat-icon class="text-slate-300 !w-12 !h-12 text-[48px] mb-2"
+      >folder_open</mat-icon
+    >
+    <p class="text-slate-500 text-sm font-medium">
+      Ce client ne possède aucun compte actif.
+    </p>
+  </div>
+</div>

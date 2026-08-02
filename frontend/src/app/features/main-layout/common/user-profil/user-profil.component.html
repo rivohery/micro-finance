@@ -1,0 +1,141 @@
+@if(userInfos){
+<div class="max-w-6xl mx-auto">
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-800">Mon Profil</h1>
+    <p class="text-gray-500">
+      Gérez vos informations personnelles et vos paramètres de sécurité.
+    </p>
+  </div>
+
+  <div class="w-full mb-8" *ngIf="errorMsg()">
+    <app-message-box
+      [type]="'error'"
+      [message]="errorMsg()"
+      (onClose)="closeErrorMsg($event)"
+    ></app-message-box>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-1">
+      <mat-card class="overflow-hidden border-none shadow-sm">
+        <div class="bg-primary h-24 w-full"></div>
+        <div class="px-6 pb-6">
+          <div class="relative -mt-12 mb-4">
+            <div class="w-24 h-24 bg-white rounded-full p-1 shadow-lg mx-auto">
+              <div
+                class="w-full h-full bg-blue-100 rounded-full flex items-center justify-center text-primary text-3xl font-bold"
+              >
+                {{ initials }}
+              </div>
+            </div>
+          </div>
+
+          <div class="text-center space-y-4">
+            <h2 class="text-xl font-bold text-gray-800">
+              {{ userInfos.username }}
+            </h2>
+            <mat-chip-row
+              class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold mx-auto uppercase"
+            >
+              {{ userInfos.enable ? "ACTIVE" : "INACTIVE" }}
+            </mat-chip-row>
+
+            <mat-divider class="my-4"></mat-divider>
+
+            <div class="flex flex-col gap-3 text-left">
+              <div class="flex items-center gap-3 text-gray-600 mt-4">
+                <mat-icon class="text-gray-400">email</mat-icon>
+                <span class="text-sm">{{ userInfos.email }}</span>
+              </div>
+              <div class="flex items-center gap-3 text-green-600">
+                <mat-icon class="text-gray-400">verified_user</mat-icon>
+                <span class="text-sm">Compte vérifié</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+
+    <div class="lg:col-span-2">
+      <mat-card class="p-6 border-none shadow-sm">
+        <h3 class="text-lg font-semibold mb-6 flex items-center gap-2">
+          <mat-icon color="primary">edit</mat-icon>
+          Modifier mes informations
+        </h3>
+
+        <form
+          [formGroup]="profileForm"
+          (ngSubmit)="onSave()"
+          class="flex flex-col gap-4"
+        >
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Pseudo / Nom d'utilisateur</mat-label>
+              <input
+                matInput
+                formControlName="username"
+                placeholder="Ex. jean_dev"
+              />
+              <mat-icon matSuffix>person</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Adresse Email</mat-label>
+              <input
+                matInput
+                formControlName="email"
+                type="email"
+                placeholder="email@domaine.com"
+              />
+              <mat-icon matSuffix>alternate_email</mat-icon>
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Nouveau mot de passe</mat-label>
+            <input
+              matInput
+              formControlName="password"
+              type="password"
+              placeholder="Laissez vide pour ne pas modifier"
+            />
+            <mat-icon matSuffix>lock</mat-icon>
+            <mat-hint>Minimum 4 caractères</mat-hint>
+          </mat-form-field>
+
+          <div
+            class="flex flex-col sm:flex-row items-center justify-end gap-3 mt-6 border-t pt-6"
+          >
+            <button
+              mat-stroked-button
+              type="button"
+              (click)="onCancel()"
+              class="w-full sm:w-auto px-6"
+            >
+              <mat-icon>close</mat-icon>
+              Annuler
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="profileForm.invalid || updating()"
+              class="w-full sm:w-auto px-8"
+            >
+              @if(updating()){
+              <span>Enregistrement en cours</span>
+              } @else {
+              <span class="flex items-center justify-center gap-2">
+                <mat-icon>check</mat-icon>
+                <span>Enregistrer les modifications</span>
+              </span>
+              }
+            </button>
+          </div>
+        </form>
+      </mat-card>
+    </div>
+  </div>
+</div>
+}

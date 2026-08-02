@@ -1,0 +1,20 @@
+@if(accountState().loading){
+<app-loader></app-loader>
+} @else {
+
+<div class="flex flex-col gap-4 w-full p-4 sm:p-8 bg-slate-50 min-h-screen">
+  @if(errorMsg()){
+  <app-message-box
+    [type]="'error'"
+    [message]="errorMsg()"
+    (onClose)="closeErrorMsg($event)"
+  ></app-message-box>
+  }
+  <div>
+    <app-account-card-list
+      [accounts]="accountState().data"
+    ></app-account-card-list>
+  </div>
+</div>
+
+}

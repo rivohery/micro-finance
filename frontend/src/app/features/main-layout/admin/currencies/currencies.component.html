@@ -1,0 +1,15 @@
+<div class="p-4 sm:p-8 bg-slate-50 min-h-screen flex flex-col gap-5">
+  @if(errorMsg()){
+  <app-message-box
+    [type]="'error'"
+    [message]="errorMsg()"
+    (onClose)="closeMsgbox($event)"
+  ></app-message-box>
+  }
+
+  <!-- SECTION 1 : FORMULAIRE D'AJOUT -->
+  <app-currency-form (errorEvent)="displayErrorMsg($event)"></app-currency-form>
+
+  <!-- SECTION 2 : LISTE DES MONNAIES -->
+  <app-currency-list (errorEvent)="displayErrorMsg($event)"></app-currency-list>
+</div>

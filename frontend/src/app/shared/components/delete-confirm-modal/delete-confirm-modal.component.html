@@ -1,0 +1,39 @@
+<div class="p-6 max-w-sm text-center">
+  <div class="flex flex-col items-center mb-4">
+    <div class="bg-red-100 p-3 rounded-full mb-3">
+      <mat-icon
+        class="text-red-600 !h-10 !w-10 !text-5xl flex items-center justify-center"
+        >warning</mat-icon
+      >
+    </div>
+    <h2 class="text-2xl font-bold text-gray-800 tracking-tight">
+      Supprimer l'élément ?
+    </h2>
+  </div>
+
+  <mat-dialog-content class="!p-0 mb-6">
+    <p class="text-gray-500">
+      Voulez-vous vraiment supprimer cet elément ? <br />
+      <span class="font-semibold text-red-500"
+        >Cette action est irréversible.</span
+      >
+    </p>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="flex justify-center gap-3 !p-0">
+    <button
+      mat-button
+      (click)="onCancel()"
+      class="px-6 py-2 !rounded-lg font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors"
+    >
+      Annuler
+    </button>
+    <button
+      mat-raised-button
+      (click)="onConfirm()"
+      class="px-6 py-2 !rounded-lg font-medium !bg-red-600 !text-white hover:!bg-red-700 shadow-md transition-all"
+    >
+      Confirmer
+    </button>
+  </mat-dialog-actions>
+</div>

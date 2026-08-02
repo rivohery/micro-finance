@@ -1,0 +1,64 @@
+spring:
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      max-file-size: 50MB
+  # Pour empécher spring Boot de lancer le Job immédiatement au démarrage.
+  batch:
+    job:
+      enabled: false
+  mail:
+    host: ${SPRING_MAIL_HOST:localhost}
+    port: ${SPRING_MAIL_PORT:1025}
+    username: ${SPRING_MAIL_USERNAME:test}
+    password: ${SPRING_MAIL_PSW:test}
+    properties:
+      mail:
+        smtp:
+          trust: "*"
+          auth: true
+          starttls:
+            enabled: true
+          connectiontimeout: 5000
+          timeout: 3000
+          writetimeout: 5000
+        debug: true
+springdoc:
+  default-produces-media-type: application/json
+server:
+  port: 8088
+  servlet:
+    context-path: /api/v1
+application:
+  security:
+    jwt:
+      secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      expiration: 3600000 # 1h
+  api:
+    exchange:
+      url: https://v6.exchangerate-api.com/v6/
+      key: f9f67caa38f0f94dc1cc3fd6
+
+
+resilience4j:
+  # CONFIGURATION DU RETRY (La persévérance à court terme: la tentative)
+  retry:
+    instances:
+      currencyRetry:
+        max-attempts: 3        # Nombre d'essais total
+        wait-duration: 1s      # Pause entre les essais
+        retry-exceptions:      # On ne retente que sur ces erreurs
+          - java.io.IOException
+          - org.springframework.web.client.ResourceAccessException
+
+  # CONFIGURATION DU CIRCUIT BREAKER (La protection à long terme: le Disjoncteur)
+  circuitbreaker:
+    instances:
+      currencyCB:
+        failure-rate-threshold: 50   # Si 50% d'erreurs, on coupe tout
+        sliding-window-size: 10      # On regarde les 10 derniers appels
+        wait-duration-in-open-state: 30s # Temps avant de retenter l'API tiers
+
+
+

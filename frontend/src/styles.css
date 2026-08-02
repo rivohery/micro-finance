@@ -1,0 +1,58 @@
+/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* Empêche Tailwind de casser l'encoche du label Material */
+*,
+::before,
+::after {
+  border-width: 0;
+}
+
+/* Force le calcul correct de l'espace pour le label */
+.mdc-notched-outline__notch {
+  border-right: none !important;
+}
+
+/* Optionnel : Ajuste la taille globale pour que ce soit plus élégant */
+.mat-mdc-form-field {
+  @apply w-full mb-2;
+}
+
+/* Template */
+@layer components {
+  .nav-link {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 text-sm font-medium;
+  }
+
+  .nav-link mat-icon {
+    @apply text-[20px] w-[20px] h-[20px];
+  }
+}
+
+/* Ajustement pour Angular Material Sidenav */
+mat-drawer-container {
+  background-color: transparent !important;
+}
+
+mat-drawer {
+  background-color: white !important;
+}
+
+/*CSS pour l'animation de la barre de progression pour toastr*/
+@keyframes shrink {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}

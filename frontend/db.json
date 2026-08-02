@@ -1,0 +1,6 @@
+{
+  "clients": [{ "id": 1, "nom": "Client Test" }],
+  "auths/login": {
+    "token": "fake-jwt-123"
+  }
+}

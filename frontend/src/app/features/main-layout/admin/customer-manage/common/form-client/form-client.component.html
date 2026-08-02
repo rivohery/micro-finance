@@ -1,0 +1,252 @@
+<div class="p-4 sm:p-8 bg-gray-50 min-h-screen">
+  <div class="max-w-5xl mx-auto">
+    <div class="mb-8">
+      @if(mode() === 'create'){
+      <h1 class="text-3xl font-extrabold text-gray-800 flex items-center gap-3">
+        <mat-icon class="w-8 h-8 text-[32px] text-blue-600"
+          >person_add_alt</mat-icon
+        >
+        Enregistrement d'un Nouveau Client
+      </h1>
+      <p class="text-gray-500 mt-1">
+        Veuillez remplir tous les champs obligatoires pour créer le dossier
+        financier.
+      </p>
+      }@else {
+      <h1 class="text-3xl font-extrabold text-gray-800 flex items-center gap-3">
+        <mat-icon class="w-8 h-8 text-[32px] text-blue-600"
+          >person_edit_alt</mat-icon
+        >
+        Modification des Informations Client
+      </h1>
+      <p class="text-gray-500 mt-1">
+        Veuillez verifier tous les champs obligatoires
+      </p>
+      }
+    </div>
+
+    @if(errorMsg()){
+    <app-message-box
+      [type]="'error'"
+      [message]="errorMsg()"
+      (onClose)="closeErrorMsg($event)"
+    ></app-message-box>
+    }
+
+    <div class="mb-8">
+      <app-upload-image
+        (onChecked)="checkImage($event)"
+        [image]="editedCustomer().photo"
+      ></app-upload-image>
+    </div>
+
+    <form
+      [formGroup]="clientForm"
+      (ngSubmit)="mode() === 'create' ? onCreate() : onUpdate()"
+      class="space-y-6"
+    >
+      <section
+        class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100"
+      >
+        <div class="flex items-center gap-2 mb-6 text-blue-700">
+          <mat-icon>fingerprint</mat-icon>
+          <h2 class="font-bold uppercase tracking-wider text-sm">
+            Informations d'Identité
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <app-input
+            [label]="'Nom'"
+            [control]="lastName"
+            [icon]="'person'"
+            [iconPosition]="'suffix'"
+            [placeholder]="'Ex: RAKOTO'"
+            [errors]="[
+              { value: 'required', message: 'Le nom du client est récquis' }
+            ]"
+          ></app-input>
+
+          <app-input
+            [label]="'Prénom'"
+            [control]="firstName"
+            [icon]="'person_outline'"
+            [iconPosition]="'suffix'"
+            [placeholder]="'Ex: Jean'"
+            [errors]="[
+              { value: 'required', message: 'Le prénom du client est récquis' }
+            ]"
+          ></app-input>
+
+          <app-input
+            [label]="'Pseudo'"
+            [control]="username"
+            [icon]="'account_circle'"
+            [iconPosition]="'suffix'"
+            [placeholder]="'Ex: jrakoto26'"
+            [errors]="[
+              { value: 'required', message: 'Le pseudo du client est récquis' }
+            ]"
+          ></app-input>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Date de naissance</mat-label>
+            <input
+              matInput
+              [matDatepicker]="picker"
+              [formControl]="dateOfBirth"
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="picker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+
+          <app-input
+            [label]="'Numéro CIN'"
+            [control]="cin"
+            [icon]="'badge'"
+            [iconPosition]="'suffix'"
+            [hint]="'Numéro de carte identité nationale'"
+            [placeholder]="'12 chiffres'"
+            [errors]="[
+              { value: 'required', message: 'Le CIN du client est récquis' },
+              { value: 'pattern', message: 'Le format du CIN est invalide' }
+            ]"
+          ></app-input>
+        </div>
+      </section>
+
+      <section
+        class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100"
+      >
+        <div class="flex items-center gap-2 mb-6 text-blue-700">
+          <mat-icon>work</mat-icon>
+          <h2 class="font-bold uppercase tracking-wider text-sm">
+            Contact & Situation Professionnelle
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <app-input
+            [label]="'Numéro de Téléphone'"
+            [control]="phoneNumber"
+            [icon]="'phone'"
+            [iconPosition]="'suffix'"
+            [placeholder]="'Ex: 0340000000'"
+            [errors]="[
+              { value: 'required', message: 'Le contact du client est récquis' }
+            ]"
+          ></app-input>
+
+          <app-input
+            [label]="'Email'"
+            [control]="email"
+            [icon]="'email'"
+            [iconPosition]="'suffix'"
+            [placeholder]="'client@exemple.mg'"
+            [errors]="[
+              { value: 'required', message: 'Email du client est récquis' },
+              { value: 'email', message: 'Email du client est invalide format' }
+            ]"
+          ></app-input>
+
+          <app-input
+            [label]="'Occupation / Métier'"
+            [control]="occupation"
+            [icon]="'business_center'"
+            [iconPosition]="'suffix'"
+            [placeholder]="'Ex: Agriculteur, Commerçant...'"
+            [errors]="[
+              { value: 'required', message: 'Occupation du client est récquis' }
+            ]"
+          ></app-input>
+        </div>
+      </section>
+
+      <section
+        class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100"
+      >
+        <div class="flex items-center gap-2 mb-6 text-blue-700">
+          <mat-icon>location_on</mat-icon>
+          <h2 class="font-bold uppercase tracking-wider text-sm">
+            Adresse Résidentielle
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <mat-form-field appearance="outline" class="md:col-span-3">
+            <mat-label>Adresse (Rue, Lot...)</mat-label>
+            <input matInput formControlName="addressValue" />
+            <mat-icon matSuffix>home</mat-icon>
+          </mat-form-field>
+
+          <app-input
+            [label]="'Ville'"
+            [control]="addressCity"
+            [icon]="'apartment'"
+            [iconPosition]="'suffix'"
+            [placeholder]="'Ex: Antananarivo'"
+            [errors]="[
+              { value: 'required', message: 'Le champ ville est récquis' }
+            ]"
+          ></app-input>
+
+          <app-input
+            [label]="'Code Postal'"
+            [control]="addressZipCode"
+            [icon]="'markunread_mailbox'"
+            [iconPosition]="'suffix'"
+            [placeholder]="'Ex: 101'"
+            [errors]="[
+              { value: 'required', message: 'Code postal est récquis' }
+            ]"
+          ></app-input>
+
+          <app-input
+            [label]="'Pays'"
+            [control]="addressCountry"
+            [icon]="'public'"
+            [iconPosition]="'suffix'"
+            [placeholder]="'Madagascar'"
+            [errors]="[{ value: 'required', message: 'Pays est récquis' }]"
+          ></app-input>
+        </div>
+      </section>
+
+      <div
+        class="flex flex-col sm:flex-row items-center justify-end gap-4 mt-10 pb-10"
+      >
+        <button
+          mat-stroked-button
+          type="button"
+          (click)="onCancel()"
+          class="w-full sm:w-auto px-10 py-2 hover:!bg-slate-600 !bg-slate-700 !text-white"
+        >
+          Annuler l'opération
+        </button>
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="sending()"
+          class="w-full sm:w-auto px-12 py-2 shadow-lg shadow-blue-200 !bg-blue-500 hover:!bg-blue-600 !text-white"
+        >
+          @if(sending()){
+          <span>{{
+            mode() === "create" ? "Création en cours" : "Modification en cours"
+          }}</span>
+          } @else {
+          <span class="flex items-center justify-center gap-2">
+            <mat-icon>save</mat-icon>
+            <span>{{
+              mode() === "create" ? "Créer client" : "Modifier client"
+            }}</span>
+          </span>
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

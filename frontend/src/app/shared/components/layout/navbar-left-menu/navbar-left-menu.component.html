@@ -1,0 +1,13 @@
+<div class="flex items-center gap-4">
+  <button mat-icon-button><mat-icon>notifications</mat-icon></button>
+  <div class="flex items-center gap-2 ml-2">
+    <span class="hidden md:block text-sm font-medium">Utilisateur</span>
+    <button mat-icon-button [matMenuTriggerFor]="profileMenu">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+    <mat-menu #profileMenu="matMenu">
+      <button mat-menu-item><mat-icon>person</mat-icon> Mon Profil</button>
+      <button mat-menu-item><mat-icon>security</mat-icon> Sécurité</button>
+    </mat-menu>
+  </div>
+</div>
