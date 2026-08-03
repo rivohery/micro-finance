@@ -19,7 +19,7 @@ import com.alibou.finance.currency.domain.vo.CurrencyCode;
 import com.alibou.finance.currency.domain.vo.CurrencyName;
 import com.alibou.finance.customer.application.port.CustomerUseCase;
 import com.alibou.finance.customer.domain.vo.CustomerId;
-import com.alibou.finance.shared.error.domain.IllegalOperationException;
+import com.alibou.finance.shared.domain.IllegalOperationException;
 import com.alibou.finance.shared.vo.domain.Description;
 import com.alibou.finance.account.domain.agregate.Transaction;
 import com.alibou.finance.account.domain.out.repository.TransactionRepository;

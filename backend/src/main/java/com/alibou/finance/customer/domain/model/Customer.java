@@ -3,7 +3,7 @@ package com.alibou.finance.customer.domain.model;
 import com.alibou.finance.auth.domain.model.User;
 import com.alibou.finance.auth.domain.vo.Address;
 import com.alibou.finance.customer.domain.vo.*;
-import com.alibou.finance.shared.error.domain.OperationNotPermittedException;
+import com.alibou.finance.shared.domain.OperationNotPermittedException;
 import com.alibou.finance.shared.vo.domain.Email;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

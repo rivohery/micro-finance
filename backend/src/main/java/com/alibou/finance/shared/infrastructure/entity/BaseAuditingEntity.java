@@ -1,4 +1,4 @@
-package com.alibou.finance.shared.entity;
+package com.alibou.finance.shared.infrastructure.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

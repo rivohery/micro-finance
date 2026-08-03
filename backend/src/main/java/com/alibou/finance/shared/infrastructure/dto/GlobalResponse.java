@@ -1,4 +1,4 @@
-package com.alibou.finance.shared.dto;
+package com.alibou.finance.shared.infrastructure.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

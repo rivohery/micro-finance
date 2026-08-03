@@ -1,6 +1,6 @@
 package com.alibou.finance.auth.domain.vo;
 
-import com.alibou.finance.shared.error.domain.Assert;
+import com.alibou.finance.shared.domain.Assert;
 
 public record Address(String value, String city, String zipCode, String country) {
     public Address{

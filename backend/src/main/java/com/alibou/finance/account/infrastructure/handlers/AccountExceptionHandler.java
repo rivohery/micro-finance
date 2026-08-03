@@ -1,8 +1,7 @@
 package com.alibou.finance.account.infrastructure.handlers;
 
 import com.alibou.finance.account.domain.exception.*;
-import com.alibou.finance.shared.error.infrastructure.HttpErrorResponse;
-import jakarta.persistence.EntityNotFoundException;
+import com.alibou.finance.shared.infrastructure.error.HttpErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

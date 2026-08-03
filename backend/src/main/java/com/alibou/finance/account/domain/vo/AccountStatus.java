@@ -1,7 +1,7 @@
 package com.alibou.finance.account.domain.vo;
 
 import com.alibou.finance.account.domain.agregate.AccountStatusEnum;
-import com.alibou.finance.shared.error.domain.Assert;
+import com.alibou.finance.shared.domain.Assert;
 public record AccountStatus(AccountStatusEnum value) {
 
     public AccountStatus {

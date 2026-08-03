@@ -4,7 +4,7 @@ import com.alibou.finance.log.application.port.usecase.AccountStatusHistoryUseCa
 import com.alibou.finance.log.infrastructure.in.dto.AccountStatusHistoryResponse;
 import com.alibou.finance.log.infrastructure.out.mappers.AccountStatusHistoryMapper;
 import com.alibou.finance.log.domain.agregate.AccountStatusHistory;
-import com.alibou.finance.shared.dto.PageResponse;
+import com.alibou.finance.shared.infrastructure.dto.PageResponse;
 import com.alibou.finance.account.domain.vo.AccountId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

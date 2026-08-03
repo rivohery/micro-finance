@@ -1,7 +1,7 @@
 package com.alibou.finance.auth.domain.vo;
 
 import com.alibou.finance.auth.domain.model.RoleEnum;
-import com.alibou.finance.shared.error.domain.Assert;
+import com.alibou.finance.shared.domain.Assert;
 
 public record Role(RoleEnum value) {
     public Role{

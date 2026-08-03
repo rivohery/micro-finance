@@ -1,6 +1,6 @@
 package com.alibou.finance.account.infrastructure.adapter.in.dto;
 
-import com.alibou.finance.shared.dto.PageResponse;
+import com.alibou.finance.shared.infrastructure.dto.PageResponse;
 import lombok.*;
 
 import java.math.BigDecimal;

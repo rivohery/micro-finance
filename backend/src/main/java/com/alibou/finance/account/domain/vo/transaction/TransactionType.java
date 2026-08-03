@@ -1,8 +1,8 @@
 package com.alibou.finance.account.domain.vo.transaction;
 
 import com.alibou.finance.account.domain.agregate.TransactionTypeEnum;
-import com.alibou.finance.shared.error.domain.Assert;
-import com.alibou.finance.shared.error.domain.IllegalArgumentException;
+import com.alibou.finance.shared.domain.Assert;
+import com.alibou.finance.shared.domain.IllegalArgumentException;
 
 import java.util.Set;
 

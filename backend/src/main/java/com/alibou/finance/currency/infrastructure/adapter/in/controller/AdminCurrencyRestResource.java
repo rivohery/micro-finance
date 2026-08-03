@@ -6,7 +6,7 @@ import com.alibou.finance.currency.domain.vo.CurrencyId;
 import com.alibou.finance.currency.infrastructure.adapter.in.dto.CreateCurrencyRequest;
 import com.alibou.finance.currency.infrastructure.adapter.in.dto.CurrencyResponse;
 import com.alibou.finance.currency.infrastructure.adapter.in.dto.UpdateCurrencyRequest;
-import com.alibou.finance.shared.dto.GlobalResponse;
+import com.alibou.finance.shared.infrastructure.dto.GlobalResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

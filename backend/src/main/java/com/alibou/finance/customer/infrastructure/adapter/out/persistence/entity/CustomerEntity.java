@@ -2,7 +2,7 @@ package com.alibou.finance.customer.infrastructure.adapter.out.persistence.entit
 
 import com.alibou.finance.auth.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.alibou.finance.customer.domain.model.CustomerStatus;
-import com.alibou.finance.shared.entity.BaseAuditingEntity;
+import com.alibou.finance.shared.infrastructure.entity.BaseAuditingEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

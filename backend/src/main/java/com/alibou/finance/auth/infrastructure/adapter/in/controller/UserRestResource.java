@@ -5,21 +5,20 @@ import com.alibou.finance.auth.domain.model.User;
 import com.alibou.finance.auth.domain.vo.UserId;
 import com.alibou.finance.auth.infrastructure.adapter.in.dto.*;
 import com.alibou.finance.auth.infrastructure.adapter.out.mapper.UserMapper;
-import com.alibou.finance.shared.dto.GlobalResponse;
-import com.alibou.finance.shared.dto.PageResponse;
+import com.alibou.finance.shared.application.PageResult;
+import com.alibou.finance.shared.infrastructure.dto.GlobalResponse;
+import com.alibou.finance.shared.infrastructure.dto.PageResponse;
+import com.alibou.finance.shared.infrastructure.mapper.PageMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -45,6 +44,7 @@ public class UserRestResource {
                     .status(HttpStatus.CREATED)
                     .body(GlobalResponse.builder()
                             .message(String.format("Le nouveau employé: %s est ajouté avec success", user.getUsername().value()))
+                            .status(HttpStatus.CREATED.value())
                             .build()
                     );
         }
@@ -63,14 +63,10 @@ public class UserRestResource {
           @RequestParam(name = "size", defaultValue = "6")int size
     ){
         Pageable pageable = PageRequest.of(page, size);
-        Page<User> pages = userService.searchUserByUsername(search, pageable);
-        List<UserResponse> content = pages.getContent()
-                .stream()
-                .map(UserMapper::domainToDto)
-                .toList();
+        PageResult<User> pages = userService.searchUserByUsername(search, pageable);
         return ResponseEntity.ok(
-             new PageResponse<>(content, pages.getNumber(), pages.getSize(), pages.getTotalElements(), pages.getTotalPages(), pages.isFirst(), pages.isLast()
-        ));
+                PageMapper.toPageResponse(pages, UserMapper::domainToDto)
+        );
     }
 
     @Operation(
@@ -85,6 +81,7 @@ public class UserRestResource {
             return ResponseEntity.ok(
                     GlobalResponse.builder()
                             .message("Utilisateur a été bien supprimé avec success")
+                            .status(HttpStatus.OK.value())
                             .data(Map.of("deletedId", deletedId))
                             .build()
             );
@@ -115,6 +112,7 @@ public class UserRestResource {
         userService.changeUserStatus(userId, request.status());
         return ResponseEntity.ok(
                 GlobalResponse.builder()
+                        .status(HttpStatus.OK.value())
                         .message("Le status de l'utilisateur a été bien modifié avec success")
                         .build()
         );
@@ -129,6 +127,7 @@ public class UserRestResource {
         userService.changePassword(request.username(), request.oldPasswordPlain(), request.newPasswordPlain());
         return ResponseEntity.ok(
                 GlobalResponse.builder()
+                        .status(HttpStatus.OK.value())
                         .message("le mots de passe a été modifié avec success")
                         .build()
         );
@@ -146,6 +145,7 @@ public class UserRestResource {
         userService.update(user);
         return ResponseEntity.ok(
                 GlobalResponse.builder()
+                        .status(HttpStatus.OK.value())
                         .message("Le profile de l'utilisateur a été bien modifié avec success")
                         .build()
         );

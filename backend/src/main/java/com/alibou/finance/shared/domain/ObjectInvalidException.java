@@ -1,4 +1,4 @@
-package com.alibou.finance.shared.error.domain;
+package com.alibou.finance.shared.domain;
 
 public class ObjectInvalidException extends RuntimeException{
     public ObjectInvalidException() {

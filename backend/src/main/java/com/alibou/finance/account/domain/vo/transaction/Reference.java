@@ -1,6 +1,6 @@
 package com.alibou.finance.account.domain.vo.transaction;
 
-import com.alibou.finance.shared.error.domain.Assert;
+import com.alibou.finance.shared.domain.Assert;
 
 public record Reference(String value) {
     public Reference{

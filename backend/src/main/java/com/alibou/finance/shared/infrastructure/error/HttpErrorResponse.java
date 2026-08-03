@@ -1,4 +1,4 @@
-package com.alibou.finance.shared.error.infrastructure;
+package com.alibou.finance.shared.infrastructure.error;
 
 import java.util.List;
 import java.util.Map;

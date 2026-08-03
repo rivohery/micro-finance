@@ -6,7 +6,7 @@ import com.alibou.finance.currency.domain.exception.CurrencyNotFoundException;
 import com.alibou.finance.currency.domain.repository.CurrencyRepository;
 import com.alibou.finance.currency.domain.vo.CurrencyCode;
 import com.alibou.finance.currency.domain.vo.CurrencyId;
-import com.alibou.finance.shared.error.domain.ObjectInvalidException;
+import com.alibou.finance.shared.domain.ObjectInvalidException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

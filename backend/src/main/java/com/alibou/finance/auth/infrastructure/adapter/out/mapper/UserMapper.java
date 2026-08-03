@@ -9,11 +9,13 @@ import com.alibou.finance.auth.domain.vo.Username;
 import com.alibou.finance.auth.infrastructure.adapter.in.dto.UserResponse;
 import com.alibou.finance.auth.infrastructure.adapter.out.persistence.entity.UserEntity;
 
+import java.util.Objects;
+
 public class UserMapper {
 
     public static UserResponse domainToDto(User user){
-        if(user == null){
-            throw new RuntimeException("Objet User est null dans la méthode {mapToDto}");
+        if(Objects.isNull(user)){
+            throw new RuntimeException("Objet User nulle dans {mapToDto}");
         }
         return UserResponse.builder()
                 .email(user.getEmail().value())
@@ -25,8 +27,8 @@ public class UserMapper {
     }
 
     public static User entityToDomain(UserEntity entity){
-        if(entity == null){
-            throw new RuntimeException("Objet UserEntity est null dans La méthode {entityToDomain}");
+        if(Objects.isNull(entity)){
+            throw new RuntimeException("Objet UserEntity nulle dans {entityToDomain}");
         }
         return User.builder()
                 .userId(UserId.from(entity.getId()))
@@ -39,8 +41,8 @@ public class UserMapper {
     }
 
     public static UserEntity domainToEntity(User user){
-        if(user == null){
-            throw new RuntimeException("Objet User est null dans la méthode {mapToEntity}");
+        if(Objects.isNull(user)){
+            throw new RuntimeException("Objet User nulle dans {mapToEntity}");
         }
         return UserEntity.builder()
                 .id(user.getUserId().value())

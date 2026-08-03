@@ -1,7 +1,7 @@
 package com.alibou.finance.account.domain.out.service.dto;
 
 import com.alibou.finance.auth.domain.model.User;
-import com.alibou.finance.shared.error.domain.Assert;
+import com.alibou.finance.shared.domain.Assert;
 import lombok.Builder;
 
 import java.math.BigDecimal;

@@ -1,4 +1,4 @@
-package com.alibou.finance.shared.config;
+package com.alibou.finance.shared.infrastructure.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;

@@ -2,7 +2,7 @@ package com.alibou.finance.auth.domain.repository;
 
 import com.alibou.finance.auth.domain.model.User;
 import com.alibou.finance.auth.domain.vo.UserId;
-import org.springframework.data.domain.Page;
+import com.alibou.finance.shared.application.PageResult;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface UserRepository {
     Optional<User> findByUsername(String username);
     User save(User user);
-    Page<User> searchUserByUsername(String username, Pageable pageable);
+    PageResult<User> searchUserByUsername(String username, Pageable pageable);
     Optional<User>findById(UserId userId);
 
     void deleteById(UserId userId);

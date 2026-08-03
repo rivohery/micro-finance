@@ -1,7 +1,7 @@
 package com.alibou.finance.shared.vo.domain;
 
-import com.alibou.finance.shared.error.domain.Assert;
-import com.alibou.finance.shared.error.domain.IllegalArgumentException;
+import com.alibou.finance.shared.domain.Assert;
+import com.alibou.finance.shared.domain.IllegalArgumentException;
 
 
 public record Email(String value) {

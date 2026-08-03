@@ -1,7 +1,7 @@
 package com.alibou.finance.account.application.service;
 
 import com.alibou.finance.account.domain.vo.AccountNumber;
-import com.alibou.finance.shared.error.domain.IllegalArgumentException;
+import com.alibou.finance.shared.domain.IllegalArgumentException;
 import com.alibou.finance.account.application.port.usecase.TransactionConsultationUseCase;
 import com.alibou.finance.account.domain.agregate.Transaction;
 import com.alibou.finance.account.domain.exception.TransactionNotFoundException;

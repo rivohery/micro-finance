@@ -1,7 +1,7 @@
 package com.alibou.finance.currency.infrastructure.handler;
 
 import com.alibou.finance.currency.domain.exception.CurrencyNotFoundException;
-import com.alibou.finance.shared.error.infrastructure.HttpErrorResponse;
+import com.alibou.finance.shared.infrastructure.error.HttpErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

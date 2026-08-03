@@ -7,7 +7,7 @@ import com.alibou.finance.account.infrastructure.adapter.in.dto.TransactionReque
 import com.alibou.finance.account.infrastructure.adapter.in.dto.TransactionResponse;
 import com.alibou.finance.account.infrastructure.adapter.out.mapper.TransactionMapper;
 import com.alibou.finance.account.domain.agregate.Transaction;
-import com.alibou.finance.shared.dto.GlobalResponse;
+import com.alibou.finance.shared.infrastructure.dto.GlobalResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

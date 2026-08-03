@@ -6,9 +6,10 @@ import com.alibou.finance.shared.vo.domain.Email;
 import com.alibou.finance.auth.domain.vo.Password;
 import com.alibou.finance.auth.domain.vo.Role;
 import com.alibou.finance.auth.domain.vo.Username;
-import com.alibou.finance.shared.error.domain.IllegalArgumentException;
+import com.alibou.finance.shared.domain.IllegalArgumentException;
 import lombok.*;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Builder
@@ -23,14 +24,23 @@ public class User {
     private Role role;
 
     public void updateUsername(Username username){
+        if(Objects.equals(this.username.value(), username.value())){
+            return;
+        }
         this.username = username;
     }
 
     public void updateEmail(Email email){
+        if(Objects.equals(this.email.value(), email.value())){
+            return;
+        }
         this.email = email;
     }
 
     public void updatePassword(Password password){
+        if(Objects.isNull(password)){
+            throw new IllegalArgumentException("la value objet Password est nulle");
+        }
         this.password = password;
     }
 

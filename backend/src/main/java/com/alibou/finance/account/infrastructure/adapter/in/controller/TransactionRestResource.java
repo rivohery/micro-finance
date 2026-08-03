@@ -6,7 +6,7 @@ import com.alibou.finance.account.infrastructure.adapter.in.dto.TransactionRespo
 import com.alibou.finance.account.infrastructure.adapter.out.mapper.TransactionMapper;
 import com.alibou.finance.account.domain.agregate.Transaction;
 import com.alibou.finance.account.domain.vo.transaction.Reference;
-import com.alibou.finance.shared.dto.PageResponse;
+import com.alibou.finance.shared.infrastructure.dto.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

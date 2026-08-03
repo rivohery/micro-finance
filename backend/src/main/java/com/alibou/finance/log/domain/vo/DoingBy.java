@@ -1,6 +1,6 @@
 package com.alibou.finance.log.domain.vo;
 
-import com.alibou.finance.shared.error.domain.Assert;
+import com.alibou.finance.shared.domain.Assert;
 
 public record DoingBy(String value) {
     public DoingBy {

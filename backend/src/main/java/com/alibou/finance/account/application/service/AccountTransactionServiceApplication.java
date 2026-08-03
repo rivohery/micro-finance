@@ -6,7 +6,7 @@ import com.alibou.finance.account.domain.vo.transaction.*;
 import com.alibou.finance.auth.domain.model.User;
 import com.alibou.finance.customer.application.port.CustomerUseCase;
 import com.alibou.finance.customer.domain.vo.CustomerId;
-import com.alibou.finance.shared.error.domain.OperationNotPermittedException;
+import com.alibou.finance.shared.domain.OperationNotPermittedException;
 import com.alibou.finance.shared.vo.domain.OperatorName;
 import com.alibou.finance.account.application.port.usecase.AccountTransactionUseCase;
 import com.alibou.finance.account.domain.agregate.Account;

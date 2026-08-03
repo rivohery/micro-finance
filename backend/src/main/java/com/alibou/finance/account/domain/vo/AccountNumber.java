@@ -1,7 +1,7 @@
 package com.alibou.finance.account.domain.vo;
 
-import com.alibou.finance.shared.error.domain.Assert;
-import com.alibou.finance.shared.error.domain.IllegalArgumentException;
+import com.alibou.finance.shared.domain.Assert;
+import com.alibou.finance.shared.domain.IllegalArgumentException;
 
 public record AccountNumber(String value) {
     private static final String ACCOUNT_NUMBER_REGEX = "^[01][0-9]{2}-(10|20|30)-[0-9]{10}$";

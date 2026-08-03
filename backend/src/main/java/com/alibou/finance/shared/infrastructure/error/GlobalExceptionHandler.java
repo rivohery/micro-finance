@@ -1,10 +1,10 @@
-package com.alibou.finance.shared.error.infrastructure;
+package com.alibou.finance.shared.infrastructure.error;
 
 import com.alibou.finance.account.infrastructure.email.exception.SendingEmailException;
-import com.alibou.finance.shared.error.domain.IllegalArgumentException;
-import com.alibou.finance.shared.error.domain.IllegalOperationException;
-import com.alibou.finance.shared.error.domain.ObjectInvalidException;
-import com.alibou.finance.shared.error.domain.OperationNotPermittedException;
+import com.alibou.finance.shared.domain.IllegalArgumentException;
+import com.alibou.finance.shared.domain.IllegalOperationException;
+import com.alibou.finance.shared.domain.ObjectInvalidException;
+import com.alibou.finance.shared.domain.OperationNotPermittedException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

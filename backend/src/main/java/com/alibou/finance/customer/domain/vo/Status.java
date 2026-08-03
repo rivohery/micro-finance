@@ -1,7 +1,7 @@
 package com.alibou.finance.customer.domain.vo;
 
 import com.alibou.finance.customer.domain.model.CustomerStatus;
-import com.alibou.finance.shared.error.domain.Assert;
+import com.alibou.finance.shared.domain.Assert;
 
 public record Status(CustomerStatus value) {
     public Status{

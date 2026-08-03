@@ -1,7 +1,7 @@
 package com.alibou.finance.account.domain.vo;
 
-import com.alibou.finance.shared.error.domain.Assert;
-import com.alibou.finance.shared.error.domain.IllegalOperationException;
+import com.alibou.finance.shared.domain.Assert;
+import com.alibou.finance.shared.domain.IllegalOperationException;
 
 import java.math.BigDecimal;
 

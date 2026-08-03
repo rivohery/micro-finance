@@ -1,6 +1,6 @@
 package com.alibou.finance.auth.infrastructure.error;
 
-import com.alibou.finance.shared.error.infrastructure.HttpErrorResponse;
+import com.alibou.finance.shared.infrastructure.error.HttpErrorResponse;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

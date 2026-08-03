@@ -61,8 +61,8 @@ public class SecurityConfig {
 
         http
                 .cors(Customizer.withDefaults())
-                //.csrf(AbstractHttpConfigurer::disable)
-                .csrf(csrf -> csrf
+                .csrf(AbstractHttpConfigurer::disable)
+                /*.csrf(csrf -> csrf
                         .csrfTokenRepository(repository)
                         .csrfTokenRequestHandler(requestHandler)
                         .ignoringRequestMatchers(
@@ -76,7 +76,7 @@ public class SecurityConfig {
                                 "/swagger-resources/**",
                                 "/swagger-ui.html"
                         )
-                )
+                )*/
                 .headers(headers ->
                         headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
                 )
@@ -103,8 +103,8 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthEntryPoint))
                 .logout(logout -> logout.logoutUrl("/api/v1/auths/logout"))
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(new CsrfCookieFilter(), JwtFilter.class); // Après l'auth;
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                //.addFilterAfter(new CsrfCookieFilter(), JwtFilter.class); // Après l'auth;
         return http.build();
     }
 

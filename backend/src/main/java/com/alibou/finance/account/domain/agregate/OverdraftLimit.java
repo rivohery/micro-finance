@@ -1,6 +1,6 @@
 package com.alibou.finance.account.domain.agregate;
 
-import com.alibou.finance.shared.error.domain.Assert;
+import com.alibou.finance.shared.domain.Assert;
 
 import java.math.BigDecimal;
 

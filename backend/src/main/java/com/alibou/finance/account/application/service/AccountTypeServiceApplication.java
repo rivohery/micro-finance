@@ -5,7 +5,7 @@ import com.alibou.finance.account.domain.agregate.AccountType;
 import com.alibou.finance.account.domain.exception.AccountTypeNotFoundException;
 import com.alibou.finance.account.domain.out.repository.AccountTypeRepository;
 import com.alibou.finance.account.domain.vo.AccountTypeId;
-import com.alibou.finance.shared.error.domain.ObjectInvalidException;
+import com.alibou.finance.shared.domain.ObjectInvalidException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

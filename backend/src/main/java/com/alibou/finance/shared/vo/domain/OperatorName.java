@@ -1,6 +1,6 @@
 package com.alibou.finance.shared.vo.domain;
 
-import com.alibou.finance.shared.error.domain.Assert;
+import com.alibou.finance.shared.domain.Assert;
 
 public record OperatorName(String value) {
     public OperatorName{

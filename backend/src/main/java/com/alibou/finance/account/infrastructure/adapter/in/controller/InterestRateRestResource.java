@@ -4,7 +4,7 @@ import com.alibou.finance.account.application.port.usecase.InterestRateUseCase;
 import com.alibou.finance.account.domain.agregate.InterestRateTrace;
 import com.alibou.finance.account.infrastructure.adapter.in.dto.InterestRateSummaryResp;
 import com.alibou.finance.account.infrastructure.adapter.in.dto.InterestRateTraceResponse;
-import com.alibou.finance.shared.dto.PageResponse;
+import com.alibou.finance.shared.infrastructure.dto.PageResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

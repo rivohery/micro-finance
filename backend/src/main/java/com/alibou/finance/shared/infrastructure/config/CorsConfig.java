@@ -1,4 +1,4 @@
-package com.alibou.finance.shared.config;
+package com.alibou.finance.shared.infrastructure.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -12,8 +12,8 @@ import com.alibou.finance.customer.domain.out.repository.CustomerRepository;
 import com.alibou.finance.customer.domain.model.CustomerStatus;
 import com.alibou.finance.customer.domain.out.service.FileStoragePort;
 import com.alibou.finance.customer.domain.vo.CustomerId;
-import com.alibou.finance.shared.error.domain.IllegalArgumentException;
-import com.alibou.finance.shared.error.domain.OperationNotPermittedException;
+import com.alibou.finance.shared.domain.IllegalArgumentException;
+import com.alibou.finance.shared.domain.OperationNotPermittedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

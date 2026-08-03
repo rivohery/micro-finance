@@ -1,16 +1,11 @@
 package com.alibou.finance.account.infrastructure.adapter.out.persistence.entity;
 
-import com.alibou.finance.shared.entity.BaseAuditingEntity;
+import com.alibou.finance.shared.infrastructure.entity.BaseAuditingEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.UUID;
 
 @SuperBuilder
 @NoArgsConstructor

@@ -1,4 +1,4 @@
-package com.alibou.finance.shared.config;
+package com.alibou.finance.shared.infrastructure.config;
 
 import com.alibou.finance.auth.infrastructure.model.UserPrincipal;
 import org.springframework.context.annotation.Bean;

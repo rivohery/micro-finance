@@ -22,7 +22,7 @@ import com.alibou.finance.log.application.port.input.AccountStatusHistoryInput;
 import com.alibou.finance.log.application.port.usecase.AccountStatusHistoryUseCase;
 import com.alibou.finance.log.domain.agregate.AccountStatusHistory;
 import com.alibou.finance.log.domain.vo.*;
-import com.alibou.finance.shared.error.domain.OperationNotPermittedException;
+import com.alibou.finance.shared.domain.OperationNotPermittedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -4,6 +4,9 @@ import com.alibou.finance.auth.domain.model.User;
 import com.alibou.finance.auth.domain.repository.UserRepository;
 import com.alibou.finance.auth.domain.vo.UserId;
 import com.alibou.finance.auth.infrastructure.adapter.out.mapper.UserMapper;
+import com.alibou.finance.auth.infrastructure.adapter.out.persistence.entity.UserEntity;
+import com.alibou.finance.shared.application.PageResult;
+import com.alibou.finance.shared.infrastructure.mapper.PageMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,8 +32,9 @@ public class UserDbAdapter implements UserRepository {
     }
 
     @Override
-    public Page<User> searchUserByUsername(String username,Pageable pageable) {
-        return userJpaRepository.searchAllEmployeeByUsernameStart(username, pageable).map(UserMapper::entityToDomain);
+    public PageResult<User> searchUserByUsername(String username, Pageable pageable) {
+        Page<UserEntity> pages = userJpaRepository.searchAllEmployeeByUsernameStart(username, pageable);
+        return PageMapper.toPageResult(pages, UserMapper::entityToDomain);
     }
 
     @Override

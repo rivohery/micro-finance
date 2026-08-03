@@ -1,7 +1,7 @@
 package com.alibou.finance.customer.domain.vo;
 
-import com.alibou.finance.shared.error.domain.Assert;
-import com.alibou.finance.shared.error.domain.IllegalArgumentException;
+import com.alibou.finance.shared.domain.Assert;
+import com.alibou.finance.shared.domain.IllegalArgumentException;
 
 public record Cin(String value) {
     private static final String CIN_REGEX = "^[0-9]{12}$";

@@ -1,6 +1,6 @@
 package com.alibou.finance.auth.domain.vo;
 
-import com.alibou.finance.shared.error.domain.Assert;
+import com.alibou.finance.shared.domain.Assert;
 
 public record Username(String value) {
     public Username{

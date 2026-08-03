@@ -6,7 +6,7 @@ import com.alibou.finance.customer.domain.model.Customer;
 import com.alibou.finance.customer.domain.vo.CustomerId;
 import com.alibou.finance.customer.infrastructure.adapter.in.dto.CustomerMinResponse;
 import com.alibou.finance.customer.infrastructure.adapter.out.mapper.CustomerMapper;
-import com.alibou.finance.shared.dto.PageResponse;
+import com.alibou.finance.shared.infrastructure.dto.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
