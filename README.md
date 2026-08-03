@@ -22,7 +22,7 @@ Le projet intègre un backend **Spring Boot** structuré en **Architecture Hexag
 
 ### Frontend (Angular 19)
 * **Core Architecture :** Angular v19, Composants **Standalone**, Architecture moderne.
-* **Gestion d'État :** **Angular Signals** pour l'état local et la réactivité, **NgRx** dédié spécifiquement à la gestion globale de l'authentification (Login/Logout) pour centraliser les états et les flux du traitement et aussi facilité la maintenance en cas d'évolution de business metier.
+* **Gestion d'État :** **Angular Signals** pour l'état local et la réactivité, **NgRx** dédié spécifiquement à la gestion globale de l'authentification (Login/Logout) pour centraliser les états et les flux du traitement et aussi faciliter la maintenance en cas d'évolution de business metier.
 * **Design && UI :** **Tailwind CSS** associé à **Angular Material** pour des composants UX/UI professionnels et réactifs.
 
 ---
