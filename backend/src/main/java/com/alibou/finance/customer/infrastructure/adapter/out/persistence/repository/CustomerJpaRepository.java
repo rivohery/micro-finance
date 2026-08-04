@@ -1,7 +1,7 @@
 package com.alibou.finance.customer.infrastructure.adapter.out.persistence.repository;
 
 import com.alibou.finance.customer.infrastructure.adapter.out.persistence.entity.CustomerEntity;
-import com.alibou.finance.customer.domain.model.CustomerStatus;
+import com.alibou.finance.customer.domain.agregate.CustomerStatus;
 import com.alibou.finance.customer.infrastructure.adapter.out.persistence.projection.RegistrationStatisticProj;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

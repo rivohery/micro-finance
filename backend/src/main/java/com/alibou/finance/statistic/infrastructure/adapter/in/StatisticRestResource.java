@@ -1,9 +1,9 @@
 package com.alibou.finance.statistic.infrastructure.adapter.in;
 
-import com.alibou.finance.statistic.application.StatisticUseCase;
 import com.alibou.finance.statistic.domain.agregate.NumberAccountStatistic;
 import com.alibou.finance.statistic.domain.agregate.RegistrationStatistic;
 import com.alibou.finance.statistic.domain.agregate.SoldeAccountStatistic;
+import com.alibou.finance.statistic.infrastructure.transactional.StatisticUseCaseProxy;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import java.util.List;
 @Tag(name = "statistic-endpoint", description = "Récupérer les statistiques pour le tableau de bord")
 @RequestMapping("/statistic")
 public class StatisticRestResource {
-    private final StatisticUseCase statisticUseCase;
+    private final StatisticUseCaseProxy statisticUseCase;
 
     @Operation(
             summary = "getNbrTotalOfCustomer",

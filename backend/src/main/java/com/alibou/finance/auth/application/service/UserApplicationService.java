@@ -1,7 +1,7 @@
 package com.alibou.finance.auth.application.service;
 
 import com.alibou.finance.auth.application.port.UserUseCase;
-import com.alibou.finance.auth.domain.model.User;
+import com.alibou.finance.auth.domain.agregate.User;
 import com.alibou.finance.auth.domain.repository.UserRepository;
 import com.alibou.finance.auth.domain.service.PasswordHasher;
 import com.alibou.finance.auth.domain.vo.UserId;
@@ -10,7 +10,7 @@ import com.alibou.finance.shared.domain.ObjectInvalidException;
 import com.alibou.finance.shared.domain.OperationNotPermittedException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -25,11 +25,11 @@ public class UserApplicationService implements UserUseCase {
 
         validateEmailUniqueness(user.getEmail().value());
 
+        user.initDBValue();
+
         user.encodePassword(passwordHasher);
         return userRepository.save(user);
     }
-
-
 
     @Override
     public User update(User user){
@@ -51,8 +51,8 @@ public class UserApplicationService implements UserUseCase {
     }
 
     @Override
-    public PageResult<User> searchUserByUsername(String username, Pageable pageable) {
-        return userRepository.searchUserByUsername(username, pageable);
+    public PageResult<User> searchUserByUsername(String username, int page, int size) {
+        return userRepository.searchUserByUsername(username, page, size);
     }
 
     @Override

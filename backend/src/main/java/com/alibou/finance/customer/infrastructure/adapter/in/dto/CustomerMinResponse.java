@@ -1,6 +1,6 @@
 package com.alibou.finance.customer.infrastructure.adapter.in.dto;
 
-import com.alibou.finance.customer.domain.model.CustomerStatus;
+import com.alibou.finance.customer.domain.agregate.CustomerStatus;
 import lombok.*;
 
 import java.time.LocalDate;

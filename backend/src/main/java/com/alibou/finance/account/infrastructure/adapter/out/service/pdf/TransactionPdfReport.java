@@ -1,6 +1,6 @@
 package com.alibou.finance.account.infrastructure.adapter.out.service.pdf;
 
-import com.alibou.finance.account.infrastructure.adapter.in.dto.TransactionResponse;
+import com.alibou.finance.log.infrastructure.adapter.in.dto.TransactionResponse;
 import org.springframework.stereotype.Component;
 
 import com.itextpdf.text.*;

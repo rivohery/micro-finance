@@ -1,7 +1,8 @@
 package com.alibou.finance.currency.infrastructure.adapter.in.controller;
 
-import com.alibou.finance.currency.application.port.CurrencyUseCase;
+
 import com.alibou.finance.currency.infrastructure.adapter.in.dto.CurrencyResponse;
+import com.alibou.finance.currency.infrastructure.transactional.CurrencyUseCaseProxy;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EmployeeCurrencyRestResource {
 
-    private final CurrencyUseCase currencyService;
+    private final CurrencyUseCaseProxy currencyService;
 
     @Operation(
             summary = "fetchEnableCurrency",

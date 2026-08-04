@@ -1,10 +1,10 @@
 package com.alibou.finance.auth.infrastructure.adapter.in.controller;
 
-import com.alibou.finance.auth.application.port.UserUseCase;
-import com.alibou.finance.auth.domain.model.User;
+import com.alibou.finance.auth.domain.agregate.User;
 import com.alibou.finance.auth.domain.vo.UserId;
 import com.alibou.finance.auth.infrastructure.adapter.in.dto.*;
 import com.alibou.finance.auth.infrastructure.adapter.out.mapper.UserMapper;
+import com.alibou.finance.auth.infrastructure.transactional.UserUseCaseProxy;
 import com.alibou.finance.shared.application.PageResult;
 import com.alibou.finance.shared.infrastructure.dto.GlobalResponse;
 import com.alibou.finance.shared.infrastructure.dto.PageResponse;
@@ -13,8 +13,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,7 +26,7 @@ import java.util.UUID;
 @Tag(name="users-endpoints", description = "Endpoint pour la gestion des employés de la micro-finance par l'admin et permette aux utilisateurs de modifier ses informations")
 @RequiredArgsConstructor
 public class UserRestResource {
-    private final UserUseCase userService;
+    private final UserUseCaseProxy userService;
 
     @Operation(
             summary = "create",
@@ -62,8 +60,7 @@ public class UserRestResource {
           @RequestParam(name = "page", defaultValue = "0")int page,
           @RequestParam(name = "size", defaultValue = "6")int size
     ){
-        Pageable pageable = PageRequest.of(page, size);
-        PageResult<User> pages = userService.searchUserByUsername(search, pageable);
+        PageResult<User> pages = userService.searchUserByUsername(search, page, size);
         return ResponseEntity.ok(
                 PageMapper.toPageResponse(pages, UserMapper::domainToDto)
         );

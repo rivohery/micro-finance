@@ -1,6 +1,7 @@
 package com.alibou.finance.account.infrastructure.adapter.out.persistence.entity;
 
 import com.alibou.finance.account.domain.agregate.AccountStatusEnum;
+import com.alibou.finance.accountType.infrastructure.adapter.out.persistence.entity.AccountTypeEntity;
 import com.alibou.finance.currency.infrastructure.adapter.out.entity.CurrencyEntity;
 import com.alibou.finance.shared.infrastructure.entity.BaseAuditingEntity;
 import jakarta.persistence.*;

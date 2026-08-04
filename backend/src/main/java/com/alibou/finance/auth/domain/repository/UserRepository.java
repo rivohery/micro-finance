@@ -1,16 +1,15 @@
 package com.alibou.finance.auth.domain.repository;
 
-import com.alibou.finance.auth.domain.model.User;
+import com.alibou.finance.auth.domain.agregate.User;
 import com.alibou.finance.auth.domain.vo.UserId;
 import com.alibou.finance.shared.application.PageResult;
-import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
 public interface UserRepository {
     Optional<User> findByUsername(String username);
     User save(User user);
-    PageResult<User> searchUserByUsername(String username, Pageable pageable);
+    PageResult<User> searchUserByUsername(String username, int page, int size);
     Optional<User>findById(UserId userId);
 
     void deleteById(UserId userId);

@@ -1,20 +1,20 @@
 package com.alibou.finance.account.application;
 
-import com.alibou.finance.account.application.port.usecase.InterestRateUseCase;
+import com.alibou.finance.log.application.port.usecase.InterestRateUseCase;
 import com.alibou.finance.account.application.service.CalculateMonthlyInterestServiceApplication;
 import com.alibou.finance.account.domain.agregate.Account;
-import com.alibou.finance.account.domain.agregate.AccountType;
-import com.alibou.finance.account.domain.agregate.InterestRateTrace;
-import com.alibou.finance.account.domain.agregate.Transaction;
+import com.alibou.finance.accountType.domain.agregate.AccountType;
+import com.alibou.finance.log.domain.agregate.InterestRateTrace;
+import com.alibou.finance.log.domain.agregate.Transaction;
 import com.alibou.finance.account.domain.out.repository.TransactionRepository;
 import com.alibou.finance.account.domain.out.service.CurrencyExchangePort;
 import com.alibou.finance.account.domain.vo.AccountNumber;
 import com.alibou.finance.account.domain.vo.Balance;
 import com.alibou.finance.account.domain.vo.MgaBalance;
-import com.alibou.finance.account.domain.vo.transaction.SoldBeforeTransaction;
+import com.alibou.finance.log.domain.vo.transaction.SoldBeforeTransaction;
 import com.alibou.finance.currency.domain.agregate.Currency;
 import com.alibou.finance.currency.domain.vo.CurrencyCode;
-import com.alibou.finance.log.domain.vo.InterestRate;
+import com.alibou.finance.log.domain.vo.accountStatusHistory.InterestRate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

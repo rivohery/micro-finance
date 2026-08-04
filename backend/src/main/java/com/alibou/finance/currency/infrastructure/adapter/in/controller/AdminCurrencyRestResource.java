@@ -1,11 +1,11 @@
 package com.alibou.finance.currency.infrastructure.adapter.in.controller;
 
-import com.alibou.finance.currency.application.port.CurrencyUseCase;
 import com.alibou.finance.currency.domain.agregate.Currency;
 import com.alibou.finance.currency.domain.vo.CurrencyId;
 import com.alibou.finance.currency.infrastructure.adapter.in.dto.CreateCurrencyRequest;
 import com.alibou.finance.currency.infrastructure.adapter.in.dto.CurrencyResponse;
 import com.alibou.finance.currency.infrastructure.adapter.in.dto.UpdateCurrencyRequest;
+import com.alibou.finance.currency.infrastructure.transactional.CurrencyUseCaseProxy;
 import com.alibou.finance.shared.infrastructure.dto.GlobalResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,7 +25,7 @@ import java.util.UUID;
 @Tag(name="admin-currency-endpoints",description = "Endpoint pour le CRUD Operation sur les monnaies utilisé")
 @RequiredArgsConstructor
 public class AdminCurrencyRestResource {
-    private final CurrencyUseCase currencyService;
+    private final CurrencyUseCaseProxy currencyService;
 
     @Operation(
             summary = "create",

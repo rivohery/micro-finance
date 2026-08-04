@@ -1,9 +1,8 @@
 package com.alibou.finance.account.infrastructure.out.repository;
 
-import com.alibou.finance.account.domain.agregate.TransactionTypeEnum;
-import com.alibou.finance.account.domain.vo.transaction.TransactionType;
-import com.alibou.finance.account.infrastructure.adapter.out.persistence.entity.TransactionEntity;
-import com.alibou.finance.account.infrastructure.adapter.out.persistence.repository.TransactionJpaRepository;
+import com.alibou.finance.log.domain.agregate.TransactionTypeEnum;
+import com.alibou.finance.log.infrastructure.adapter.out.persistence.entity.TransactionEntity;
+import com.alibou.finance.log.infrastructure.adapter.out.persistence.repository.TransactionJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

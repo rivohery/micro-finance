@@ -1,6 +1,6 @@
 package com.alibou.finance.auth.infrastructure.model;
 
-import com.alibou.finance.auth.domain.model.User;
+import com.alibou.finance.auth.domain.agregate.User;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -1,6 +1,6 @@
 package com.alibou.finance.auth.infrastructure.adapter.out.mapper;
 
-import com.alibou.finance.auth.domain.model.User;
+import com.alibou.finance.auth.domain.agregate.User;
 import com.alibou.finance.auth.domain.vo.UserId;
 import com.alibou.finance.shared.vo.domain.Email;
 import com.alibou.finance.auth.domain.vo.Password;

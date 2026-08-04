@@ -7,7 +7,7 @@ import com.alibou.finance.customer.infrastructure.adapter.in.dto.CustomerMinResp
 import com.alibou.finance.customer.infrastructure.adapter.in.dto.CustomerResponse;
 import com.alibou.finance.customer.infrastructure.adapter.out.persistence.entity.CustomerEntity;
 import com.alibou.finance.customer.infrastructure.utils.FileUtils;
-import com.alibou.finance.customer.domain.model.Customer;
+import com.alibou.finance.customer.domain.agregate.Customer;
 import com.alibou.finance.shared.vo.domain.Email;
 
 public class CustomerMapper {

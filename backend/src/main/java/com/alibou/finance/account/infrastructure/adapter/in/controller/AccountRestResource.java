@@ -8,10 +8,10 @@ import com.alibou.finance.account.application.port.usecase.AccountLifeCycleUseCa
 import com.alibou.finance.account.domain.agregate.Account;
 import com.alibou.finance.account.domain.vo.AccountNumber;
 import com.alibou.finance.account.infrastructure.adapter.in.dto.*;
-import com.alibou.finance.auth.domain.model.User;
+import com.alibou.finance.auth.domain.agregate.User;
 import com.alibou.finance.auth.infrastructure.model.UserPrincipal;
-import com.alibou.finance.log.domain.vo.AccountStatusHistoryId;
-import com.alibou.finance.log.domain.vo.Reason;
+import com.alibou.finance.log.domain.vo.accountStatusHistory.AccountStatusHistoryId;
+import com.alibou.finance.log.domain.vo.accountStatusHistory.Reason;
 import com.alibou.finance.shared.infrastructure.dto.GlobalResponse;
 import com.alibou.finance.shared.infrastructure.dto.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;

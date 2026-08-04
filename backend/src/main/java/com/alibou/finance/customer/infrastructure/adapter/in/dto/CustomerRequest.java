@@ -1,9 +1,9 @@
 package com.alibou.finance.customer.infrastructure.adapter.in.dto;
 
-import com.alibou.finance.auth.domain.model.RoleEnum;
-import com.alibou.finance.auth.domain.model.User;
+import com.alibou.finance.auth.domain.agregate.RoleEnum;
+import com.alibou.finance.auth.domain.agregate.User;
 import com.alibou.finance.auth.domain.vo.Address;
-import com.alibou.finance.customer.domain.model.Customer;
+import com.alibou.finance.customer.domain.agregate.Customer;
 import com.alibou.finance.customer.domain.vo.*;
 import com.alibou.finance.shared.vo.domain.Email;
 import com.fasterxml.jackson.annotation.JsonFormat;

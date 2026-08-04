@@ -2,29 +2,30 @@ package com.alibou.finance.account.application;
 
 import com.alibou.finance.account.application.port.dto.input.AccountLifeCycleInput;
 import com.alibou.finance.account.application.port.dto.vo.ChangedBy;
-import com.alibou.finance.account.application.port.usecase.AccountTypeUseCase;
+import com.alibou.finance.accountType.application.port.AccountTypeUseCase;
 import com.alibou.finance.account.application.service.AccountLifeCycleServiceApplication;
 import com.alibou.finance.account.domain.agregate.Account;
 import com.alibou.finance.account.domain.agregate.AccountStatusEnum;
-import com.alibou.finance.account.domain.agregate.AccountType;
+import com.alibou.finance.accountType.domain.agregate.AccountType;
 import com.alibou.finance.account.domain.out.repository.AccountRepository;
 import com.alibou.finance.account.domain.out.service.AccountNumberGenerator;
 import com.alibou.finance.account.domain.out.service.CurrencyExchangePort;
 import com.alibou.finance.account.domain.vo.*;
+import com.alibou.finance.accountType.domain.vo.*;
 import com.alibou.finance.auth.application.port.UserUseCase;
-import com.alibou.finance.auth.domain.model.User;
+import com.alibou.finance.auth.domain.agregate.User;
 import com.alibou.finance.auth.domain.vo.UserId;
 import com.alibou.finance.auth.domain.vo.Username;
 import com.alibou.finance.currency.application.port.CurrencyUseCase;
 import com.alibou.finance.currency.domain.agregate.Currency;
 import com.alibou.finance.currency.domain.vo.CurrencyCode;
 import com.alibou.finance.currency.domain.vo.CurrencyName;
-import com.alibou.finance.customer.application.port.CustomerUseCase;
+import com.alibou.finance.customer.application.port.CustomerLifeCycleUseCase;
 import com.alibou.finance.customer.domain.vo.CustomerId;
 import com.alibou.finance.log.application.port.input.AccountStatusHistoryInput;
 import com.alibou.finance.log.application.port.usecase.AccountStatusHistoryUseCase;
 import com.alibou.finance.log.domain.agregate.AccountStatusHistory;
-import com.alibou.finance.log.domain.vo.*;
+import com.alibou.finance.log.domain.vo.accountStatusHistory.*;
 import com.alibou.finance.shared.domain.IllegalOperationException;
 import com.alibou.finance.shared.domain.OperationNotPermittedException;
 import com.alibou.finance.account.domain.vo.AccountId;
@@ -49,7 +50,9 @@ import static org.mockito.Mockito.*;
 public class AccountLifeCycleServiceApplicationTest {
 
     @Mock
-    private  CustomerUseCase customerUseCase;
+    private CustomerLifeCycleUseCase customerLifeCycleUseCase;
+
+
     @Mock
     private AccountTypeUseCase accountTypeUseCase;
     @Mock
@@ -103,7 +106,7 @@ public class AccountLifeCycleServiceApplicationTest {
     @Test
     void create_ShouldReturnSavedAccount_WhenCustomerIsActive(){
         //Given
-        when(customerUseCase.verifyIfCustomerIsActive(account.getCustomerId())).thenReturn(true);
+        when(customerLifeCycleUseCase.verifyIfCustomerIsActive(account.getCustomerId())).thenReturn(true);
         AccountType accountType = AccountType.builder()
                         .accountTypeId(AccountTypeId.generate())
                         .name(new AccountTypeName("epargne"))
@@ -132,7 +135,7 @@ public class AccountLifeCycleServiceApplicationTest {
 
     @Test
     void create_ShouldThrowException_WhenCustomerIsNotActive() {
-        when(customerUseCase.verifyIfCustomerIsActive(any(CustomerId.class))).thenReturn(false);
+        when(customerLifeCycleUseCase.verifyIfCustomerIsActive(any(CustomerId.class))).thenReturn(false);
 
         assertThatThrownBy(
                 () -> accountLifeCycleServiceApplication.create(account)

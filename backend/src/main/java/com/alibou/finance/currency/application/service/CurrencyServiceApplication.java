@@ -8,18 +8,14 @@ import com.alibou.finance.currency.domain.vo.CurrencyCode;
 import com.alibou.finance.currency.domain.vo.CurrencyId;
 import com.alibou.finance.shared.domain.ObjectInvalidException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service
 @RequiredArgsConstructor
 public class CurrencyServiceApplication implements CurrencyUseCase {
     private final CurrencyRepository currencyRepository;
 
     @Override
-    @Transactional
     public Currency create(Currency currency) {
         currency.generateCurrencyId();
         currency.active();
@@ -27,7 +23,6 @@ public class CurrencyServiceApplication implements CurrencyUseCase {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Currency findByCode(CurrencyCode code) {
         return currencyRepository.findByCode(code).orElseThrow(
                 ()-> new CurrencyNotFoundException("Monnaie introuvable: code de monnaie invalide")
@@ -42,25 +37,21 @@ public class CurrencyServiceApplication implements CurrencyUseCase {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Currency> findAll() {
         return currencyRepository.findAll();
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Currency> fetchEnableCurrency() {
         return currencyRepository.fetchCurrencyEnable();
     }
 
     @Override
-    @Transactional
     public Currency update(Currency currency) {
         return currencyRepository.save(currency);
     }
 
     @Override
-    @Transactional
     public void deleteById(CurrencyId currencyId) {
         boolean isExists = currencyRepository.existsById(currencyId);
         if(!isExists){

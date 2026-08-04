@@ -1,13 +1,17 @@
 package com.alibou.finance.customer.infrastructure.adapter.out.persistence.repository;
 
-import com.alibou.finance.auth.domain.model.User;
-import com.alibou.finance.customer.domain.model.CustomerStatus;
+import com.alibou.finance.auth.domain.agregate.User;
+import com.alibou.finance.customer.domain.agregate.CustomerStatus;
 import com.alibou.finance.customer.domain.vo.CustomerId;
 import com.alibou.finance.customer.infrastructure.adapter.out.mapper.CustomerMapper;
-import com.alibou.finance.customer.domain.model.Customer;
+import com.alibou.finance.customer.domain.agregate.Customer;
 import com.alibou.finance.customer.domain.out.repository.CustomerRepository;
+import com.alibou.finance.customer.infrastructure.adapter.out.persistence.entity.CustomerEntity;
+import com.alibou.finance.shared.application.PageResult;
+import com.alibou.finance.shared.infrastructure.mapper.PageMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -36,18 +40,19 @@ public class CustomerDbAdapter implements CustomerRepository {
     }
 
     @Override
-    public Page<Customer> fetchAllEnableCustomerBySearchBegin(String search, Pageable pageable) {
-        return customerJpaRepository
-                .fetchAllEnableCustomerBySearchBegin(search, pageable)
-                .map(CustomerMapper::entityToDomain);
+    public PageResult<Customer> fetchAllEnableCustomerBySearchBegin(String search, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CustomerEntity> pagesEntity = customerJpaRepository.fetchAllEnableCustomerBySearchBegin(search, pageable);
+        return PageMapper.toPageResult(pagesEntity, CustomerMapper::entityToDomain);
     }
 
     @Override
-    public Page<Customer> findAllCustomerBySearchBegin(String search, Pageable pageable) {
-        return customerJpaRepository
-                .findAllByFirstNameStartingWithIgnoreCaseOrLastNameStartingWithIgnoreCaseOrCinStartingWith(
+    public PageResult<Customer> findAllCustomerBySearchBegin(String search,  int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CustomerEntity> pages = customerJpaRepository.findAllByFirstNameStartingWithIgnoreCaseOrLastNameStartingWithIgnoreCaseOrCinStartingWith(
                         search, search, search, pageable
-                ).map(CustomerMapper::entityToDomain);
+        );
+        return PageMapper.toPageResult(pages, CustomerMapper::entityToDomain);
     }
 
     @Override

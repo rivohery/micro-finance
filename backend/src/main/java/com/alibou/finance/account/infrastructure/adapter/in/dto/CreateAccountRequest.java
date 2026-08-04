@@ -1,8 +1,8 @@
 package com.alibou.finance.account.infrastructure.adapter.in.dto;
 
 import com.alibou.finance.account.domain.agregate.Account;
-import com.alibou.finance.account.domain.agregate.AccountType;
-import com.alibou.finance.account.domain.vo.AccountTypeCode;
+import com.alibou.finance.accountType.domain.agregate.AccountType;
+import com.alibou.finance.accountType.domain.vo.AccountTypeCode;
 import com.alibou.finance.currency.domain.agregate.Currency;
 import com.alibou.finance.currency.domain.vo.CurrencyCode;
 import com.alibou.finance.customer.domain.vo.CustomerId;

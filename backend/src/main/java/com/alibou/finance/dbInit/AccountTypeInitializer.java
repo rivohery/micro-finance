@@ -1,7 +1,7 @@
 package com.alibou.finance.dbInit;
 
-import com.alibou.finance.account.infrastructure.adapter.out.persistence.entity.AccountTypeEntity;
-import com.alibou.finance.account.infrastructure.adapter.out.persistence.repository.AccountTypeJpaRepository;
+import com.alibou.finance.accountType.infrastructure.adapter.out.persistence.entity.AccountTypeEntity;
+import com.alibou.finance.accountType.infrastructure.adapter.out.persistence.repository.AccountTypeJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;

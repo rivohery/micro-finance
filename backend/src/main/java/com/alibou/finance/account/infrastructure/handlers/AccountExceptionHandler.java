@@ -19,14 +19,6 @@ public class AccountExceptionHandler {
                 );
     }
 
-    @ExceptionHandler(AccountTypeNotFoundException.class)
-    public ResponseEntity<HttpErrorResponse> handleException(AccountTypeNotFoundException exp) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(
-                        HttpErrorResponse.of(exp.getMessage(), HttpStatus.NOT_FOUND.value())
-                );
-    }
 
     @ExceptionHandler(InsufficientBalanceException.class)
     public ResponseEntity<HttpErrorResponse> handleException(InsufficientBalanceException exp) {

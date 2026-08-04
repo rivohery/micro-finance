@@ -3,7 +3,7 @@ package com.alibou.finance.account.application;
 import com.alibou.finance.account.application.port.dto.input.TransactionInput;
 import com.alibou.finance.account.application.service.AccountTransactionServiceApplication;
 import com.alibou.finance.account.domain.agregate.Account;
-import com.alibou.finance.account.domain.agregate.OverdraftLimit;
+import com.alibou.finance.account.domain.vo.OverdraftLimit;
 import com.alibou.finance.account.domain.exception.ThirdPartyServiceException;
 import com.alibou.finance.account.domain.out.repository.AccountRepository;
 import com.alibou.finance.account.domain.out.service.CurrencyExchangePort;
@@ -11,20 +11,20 @@ import com.alibou.finance.account.domain.out.service.ReferenceGenerator;
 import com.alibou.finance.account.domain.out.service.TransfertConfirmationPort;
 import com.alibou.finance.account.domain.out.service.dto.TransfertConfirmationInfo;
 import com.alibou.finance.account.domain.vo.*;
-import com.alibou.finance.auth.domain.model.User;
+import com.alibou.finance.auth.domain.agregate.User;
 import com.alibou.finance.auth.domain.vo.UserId;
 import com.alibou.finance.auth.domain.vo.Username;
 import com.alibou.finance.currency.domain.agregate.Currency;
 import com.alibou.finance.currency.domain.vo.CurrencyCode;
 import com.alibou.finance.currency.domain.vo.CurrencyName;
-import com.alibou.finance.customer.application.port.CustomerUseCase;
+import com.alibou.finance.customer.application.port.CustomerConsultationUseCase;
 import com.alibou.finance.customer.domain.vo.CustomerId;
 import com.alibou.finance.shared.domain.IllegalOperationException;
 import com.alibou.finance.shared.vo.domain.Description;
-import com.alibou.finance.account.domain.agregate.Transaction;
+import com.alibou.finance.log.domain.agregate.Transaction;
 import com.alibou.finance.account.domain.out.repository.TransactionRepository;
-import com.alibou.finance.account.domain.vo.transaction.OriginalAmount;
-import com.alibou.finance.account.domain.vo.transaction.TransactionCurrencyCode;
+import com.alibou.finance.log.domain.vo.transaction.OriginalAmount;
+import com.alibou.finance.log.domain.vo.transaction.TransactionCurrencyCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,7 +55,7 @@ public class AccountTransactionServiceApplicationTest {
     @Mock
     private ReferenceGenerator referenceGenerator;
     @Mock
-    private CustomerUseCase customerService;
+    private CustomerConsultationUseCase customerService;
     @Mock
     private TransfertConfirmationPort transfertConfirmationService;
     @InjectMocks

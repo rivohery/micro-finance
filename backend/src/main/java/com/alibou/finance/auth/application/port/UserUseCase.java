@@ -1,16 +1,15 @@
 package com.alibou.finance.auth.application.port;
 
-import com.alibou.finance.auth.domain.model.User;
+import com.alibou.finance.auth.domain.agregate.User;
 import com.alibou.finance.auth.domain.vo.UserId;
 import com.alibou.finance.shared.application.PageResult;
-import org.springframework.data.domain.Pageable;
 
 import java.util.UUID;
 
 public interface UserUseCase {
     User create(User user);
     User update(User user);
-    PageResult<User> searchUserByUsername(String username, Pageable pageable);
+    PageResult<User> searchUserByUsername(String username, int page, int size);
     UUID delete(UserId userId);
     void changePassword(String username, String oldPassword, String newPassword);
     User findByUserId(UserId userId);

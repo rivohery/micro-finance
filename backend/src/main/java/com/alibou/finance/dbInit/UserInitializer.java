@@ -1,7 +1,7 @@
 package com.alibou.finance.dbInit;
 
-import com.alibou.finance.auth.domain.model.RoleEnum;
-import com.alibou.finance.auth.domain.model.User;
+import com.alibou.finance.auth.domain.agregate.RoleEnum;
+import com.alibou.finance.auth.domain.agregate.User;
 import com.alibou.finance.auth.domain.repository.UserRepository;
 import com.alibou.finance.auth.domain.service.PasswordHasher;
 import lombok.RequiredArgsConstructor;

@@ -1,11 +1,10 @@
 package com.alibou.finance.customer.domain.out.repository;
 
-import com.alibou.finance.auth.domain.model.User;
-import com.alibou.finance.customer.domain.model.Customer;
-import com.alibou.finance.customer.domain.model.CustomerStatus;
+import com.alibou.finance.auth.domain.agregate.User;
+import com.alibou.finance.customer.domain.agregate.Customer;
+import com.alibou.finance.customer.domain.agregate.CustomerStatus;
 import com.alibou.finance.customer.domain.vo.CustomerId;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.alibou.finance.shared.application.PageResult;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -19,9 +18,9 @@ public interface CustomerRepository {
 
     boolean existsByCin(String cin);
 
-    Page<Customer>fetchAllEnableCustomerBySearchBegin(String search, Pageable pageable);
+    PageResult<Customer> fetchAllEnableCustomerBySearchBegin(String search, int page, int size);
 
-    Page<Customer>findAllCustomerBySearchBegin(String search, Pageable pageable);
+    PageResult<Customer>findAllCustomerBySearchBegin(String search,  int page, int size);
 
     CustomerStatus updateCustomerStatus(Customer customer);
 

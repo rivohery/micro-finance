@@ -1,6 +1,6 @@
 package com.alibou.finance.statistic.infrastructure.adapter.out;
 
-import com.alibou.finance.customer.domain.model.CustomerStatus;
+import com.alibou.finance.customer.domain.agregate.CustomerStatus;
 import com.alibou.finance.customer.infrastructure.adapter.out.persistence.projection.RegistrationStatisticProj;
 import com.alibou.finance.customer.infrastructure.adapter.out.persistence.repository.CustomerJpaRepository;
 import com.alibou.finance.statistic.domain.service.CustomerServicePort;

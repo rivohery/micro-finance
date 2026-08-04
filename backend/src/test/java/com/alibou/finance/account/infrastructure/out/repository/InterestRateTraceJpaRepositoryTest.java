@@ -1,7 +1,7 @@
 package com.alibou.finance.account.infrastructure.out.repository;
 
-import com.alibou.finance.account.infrastructure.adapter.out.persistence.entity.InterestRateTraceEntity;
-import com.alibou.finance.account.infrastructure.adapter.out.persistence.repository.InterestRateTraceJpaRepository;
+import com.alibou.finance.log.infrastructure.adapter.out.persistence.entity.InterestRateTraceEntity;
+import com.alibou.finance.log.infrastructure.adapter.out.persistence.repository.InterestRateTraceJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

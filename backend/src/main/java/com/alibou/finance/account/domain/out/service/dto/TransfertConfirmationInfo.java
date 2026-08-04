@@ -1,6 +1,6 @@
 package com.alibou.finance.account.domain.out.service.dto;
 
-import com.alibou.finance.auth.domain.model.User;
+import com.alibou.finance.auth.domain.agregate.User;
 import com.alibou.finance.shared.domain.Assert;
 import lombok.Builder;
 

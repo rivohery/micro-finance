@@ -1,11 +1,13 @@
 package com.alibou.finance.account.infrastructure.adapter.out.mapper;
 
 import com.alibou.finance.account.domain.agregate.Account;
-import com.alibou.finance.account.domain.agregate.AccountType;
-import com.alibou.finance.account.domain.agregate.OverdraftLimit;
+import com.alibou.finance.accountType.domain.agregate.AccountType;
+import com.alibou.finance.account.domain.vo.OverdraftLimit;
 import com.alibou.finance.account.domain.vo.*;
 import com.alibou.finance.account.infrastructure.adapter.out.persistence.entity.AccountEntity;
 import com.alibou.finance.account.infrastructure.adapter.out.persistence.projection.AccountProjection;
+import com.alibou.finance.accountType.domain.vo.AccountTypeName;
+import com.alibou.finance.accountType.infrastructure.adapter.out.mapper.AccountTypeMapper;
 import com.alibou.finance.currency.domain.agregate.Currency;
 import com.alibou.finance.currency.domain.vo.CurrencyCode;
 import com.alibou.finance.currency.infrastructure.adapter.out.mapper.CurrencyMapper;

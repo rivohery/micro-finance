@@ -1,7 +1,7 @@
 package com.alibou.finance.customer.infrastructure.adapter.out.persistence.entity;
 
 import com.alibou.finance.auth.infrastructure.adapter.out.persistence.entity.UserEntity;
-import com.alibou.finance.customer.domain.model.CustomerStatus;
+import com.alibou.finance.customer.domain.agregate.CustomerStatus;
 import com.alibou.finance.shared.infrastructure.entity.BaseAuditingEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

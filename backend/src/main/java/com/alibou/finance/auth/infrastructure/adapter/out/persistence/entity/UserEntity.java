@@ -1,9 +1,6 @@
 package com.alibou.finance.auth.infrastructure.adapter.out.persistence.entity;
 
-import com.alibou.finance.auth.domain.model.RoleEnum;
-import com.alibou.finance.auth.domain.model.User;
-import com.alibou.finance.auth.domain.service.PasswordHasher;
-import com.alibou.finance.auth.domain.vo.Password;
+import com.alibou.finance.auth.domain.agregate.RoleEnum;
 import jakarta.persistence.*;
 import lombok.*;
 

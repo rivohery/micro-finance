@@ -1,25 +1,27 @@
 package com.alibou.finance.customer.infrastructure.adapter.in.controller;
 
-import com.alibou.finance.customer.application.port.CustomerUseCase;
 import com.alibou.finance.customer.domain.vo.CustomerId;
 import com.alibou.finance.customer.infrastructure.adapter.in.dto.CustomerMinResponse;
 import com.alibou.finance.customer.infrastructure.adapter.in.dto.CustomerRequest;
 import com.alibou.finance.customer.infrastructure.adapter.in.dto.CustomerResponse;
-import com.alibou.finance.customer.domain.model.Customer;
-import com.alibou.finance.customer.domain.model.CustomerStatus;
+import com.alibou.finance.customer.domain.agregate.Customer;
+import com.alibou.finance.customer.domain.agregate.CustomerStatus;
 import com.alibou.finance.customer.infrastructure.adapter.in.dto.UpdateStatusClientRequest;
 import com.alibou.finance.customer.infrastructure.adapter.out.mapper.CustomerMapper;
+import com.alibou.finance.customer.infrastructure.transactional.CreateCustomerUseCaseProxy;
+import com.alibou.finance.customer.infrastructure.transactional.CustomerConsultationUseCaseProxy;
+import com.alibou.finance.customer.infrastructure.transactional.CustomerLifeCycleUseCaseProxy;
+import com.alibou.finance.customer.infrastructure.transactional.UpdateCustomerUseCaseProxy;
+import com.alibou.finance.shared.application.PageResult;
 import com.alibou.finance.shared.infrastructure.dto.GlobalResponse;
 import com.alibou.finance.shared.infrastructure.dto.PageResponse;
+import com.alibou.finance.shared.infrastructure.mapper.PageMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,7 +29,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -36,7 +37,10 @@ import java.util.UUID;
 @Tag(name = "admin-clients-endpoints", description = "Endpoint pour gérer le cycle de vie des clients, accessible seulement par un admin")
 @RequiredArgsConstructor
 public class AdminCustomerRestResource {
-    private final CustomerUseCase customerService;
+    private final CustomerConsultationUseCaseProxy customerConsultationUseCase;
+    private final CreateCustomerUseCaseProxy createCustomerUseCase;
+    private final UpdateCustomerUseCaseProxy updateCustomerUseCase;
+    private final CustomerLifeCycleUseCaseProxy customerLifeCycleUseCase;
     private final ObjectMapper objectMapper;
 
     @Operation(
@@ -51,9 +55,8 @@ public class AdminCustomerRestResource {
             @RequestPart(name = "file", required = true) MultipartFile uploadedFile
     ) throws IOException {
         CustomerRequest request = objectMapper.readValue(customerInfo, CustomerRequest.class);
-
         Customer newCustomer = CustomerRequest.toDomain(request);
-        Customer created = customerService.create(newCustomer, uploadedFile.getBytes(), uploadedFile.getOriginalFilename());
+        Customer created = createCustomerUseCase.execute(newCustomer, uploadedFile.getBytes(), uploadedFile.getOriginalFilename());
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(GlobalResponse.builder()
@@ -78,10 +81,10 @@ public class AdminCustomerRestResource {
     ) throws IOException {
         CustomerRequest customerRequest = objectMapper.readValue(customerInfo, CustomerRequest.class);
         Customer customer = CustomerRequest.toDomain(customerRequest);
-        customer.setCustomerId(CustomerId.from(customerId));
+        customer.updateCustomerId(CustomerId.from(customerId));
         byte[]contentFile =  (uploadedFile != null && !uploadedFile.isEmpty() && uploadedFile.getBytes().length > 0) ? uploadedFile.getBytes() : null ;
         String fileName = (uploadedFile != null && !uploadedFile.isEmpty()) ? uploadedFile.getOriginalFilename() : null;
-        Customer updated = customerService.update(customer, contentFile, fileName);
+        Customer updated = updateCustomerUseCase.execute(customer, contentFile, fileName);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(GlobalResponse.builder()
@@ -99,7 +102,7 @@ public class AdminCustomerRestResource {
     @GetMapping("/{customerId}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<CustomerResponse> findCustomerDetailsById(@PathVariable("customerId") UUID customerId) {
-        var customer = customerService.findCustomerDetailsById(CustomerId.from(customerId));
+        var customer = customerConsultationUseCase.findCustomerDetailsById(CustomerId.from(customerId));
         if (customer != null) {
             return ResponseEntity.ok(CustomerMapper.domainToCustomerFullResponse(customer));
         }
@@ -117,23 +120,10 @@ public class AdminCustomerRestResource {
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "6") int size
     ) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Customer> pageOfCustomer = customerService.findAllCustomerBySearchStart(search, pageable);
-        List<CustomerMinResponse> content = pageOfCustomer
-                .getContent()
-                .stream()
-                .map(CustomerMapper::domainToMinResponse)
-                .toList();
-        return ResponseEntity.ok(
-                new PageResponse<>(
-                        content,
-                        pageOfCustomer.getNumber(),
-                        pageOfCustomer.getSize(),
-                        pageOfCustomer.getTotalElements(),
-                        pageOfCustomer.getTotalPages(),
-                        pageOfCustomer.isFirst(),
-                        pageOfCustomer.isLast()
-                ));
+
+        PageResult<Customer> pageOfCustomer = customerConsultationUseCase.findAllCustomerBySearchStart(search, page, size);
+        PageResponse<CustomerMinResponse>pagesResponse = PageMapper.toPageResponse(pageOfCustomer, CustomerMapper::domainToMinResponse);
+        return ResponseEntity.ok(pagesResponse);
     }
 
     @Operation(
@@ -146,9 +136,10 @@ public class AdminCustomerRestResource {
             @Valid @RequestBody UpdateStatusClientRequest request
     ) {
         CustomerId customerId = CustomerId.from(request.id());
-        CustomerStatus status = customerService.updateStatusCustomer(customerId, request.status());
+        CustomerStatus status = customerLifeCycleUseCase.updateStatusCustomer(customerId, request.status());
         return ResponseEntity.ok(
                 GlobalResponse.builder()
+                        .status(HttpStatus.OK.value())
                         .message(String.format("Le status du client a été bien modifié en: %s", status.name()))
                         .build()
         );
@@ -163,7 +154,7 @@ public class AdminCustomerRestResource {
     public ResponseEntity<GlobalResponse> closeCustomerAccount(
             @PathVariable("customerId") UUID customerId
     ) {
-        var closed = customerService.CloseCustomerAccount(CustomerId.from(customerId));
+        var closed = customerLifeCycleUseCase.closeCustomerAccount(CustomerId.from(customerId));
         if (closed) {
             return ResponseEntity.ok(
                     GlobalResponse.builder()

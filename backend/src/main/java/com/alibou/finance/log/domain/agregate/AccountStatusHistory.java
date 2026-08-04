@@ -1,7 +1,7 @@
 package com.alibou.finance.log.domain.agregate;
 
 import com.alibou.finance.account.domain.vo.AccountId;
-import com.alibou.finance.log.domain.vo.*;
+import com.alibou.finance.log.domain.vo.accountStatusHistory.*;
 import lombok.Builder;
 import lombok.Getter;
 

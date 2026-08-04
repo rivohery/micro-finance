@@ -14,4 +14,8 @@ public record Email(String value) {
         value = value.toLowerCase().trim();
     }
 
+    public static Email from(String value){
+        return new Email(value);
+    }
+
 }

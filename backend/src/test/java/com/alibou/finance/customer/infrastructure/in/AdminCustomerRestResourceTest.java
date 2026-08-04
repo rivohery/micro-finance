@@ -1,8 +1,12 @@
 package com.alibou.finance.customer.infrastructure.in;
 
-import com.alibou.finance.customer.application.port.CustomerUseCase;
-import com.alibou.finance.customer.domain.model.Customer;
+import com.alibou.finance.customer.domain.agregate.Customer;
 import com.alibou.finance.customer.infrastructure.adapter.in.controller.AdminCustomerRestResource;
+import com.alibou.finance.customer.infrastructure.handler.CustomerExceptionHandler;
+import com.alibou.finance.customer.infrastructure.transactional.CreateCustomerUseCaseProxy;
+import com.alibou.finance.customer.infrastructure.transactional.CustomerConsultationUseCaseProxy;
+import com.alibou.finance.customer.infrastructure.transactional.CustomerLifeCycleUseCaseProxy;
+import com.alibou.finance.customer.infrastructure.transactional.UpdateCustomerUseCaseProxy;
 import com.alibou.finance.shared.domain.IllegalArgumentException;
 import com.alibou.finance.shared.domain.OperationNotPermittedException;
 import com.alibou.finance.shared.infrastructure.error.GlobalExceptionHandler;
@@ -31,7 +35,13 @@ class AdminCustomerRestResourceTest {
     private MockMvc mockMvc;
 
     @Mock
-    private CustomerUseCase customerService;
+    private CustomerConsultationUseCaseProxy customerConsultationUseCase;
+    @Mock
+    private CreateCustomerUseCaseProxy createCustomerService;
+    @Mock
+    private UpdateCustomerUseCaseProxy updateCustomerUseCase;
+    @Mock
+    private CustomerLifeCycleUseCaseProxy customerLifeCycleUseCase;
 
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()); // Important pour LocalDate
 
@@ -42,10 +52,16 @@ class AdminCustomerRestResourceTest {
 
     @BeforeEach
     void setUp() {
-        customerController = new AdminCustomerRestResource(customerService, objectMapper);
+        customerController = new AdminCustomerRestResource(
+                customerConsultationUseCase,
+                createCustomerService,
+                updateCustomerUseCase,
+                customerLifeCycleUseCase,
+                objectMapper
+        );
         mockMvc = MockMvcBuilders
                 .standaloneSetup(customerController)
-                .setControllerAdvice(new GlobalExceptionHandler()) // On ajoute le handler ici !
+                .setControllerAdvice(new GlobalExceptionHandler(), new CustomerExceptionHandler()) // On ajoute le handler ici !
                 .build();
     }
 
@@ -71,7 +87,7 @@ class AdminCustomerRestResourceTest {
                 """;
 
         // WHEN & THEN
-        mockMvc.perform(multipart("/clients/create")
+        mockMvc.perform(multipart("/admin/clients/create")
                         .file(mockFile)
                         .param("customerInfo", jsonInfo))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
@@ -84,7 +100,7 @@ class AdminCustomerRestResourceTest {
                     assertThat(cause.getMessage()).contains("Nos services sont réservés uniquement pour le majeur");
                 });
 
-        Mockito.verify(customerService, Mockito.never()).create(any(Customer.class), eq(mockFile.getBytes()), eq(mockFile.getOriginalFilename()));
+        Mockito.verify(createCustomerService, Mockito.never()).execute(any(Customer.class), eq(mockFile.getBytes()), eq(mockFile.getOriginalFilename()));
     }
 
     @Test
@@ -108,16 +124,16 @@ class AdminCustomerRestResourceTest {
                 """;
 
         Mockito.doThrow(new OperationNotPermittedException("Une exception est levée au niveau du service"))
-                .when(customerService).create(any(Customer.class), eq(mockFile.getBytes()), eq(mockFile.getOriginalFilename()));
+                .when(createCustomerService).execute(any(Customer.class), eq(mockFile.getBytes()), eq(mockFile.getOriginalFilename()));
 
         // WHEN & THEN
-        mockMvc.perform(multipart("/clients/create")
+        mockMvc.perform(multipart("/admin/clients/create")
                              .file(mockFile)
                              .param("customerInfo", jsonInfo)
         ).andExpect(MockMvcResultMatchers.status().isNotAcceptable())
          .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Une exception est levée au niveau du service"));
 
-        Mockito.verify(customerService, Mockito.times(1)).create(
+        Mockito.verify(createCustomerService, Mockito.times(1)).execute(
                 any(Customer.class), eq(mockFile.getBytes()), eq(mockFile.getOriginalFilename())
         );
 

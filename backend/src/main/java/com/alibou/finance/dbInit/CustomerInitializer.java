@@ -1,18 +1,15 @@
 package com.alibou.finance.dbInit;
 
-import com.alibou.finance.auth.domain.model.RoleEnum;
+import com.alibou.finance.auth.domain.agregate.RoleEnum;
 import com.alibou.finance.auth.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.alibou.finance.auth.infrastructure.adapter.out.persistence.repository.UserJpaRepository;
-import com.alibou.finance.customer.domain.model.CustomerStatus;
+import com.alibou.finance.customer.domain.agregate.CustomerStatus;
 import com.alibou.finance.customer.infrastructure.adapter.out.persistence.entity.CustomerEntity;
 import com.alibou.finance.customer.infrastructure.adapter.out.persistence.repository.CustomerJpaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;

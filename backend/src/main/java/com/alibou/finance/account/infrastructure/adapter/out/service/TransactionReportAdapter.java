@@ -1,9 +1,9 @@
 package com.alibou.finance.account.infrastructure.adapter.out.service;
 
-import com.alibou.finance.account.domain.agregate.Transaction;
+import com.alibou.finance.log.domain.agregate.Transaction;
 import com.alibou.finance.account.domain.out.service.TransactionsReportPort;
-import com.alibou.finance.account.infrastructure.adapter.in.dto.TransactionResponse;
-import com.alibou.finance.account.infrastructure.adapter.out.mapper.TransactionMapper;
+import com.alibou.finance.log.infrastructure.adapter.in.dto.TransactionResponse;
+import com.alibou.finance.log.infrastructure.adapter.out.mappers.TransactionMapper;
 import com.alibou.finance.account.infrastructure.adapter.out.service.pdf.TransactionPdfReport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

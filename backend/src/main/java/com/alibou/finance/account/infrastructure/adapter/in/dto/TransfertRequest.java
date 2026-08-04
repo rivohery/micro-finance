@@ -2,8 +2,8 @@ package com.alibou.finance.account.infrastructure.adapter.in.dto;
 
 import com.alibou.finance.account.application.port.dto.input.TransactionInput;
 import com.alibou.finance.account.domain.vo.AccountNumber;
-import com.alibou.finance.auth.domain.model.User;
-import com.alibou.finance.account.domain.vo.transaction.OriginalAmount;
+import com.alibou.finance.auth.domain.agregate.User;
+import com.alibou.finance.log.domain.vo.transaction.OriginalAmount;
 import com.alibou.finance.shared.vo.domain.Description;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

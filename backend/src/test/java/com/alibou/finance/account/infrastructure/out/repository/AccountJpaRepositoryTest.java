@@ -2,15 +2,14 @@ package com.alibou.finance.account.infrastructure.out.repository;
 
 import com.alibou.finance.account.domain.agregate.AccountStatusEnum;
 import com.alibou.finance.account.infrastructure.adapter.out.persistence.entity.AccountEntity;
-import com.alibou.finance.account.infrastructure.adapter.out.persistence.entity.AccountTypeEntity;
+import com.alibou.finance.accountType.infrastructure.adapter.out.persistence.entity.AccountTypeEntity;
 import com.alibou.finance.account.infrastructure.adapter.out.persistence.projection.AccountProjection;
 import com.alibou.finance.account.infrastructure.adapter.out.persistence.projection.NumberAccountStatisticProj;
 import com.alibou.finance.account.infrastructure.adapter.out.persistence.projection.SoldeAccountStatisticProj;
 import com.alibou.finance.account.infrastructure.adapter.out.persistence.repository.AccountJpaRepository;
-import com.alibou.finance.account.infrastructure.adapter.out.persistence.repository.AccountTypeJpaRepository;
+import com.alibou.finance.accountType.infrastructure.adapter.out.persistence.repository.AccountTypeJpaRepository;
 import com.alibou.finance.currency.infrastructure.adapter.out.entity.CurrencyEntity;
 import com.alibou.finance.currency.infrastructure.adapter.out.repository.CurrencyJpaRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +22,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;

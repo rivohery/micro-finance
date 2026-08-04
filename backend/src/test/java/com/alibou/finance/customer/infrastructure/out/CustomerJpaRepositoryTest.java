@@ -1,12 +1,12 @@
 package com.alibou.finance.customer.infrastructure.out;
 
-import com.alibou.finance.auth.domain.model.RoleEnum;
+import com.alibou.finance.auth.domain.agregate.RoleEnum;
 import com.alibou.finance.auth.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.alibou.finance.auth.infrastructure.adapter.out.persistence.repository.UserJpaRepository;
 import com.alibou.finance.customer.infrastructure.adapter.out.persistence.entity.CustomerEntity;
 import com.alibou.finance.customer.infrastructure.adapter.out.persistence.projection.RegistrationStatisticProj;
 import com.alibou.finance.customer.infrastructure.adapter.out.persistence.repository.CustomerJpaRepository;
-import com.alibou.finance.customer.domain.model.CustomerStatus;
+import com.alibou.finance.customer.domain.agregate.CustomerStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,10 +18,8 @@ import org.springframework.data.domain.Pageable;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;

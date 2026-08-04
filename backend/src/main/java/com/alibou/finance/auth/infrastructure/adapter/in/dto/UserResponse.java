@@ -1,6 +1,6 @@
 package com.alibou.finance.auth.infrastructure.adapter.in.dto;
 
-import com.alibou.finance.auth.domain.model.RoleEnum;
+import com.alibou.finance.auth.domain.agregate.RoleEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 

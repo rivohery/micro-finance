@@ -2,7 +2,7 @@ package com.alibou.finance.log.application.port.input;
 
 import com.alibou.finance.account.domain.vo.AccountId;
 import com.alibou.finance.log.domain.agregate.AccountStatusHistory;
-import com.alibou.finance.log.domain.vo.*;
+import com.alibou.finance.log.domain.vo.accountStatusHistory.*;
 import lombok.Builder;
 
 @Builder

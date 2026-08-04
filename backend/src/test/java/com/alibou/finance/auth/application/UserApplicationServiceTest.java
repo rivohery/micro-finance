@@ -2,9 +2,8 @@ package com.alibou.finance.auth.application;
 
 import com.alibou.finance.auth.application.service.UserApplicationService;
 import com.alibou.finance.auth.domain.repository.UserRepository;
-import com.alibou.finance.auth.domain.model.User;
+import com.alibou.finance.auth.domain.agregate.User;
 import com.alibou.finance.auth.domain.service.PasswordHasher;
-import com.alibou.finance.auth.infrastructure.adapter.in.dto.UserRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

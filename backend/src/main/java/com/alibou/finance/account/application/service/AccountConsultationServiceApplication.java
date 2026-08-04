@@ -5,7 +5,7 @@ import com.alibou.finance.account.domain.agregate.Account;
 import com.alibou.finance.account.domain.exception.AccountNotFoundException;
 import com.alibou.finance.account.domain.out.repository.AccountRepository;
 import com.alibou.finance.account.domain.vo.AccountNumber;
-import com.alibou.finance.auth.domain.model.User;
+import com.alibou.finance.auth.domain.agregate.User;
 import com.alibou.finance.customer.domain.exception.CustomerNotFoundException;
 import com.alibou.finance.customer.domain.out.repository.CustomerRepository;
 import com.alibou.finance.customer.domain.vo.CustomerId;

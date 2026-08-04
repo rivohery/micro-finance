@@ -1,13 +1,12 @@
 package com.alibou.finance.account.application.service;
 
 import com.alibou.finance.account.application.port.usecase.CalculateMonthlyInterestUseCase;
-import com.alibou.finance.account.application.port.usecase.InterestRateUseCase;
+import com.alibou.finance.log.application.port.usecase.InterestRateUseCase;
 import com.alibou.finance.account.domain.agregate.Account;
-import com.alibou.finance.account.domain.agregate.InterestRateTrace;
-import com.alibou.finance.account.domain.agregate.Transaction;
+import com.alibou.finance.log.domain.agregate.InterestRateTrace;
+import com.alibou.finance.log.domain.agregate.Transaction;
 import com.alibou.finance.account.domain.out.repository.TransactionRepository;
 import com.alibou.finance.account.domain.out.service.CurrencyExchangePort;
-import com.alibou.finance.account.domain.vo.interestRate.Amount;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
