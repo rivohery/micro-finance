@@ -13,7 +13,7 @@ public class CustomerLifeCycleUseCaseProxy {
 
     private final CustomerLifeCycleUseCase customerLifeCycleUseCase;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public boolean verifyIfCustomerIsActive(CustomerId customerId) {
         return customerLifeCycleUseCase.verifyIfCustomerIsActive(customerId);
     }

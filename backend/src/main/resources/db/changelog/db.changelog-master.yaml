@@ -39,3 +39,5 @@ databaseChangeLog:
       file: db/changelog/changes/019-create-batch-job-seq.sql
   - include:
       file: db/changelog/changes/020-update-some-table-after-refactoring-code.sql
+  - include:
+      file: db/changelog/changes/021-add-column-version-in-accounts-table.sql

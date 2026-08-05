@@ -42,5 +42,8 @@ public class AccountEntity extends BaseAuditingEntity {
     @Column(nullable = false)
     private UUID customerId;
 
+    @Version
+    private Long version;
+
 }
 

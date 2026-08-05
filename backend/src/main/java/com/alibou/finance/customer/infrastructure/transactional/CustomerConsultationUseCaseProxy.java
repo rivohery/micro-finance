@@ -31,12 +31,12 @@ public class CustomerConsultationUseCaseProxy {
         return customerConsultationUseCase.findAllCustomerBySearchStart(search, page, size);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public CustomerId findCustomerIdByUser(User user) {
         return customerConsultationUseCase.findCustomerIdByUser(user);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public DetailCustomerWithAccount findCustomerWithAccounts(CustomerId customerId) {
         return customerConsultationUseCase.findCustomerWithAccounts(customerId);
     }
