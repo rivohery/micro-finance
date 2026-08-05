@@ -4,6 +4,7 @@ import com.alibou.finance.account.domain.exception.*;
 import com.alibou.finance.shared.infrastructure.error.HttpErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -35,6 +36,18 @@ public class AccountExceptionHandler {
                 .status(HttpStatus.SERVICE_UNAVAILABLE)//code 503
                 .body(
                         HttpErrorResponse.of(exp.getMessage(), HttpStatus.SERVICE_UNAVAILABLE.value())
+                );
+    }
+
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    public ResponseEntity<HttpErrorResponse> handleException(ObjectOptimisticLockingFailureException exp) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)//code 409
+                .body(
+                        HttpErrorResponse.of(
+                                "Une autre opération est en cours sur ce compte. Veuillez réessayer.",
+                                HttpStatus.CONFLICT.value()
+                        )
                 );
     }
 
