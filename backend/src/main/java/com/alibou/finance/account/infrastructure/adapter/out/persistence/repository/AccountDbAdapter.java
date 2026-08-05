@@ -5,15 +5,19 @@ import com.alibou.finance.account.domain.agregate.Account;
 import com.alibou.finance.account.domain.out.repository.AccountRepository;
 import com.alibou.finance.account.domain.vo.AccountNumber;
 import com.alibou.finance.account.infrastructure.adapter.out.mapper.AccountMapper;
+import com.alibou.finance.account.infrastructure.adapter.out.persistence.projection.AccountProjection;
 import com.alibou.finance.customer.domain.vo.CustomerId;
+import com.alibou.finance.shared.application.PageResult;
+import com.alibou.finance.shared.infrastructure.mapper.PageMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -37,8 +41,10 @@ public class AccountDbAdapter implements AccountRepository {
     }
 
     @Override
-    public Page<Account> findAllAccountBySearch(String search, Pageable pageable) {
-        return accountJpaRepository.getAllAccountByAccountNumberBegin(search, pageable).map(AccountMapper::domainFromProjection);
+    public PageResult<Account> findAllAccountBySearch(String search, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
+        Page<AccountProjection>pageEntities = accountJpaRepository.getAllAccountByAccountNumberBegin(search, pageable);
+        return PageMapper.toPageResult(pageEntities, AccountMapper::domainFromProjection);
     }
 
     @Override

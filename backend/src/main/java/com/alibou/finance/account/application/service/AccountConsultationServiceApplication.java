@@ -9,22 +9,18 @@ import com.alibou.finance.auth.domain.agregate.User;
 import com.alibou.finance.customer.domain.exception.CustomerNotFoundException;
 import com.alibou.finance.customer.domain.out.repository.CustomerRepository;
 import com.alibou.finance.customer.domain.vo.CustomerId;
+import com.alibou.finance.shared.application.PageResult;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service
+
 @RequiredArgsConstructor
 public class AccountConsultationServiceApplication implements AccountConsultationUseCase {
     private final AccountRepository accountRepository;
     private final CustomerRepository customerRepository;
 
     @Override
-    @Transactional(readOnly = true)
     public Account findByAccountNumber(AccountNumber accountNumber) {
         return accountRepository.findByAccountNumber(accountNumber).orElseThrow(
                 ()-> new AccountNotFoundException(String.format("Compte introuvable: numéros du compte invalide: %s", accountNumber.value()))
@@ -32,19 +28,16 @@ public class AccountConsultationServiceApplication implements AccountConsultatio
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Page<Account> findAllAccountBySearch(String search, Pageable pageable) {
-        return accountRepository.findAllAccountBySearch(search, pageable);
+    public PageResult<Account> findAllAccountBySearch(String search, int page, int size) {
+        return accountRepository.findAllAccountBySearch(search, page, size);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Account> findAllByCustomerId(CustomerId customerId) {
         return accountRepository.findAllByCustomerId(customerId);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Account> findAllByUserConnected(User user) {
         CustomerId customerId = customerRepository.findCustomerIdByUser(user).orElseThrow(
                 () -> new CustomerNotFoundException("Aucun ID client correspond au utilisateur connecté")

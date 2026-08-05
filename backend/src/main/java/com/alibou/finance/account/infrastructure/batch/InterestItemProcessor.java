@@ -4,13 +4,14 @@ import com.alibou.finance.account.application.port.usecase.CalculateMonthlyInter
 import com.alibou.finance.account.domain.agregate.Account;
 import com.alibou.finance.account.infrastructure.adapter.out.mapper.AccountMapper;
 import com.alibou.finance.account.infrastructure.adapter.out.persistence.entity.AccountEntity;
+import com.alibou.finance.account.infrastructure.transactional.CalculateMonthlyInterestUseCaseProxy;
 import org.springframework.batch.item.ItemProcessor;
 
 // Pas de @Component ici !
 public class InterestItemProcessor implements ItemProcessor<AccountEntity, AccountEntity> {
-    private final CalculateMonthlyInterestUseCase calculateMonthlyInterestService;
+    private final CalculateMonthlyInterestUseCaseProxy calculateMonthlyInterestService;
 
-    public InterestItemProcessor(CalculateMonthlyInterestUseCase calculateMonthlyInterestService) {
+    public InterestItemProcessor(CalculateMonthlyInterestUseCaseProxy calculateMonthlyInterestService) {
         this.calculateMonthlyInterestService = calculateMonthlyInterestService;
     }
 

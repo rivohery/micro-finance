@@ -21,14 +21,10 @@ import com.alibou.finance.log.domain.agregate.Transaction;
 import com.alibou.finance.account.domain.out.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Objects;
 
-
-@Service
 @RequiredArgsConstructor
 @Slf4j
 public class AccountTransactionServiceApplication implements AccountTransactionUseCase {
@@ -43,7 +39,6 @@ public class AccountTransactionServiceApplication implements AccountTransactionU
 
 
     @Override
-    @Transactional
     public Map<String, Object> deposit(TransactionInput input) {
         var account = getAccountByAccountNumber(input.getConcernedAccountNumber());
 
@@ -71,7 +66,6 @@ public class AccountTransactionServiceApplication implements AccountTransactionU
     }
 
     @Override
-    @Transactional
     public Map<String, Object> withdraw(TransactionInput input) {
         var account = getAccountByAccountNumber(input.getConcernedAccountNumber());
 
@@ -99,7 +93,6 @@ public class AccountTransactionServiceApplication implements AccountTransactionU
     }
 
     @Override
-    @Transactional
     public Map<String, Object> transfert(TransactionInput input) {
         Map<String, Object> withdrawResult = processWithdrawOfTransfert(input);
         Account sourceAccount = (Account) withdrawResult.get("account");

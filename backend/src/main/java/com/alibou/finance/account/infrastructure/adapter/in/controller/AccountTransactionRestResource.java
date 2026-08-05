@@ -1,7 +1,7 @@
 package com.alibou.finance.account.infrastructure.adapter.in.controller;
 
-import com.alibou.finance.account.application.port.usecase.AccountTransactionUseCase;
 import com.alibou.finance.account.infrastructure.adapter.in.dto.TransfertRequest;
+import com.alibou.finance.account.infrastructure.transactional.AccountTransactionUseCaseProxy;
 import com.alibou.finance.auth.infrastructure.model.UserPrincipal;
 import com.alibou.finance.account.infrastructure.adapter.in.dto.TransactionRequest;
 import com.alibou.finance.log.infrastructure.adapter.in.dto.TransactionResponse;
@@ -27,7 +27,7 @@ import java.util.Map;
 @Tag(name="account-operations-endpoints", description = "Endpoint pour gérer les opérations monétaire: dépôts-retraits-transfert")
 @RequiredArgsConstructor
 public class AccountTransactionRestResource {
-    private final AccountTransactionUseCase accountTransactionService;
+    private final AccountTransactionUseCaseProxy accountTransactionService;
 
     @Operation(
             summary = "deposit",

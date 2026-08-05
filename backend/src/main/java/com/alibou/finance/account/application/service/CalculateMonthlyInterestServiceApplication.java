@@ -8,8 +8,6 @@ import com.alibou.finance.log.domain.agregate.Transaction;
 import com.alibou.finance.account.domain.out.repository.TransactionRepository;
 import com.alibou.finance.account.domain.out.service.CurrencyExchangePort;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -19,7 +17,6 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
-@Service
 @RequiredArgsConstructor
 public class CalculateMonthlyInterestServiceApplication implements CalculateMonthlyInterestUseCase {
     private static final String CURRENCY_REFERENCE_CODE = "MGA";
@@ -29,7 +26,6 @@ public class CalculateMonthlyInterestServiceApplication implements CalculateMont
     private final InterestRateUseCase interestRateUseCase;
 
     @Override
-    @Transactional
     public Account execute(Account account) {
         LocalDate now = LocalDate.now();
         LocalDateTime startMonth = now.with(TemporalAdjusters.firstDayOfMonth()).atTime(LocalTime.MIN);

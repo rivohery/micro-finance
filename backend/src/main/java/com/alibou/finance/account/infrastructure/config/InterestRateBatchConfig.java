@@ -1,10 +1,10 @@
 package com.alibou.finance.account.infrastructure.config;
 
-import com.alibou.finance.account.application.port.usecase.CalculateMonthlyInterestUseCase;
 import com.alibou.finance.account.domain.agregate.AccountStatusEnum;
 import com.alibou.finance.account.infrastructure.adapter.out.persistence.entity.AccountEntity;
 import com.alibou.finance.account.infrastructure.adapter.out.persistence.repository.AccountJpaRepository;
 import com.alibou.finance.account.infrastructure.batch.InterestItemProcessor;
+import com.alibou.finance.account.infrastructure.transactional.CalculateMonthlyInterestUseCaseProxy;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -44,7 +44,7 @@ public class InterestRateBatchConfig {
     }
 
     @Bean
-    public ItemProcessor<AccountEntity, AccountEntity> accountProcessor(CalculateMonthlyInterestUseCase calculateMonthlyInterestService) {
+    public ItemProcessor<AccountEntity, AccountEntity> accountProcessor(CalculateMonthlyInterestUseCaseProxy calculateMonthlyInterestService) {
         return new InterestItemProcessor(calculateMonthlyInterestService);
     }
 

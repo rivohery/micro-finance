@@ -3,25 +3,24 @@ package com.alibou.finance.account.infrastructure.adapter.in.controller;
 import com.alibou.finance.account.application.port.dto.input.AccountLifeCycleInput;
 import com.alibou.finance.account.domain.vo.AccountId;
 import com.alibou.finance.account.application.port.dto.vo.ChangedBy;
-import com.alibou.finance.account.application.port.usecase.AccountConsultationUseCase;
-import com.alibou.finance.account.application.port.usecase.AccountLifeCycleUseCase;
 import com.alibou.finance.account.domain.agregate.Account;
 import com.alibou.finance.account.domain.vo.AccountNumber;
 import com.alibou.finance.account.infrastructure.adapter.in.dto.*;
+import com.alibou.finance.account.infrastructure.transactional.AccountLifeCycleUseCaseProxy;
+import com.alibou.finance.account.infrastructure.transactional.AccountConsultationUseCaseProxy;
+import com.alibou.finance.account.infrastructure.transactional.CreateNewAccountUseCaseProxy;
 import com.alibou.finance.auth.domain.agregate.User;
 import com.alibou.finance.auth.infrastructure.model.UserPrincipal;
 import com.alibou.finance.log.domain.vo.accountStatusHistory.AccountStatusHistoryId;
 import com.alibou.finance.log.domain.vo.accountStatusHistory.Reason;
+import com.alibou.finance.shared.application.PageResult;
 import com.alibou.finance.shared.infrastructure.dto.GlobalResponse;
 import com.alibou.finance.shared.infrastructure.dto.PageResponse;
+import com.alibou.finance.shared.infrastructure.mapper.PageMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,8 +36,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AccountRestResource {
 
-    private final AccountLifeCycleUseCase accountLifeCycleService;
-    private final AccountConsultationUseCase accountConsultationService;
+    private final AccountLifeCycleUseCaseProxy accountLifeCycleService;
+    private final CreateNewAccountUseCaseProxy createNewAccountUseCase;
+    private final AccountConsultationUseCaseProxy accountConsultationService;
 
     @Operation(
             summary = "createNewAccount",
@@ -50,7 +50,7 @@ public class AccountRestResource {
        @Valid @RequestBody CreateAccountRequest request
     ){
         Account newAccount = CreateAccountRequest.toDomain(request);
-        Account created = accountLifeCycleService.create(newAccount);
+        Account created = createNewAccountUseCase.execute(newAccount);
         if(created != null){
             return ResponseEntity
                     .status(HttpStatus.CREATED)
@@ -162,19 +162,9 @@ public class AccountRestResource {
            @RequestParam(name = "page", defaultValue = "0")int page,
            @RequestParam(name = "size", defaultValue = "10")int size
     ){
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
-        Page<Account> pages = accountConsultationService.findAllAccountBySearch(search, pageable);
-        return ResponseEntity.ok(
-                new PageResponse<>(
-                        pages.getContent().stream().map(AccountResponse::fromDomain).toList(),
-                        pages.getNumber(),
-                        pages.getSize(),
-                        pages.getTotalElements(),
-                        pages.getTotalPages(),
-                        pages.isFirst(),
-                        pages.isLast()
-                )
-        );
+        PageResult<Account> pages = accountConsultationService.findAllAccountBySearch(search, page, size);
+        PageResponse<AccountResponse>pageResponse = PageMapper.toPageResponse(pages, AccountResponse::fromDomain);
+        return ResponseEntity.ok(pageResponse);
     }
 
     @Operation(
