@@ -32,7 +32,7 @@ public class CreateNewAccountServiceApplication implements CreateNewAccountUseCa
     public Account execute(Account account) {
         validateCustomerActive(account.getCustomerId());
 
-        var accountType = accountTypeUseCase.findByCode(account.getAccountType().getCode().value());
+        var accountType = accountTypeUseCase.findByCode(account.getAccountType().getCode());
         var currency = currencyUseCase.findByCode(account.getCurrency().getCode());
 
         //On calcule le découvert à partir du cel définie dans le type du compte (minimumBalance en MGA) et le taux d'échange au moment de la création du compte
@@ -50,7 +50,7 @@ public class CreateNewAccountServiceApplication implements CreateNewAccountUseCa
     private void validateCustomerActive(CustomerId customerId){
         var customerIsActive = customerLifeCycleUseCase.verifyIfCustomerIsActive(customerId);
         if(!customerIsActive){
-            throw new OperationNotPermittedException("Client inactive");
+            throw new OperationNotPermittedException("Ce client n'est pas activé");
         }
     }
 }

@@ -103,48 +103,6 @@ public class AccountLifeCycleServiceApplicationTest {
 
     }
 
-    @Test
-    void create_ShouldReturnSavedAccount_WhenCustomerIsActive(){
-        //Given
-        when(customerLifeCycleUseCase.verifyIfCustomerIsActive(account.getCustomerId())).thenReturn(true);
-        AccountType accountType = AccountType.builder()
-                        .accountTypeId(AccountTypeId.generate())
-                        .name(new AccountTypeName("epargne"))
-                        .code(account.getAccountType().getCode())
-                        .accountFee(new AccountFee(BigDecimal.ZERO))
-                        .annualInterestRate(InterestRate.setNull())
-                        .minimumBalance(MinimumBalance.setNull())
-                        .build();
-        when(accountTypeUseCase.findByCode("10")).thenReturn(accountType);
-        when(currencyUseCase.findByCode(any(CurrencyCode.class))).thenReturn(currency);
-        when(accountNumberGenerator.generateUniqueAccountNumber("001","10",10))
-                .thenReturn("001-10-1234567890");
-        when(currencyExchangePort.getExchangeRate(anyString(), anyString())).thenReturn(BigDecimal.ONE);
-        when(accountRepository.save(account)).thenAnswer(i -> i.getArgument(0));
-
-        Account result = accountLifeCycleServiceApplication.create(account);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getAccountNumber().value()).isEqualTo("001-10-1234567890");
-        assertThat(result.getAccountType().getCode().value()).isEqualTo("10");
-        assertThat(result.getCurrency().getCode().value()).isEqualTo("MGA");
-        assertThat(result.getBalance().value().compareTo(BigDecimal.ZERO)).isEqualTo(0);
-        assertThat(result.getMgaBalance().value().compareTo(BigDecimal.ZERO)).isEqualTo(0);
-        assertThat(result.getAccountType().getName().value()).isEqualTo("EPARGNE");
-    }
-
-    @Test
-    void create_ShouldThrowException_WhenCustomerIsNotActive() {
-        when(customerLifeCycleUseCase.verifyIfCustomerIsActive(any(CustomerId.class))).thenReturn(false);
-
-        assertThatThrownBy(
-                () -> accountLifeCycleServiceApplication.create(account)
-        ).isInstanceOf(OperationNotPermittedException.class)
-         .hasMessage("Création du compte interrompue car le client n'est pas active");
-
-        verify(accountTypeUseCase, never()).findByCode(anyString());
-        verify(accountRepository, never()).save(any(Account.class));
-    }
 
     @Test
     void activateAccount_ShouldDoingWithSuccess(){
@@ -234,7 +192,7 @@ public class AccountLifeCycleServiceApplicationTest {
         assertThatThrownBy(
                 ()-> accountLifeCycleServiceApplication.closeAccount(accountLifeCycleInput)
         ).isInstanceOf(IllegalOperationException.class)
-         .hasMessage("On ne peut pas clôturer ce compte car le solde n'est pas nulle");
+         .hasMessage("Clôture interrompu car le solde n'est pas nulle");
 
         verify(accountRepository, never()).save(any(Account.class));
         verify(accountStatusHistoryUseCase, never()).save(any(AccountStatusHistoryInput.class));

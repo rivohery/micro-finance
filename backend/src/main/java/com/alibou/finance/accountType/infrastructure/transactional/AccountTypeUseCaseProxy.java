@@ -2,6 +2,7 @@ package com.alibou.finance.accountType.infrastructure.transactional;
 
 import com.alibou.finance.accountType.application.port.AccountTypeUseCase;
 import com.alibou.finance.accountType.domain.agregate.AccountType;
+import com.alibou.finance.accountType.domain.vo.AccountTypeCode;
 import com.alibou.finance.accountType.domain.vo.AccountTypeId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class AccountTypeUseCaseProxy {
     }
 
     @Transactional(readOnly = true)
-    public AccountType findByCode(String accountTypeCode){
+    public AccountType findByCode(AccountTypeCode accountTypeCode){
         return accountTypeUseCase.findByCode(accountTypeCode);
     }
 

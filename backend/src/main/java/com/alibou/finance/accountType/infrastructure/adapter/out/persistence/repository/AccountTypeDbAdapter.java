@@ -2,6 +2,7 @@ package com.alibou.finance.accountType.infrastructure.adapter.out.persistence.re
 
 import com.alibou.finance.accountType.domain.agregate.AccountType;
 import com.alibou.finance.accountType.domain.repository.AccountTypeRepository;
+import com.alibou.finance.accountType.domain.vo.AccountTypeCode;
 import com.alibou.finance.accountType.domain.vo.AccountTypeId;
 import com.alibou.finance.accountType.infrastructure.adapter.out.mapper.AccountTypeMapper;
 import com.alibou.finance.accountType.infrastructure.adapter.out.persistence.entity.AccountTypeEntity;
@@ -24,8 +25,8 @@ public class AccountTypeDbAdapter implements AccountTypeRepository {
     }
 
     @Override
-    public Optional<AccountType> findByCode(String code) {
-        return accountTypeJpaRepository.findByCode(code).map(AccountTypeMapper::entityToDomain);
+    public Optional<AccountType> findByCode(AccountTypeCode code) {
+        return accountTypeJpaRepository.findByCode(code.value()).map(AccountTypeMapper::entityToDomain);
     }
 
     @Override

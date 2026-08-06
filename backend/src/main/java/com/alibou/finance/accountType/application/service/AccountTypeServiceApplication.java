@@ -4,6 +4,7 @@ import com.alibou.finance.accountType.application.port.AccountTypeUseCase;
 import com.alibou.finance.accountType.domain.agregate.AccountType;
 import com.alibou.finance.accountType.domain.exception.AccountTypeNotFoundException;
 import com.alibou.finance.accountType.domain.repository.AccountTypeRepository;
+import com.alibou.finance.accountType.domain.vo.AccountTypeCode;
 import com.alibou.finance.accountType.domain.vo.AccountTypeId;
 import com.alibou.finance.shared.domain.ObjectInvalidException;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ public class AccountTypeServiceApplication implements AccountTypeUseCase {
     private final AccountTypeRepository accountTypeRepository;
 
     @Override
-    public AccountType findByCode(String code) {
+    public AccountType findByCode(AccountTypeCode code) {
         return accountTypeRepository.findByCode(code).orElseThrow(
                 () -> new AccountTypeNotFoundException("Type de compte introuvable")
         );
