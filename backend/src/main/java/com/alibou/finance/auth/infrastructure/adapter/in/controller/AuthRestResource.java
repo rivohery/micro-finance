@@ -30,6 +30,7 @@ public class AuthRestResource {
             return ResponseEntity.ok(
                     GlobalResponse.builder()
                             .message("Authentification réussie")
+                            .status(HttpStatus.OK.value())
                             .data(Map.of("userId", userId))
                             .build()
             );
@@ -43,6 +44,7 @@ public class AuthRestResource {
         return ResponseEntity.ok(
                 GlobalResponse.builder()
                         .message("Déconnexion réussie")
+                        .status(HttpStatus.OK.value())
                         .build()
         );
     }

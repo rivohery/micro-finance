@@ -10,16 +10,16 @@ import {
   withInterceptors,
   withXsrfConfiguration,
 } from '@angular/common/http';
-import { authsInterceptor } from './core/interceptors/auths.interceptor';
+import { authsInterceptor } from './core/http/auths.interceptor';
 import { provideState, provideStore } from '@ngrx/store';
-import { authFeature } from './core/stores/auths.reducer';
+import { authFeature } from './core/auth/stores/auths.reducer';
 import { provideEffects } from '@ngrx/effects';
 import {
   login$,
   logout$,
   getUserAuthenticated$,
   verifyUserInfoInLS$,
-} from './core/stores/auths.effects';
+} from './core/auth/stores/auths.effects';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const appConfig: ApplicationConfig = {

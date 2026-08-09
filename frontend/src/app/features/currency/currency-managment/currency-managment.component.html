@@ -1,0 +1,27 @@
+@if(currencies().loading){
+<app-loader></app-loader>
+} @else {
+<div class="p-4 sm:p-8 bg-slate-50 min-h-screen flex flex-col gap-5">
+  @if(errorMsg()){
+  <app-message-box
+    [type]="'error'"
+    [message]="errorMsg()"
+    (onClose)="closeMsgbox($event)"
+  ></app-message-box>
+  }
+
+  <!-- SECTION 1 : FORMULAIRE D'AJOUT -->
+  <app-currency-form
+    [sending]="sending()"
+    (onCreateEvent)="createNewCurrency($event)"
+  ></app-currency-form>
+
+  <app-currency-list
+    [currencies]="currencyService.currencies$()"
+    [updating]="updating()"
+    [deleting]="deleting()"
+    (onToggleStatusEvent)="toggleStatus($event)"
+    (onDeleteEvent)="deleteCurrency($event)"
+  ></app-currency-list>
+</div>
+}

@@ -1,5 +1,0 @@
-/* Cette classe masquera l'élément uniquement lors de la capture ou de l'impression */
-.no-pdf {
-  /* On utilise l'attribut que html2canvas reconnaît pour ignorer un élément */
-  display: none !important;
-}

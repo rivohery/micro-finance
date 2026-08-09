@@ -1,9 +1,9 @@
 import { Component, OnInit, effect, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { injectAuthsStore } from './core/stores/auths.facade';
+import { injectAuthsStore } from './core/auth/stores/auths.facade';
 import { MatIconModule } from '@angular/material/icon';
 import { NgClass } from '@angular/common';
-import { ToastrService } from './shared/service/toastr/toastr.service';
+import { ToastrService } from './core/services/toastr/toastr.service';
 
 @Component({
   selector: 'app-root',

@@ -15,8 +15,14 @@ export interface PageResponse<T> {
   last?: boolean;
 }
 
-//Field Form
+//Validation field form
 export type FieldError = {
   value: string;
   message: string;
 };
+
+export interface LoadingState<T> {
+  loading: boolean;
+  error: string;
+  data: T;
+}

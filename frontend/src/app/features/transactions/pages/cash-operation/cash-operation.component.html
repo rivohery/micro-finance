@@ -1,0 +1,103 @@
+<div
+  class="p-4 sm:p-8 bg-slate-100 min-h-screen flex flex-col items-center justify-start"
+>
+  @if(errorMsg()){
+  <div class="w-full my-5">
+    <app-message-box
+      [type]="'error'"
+      [message]="errorMsg()"
+      (onClose)="closeErrorMsg()"
+    ></app-message-box>
+  </div>
+  }
+
+  <div class="w-full max-w-xl">
+    <!-- EN-TÊTE / SYSTÈME D'ONGLETS À BOUTONS -->
+    <div
+      class="grid grid-cols-2 gap-3 mb-6 bg-white p-2 rounded-2xl shadow-sm border border-slate-200/60"
+    >
+      <!-- Bouton Onglet Dépôt -->
+      <button
+        type="button"
+        (click)="setTransactionType('DEPOSIT')"
+        [ngClass]="
+          currentType === 'DEPOSIT'
+            ? 'bg-emerald-600 text-white shadow-md shadow-emerald-100'
+            : 'text-slate-600 hover:bg-slate-50'
+        "
+        class="flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-200"
+      >
+        <mat-icon [class.text-emerald-300]="currentType === 'DEPOSIT'"
+          >arrow_downward</mat-icon
+        >
+        Dépôt de Fonds
+      </button>
+
+      <!-- Bouton Onglet Retrait -->
+      <button
+        type="button"
+        (click)="setTransactionType('WITHDRAWAL')"
+        [ngClass]="
+          currentType === 'WITHDRAWAL'
+            ? 'bg-rose-600 text-white shadow-md shadow-rose-100'
+            : 'text-slate-600 hover:bg-slate-50'
+        "
+        class="flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-200"
+      >
+        <mat-icon [class.text-rose-300]="currentType === 'WITHDRAWAL'"
+          >arrow_upward</mat-icon
+        >
+        Retrait de Fonds
+      </button>
+    </div>
+
+    <!-- BLOC CENTRAL : FORMULAIRE DE MOUVEMENT DE COMPTE -->
+    <div
+      class="bg-white rounded-3xl shadow-sm border border-slate-200/50 overflow-hidden transition-all duration-300"
+    >
+      <!-- Bandeau Dynamique d'état de la transaction -->
+      <div
+        [ngClass]="
+          currentType === 'DEPOSIT'
+            ? 'bg-slate-900 border-emerald-500'
+            : 'bg-slate-900 border-rose-500'
+        "
+        class="p-5 flex items-center gap-3 text-white border-b-4"
+      >
+        <div
+          [ngClass]="
+            currentType === 'DEPOSIT'
+              ? 'bg-emerald-500/20 text-emerald-400'
+              : 'bg-rose-500/20 text-rose-400'
+          "
+          class="w-10 h-10 rounded-xl flex items-center justify-center"
+        >
+          <mat-icon>{{
+            currentType === "DEPOSIT" ? "add_to_photos" : "content_cut"
+          }}</mat-icon>
+        </div>
+        <div>
+          <h2 class="text-sm font-extrabold m-0 uppercase tracking-wider">
+            {{
+              currentType === "DEPOSIT"
+                ? "Créditer un compte"
+                : "Débiter un compte"
+            }}
+          </h2>
+          <p class="text-[10px] text-slate-400 font-medium m-0">
+            Saisie d'un ordre d'opération de guichet
+          </p>
+        </div>
+      </div>
+
+      <!-- Corps du formulaire (Champs alignés verticalement en colonne) -->
+      <app-transaction-form
+        [currentType]="currentType"
+        [currencies]="currencies()"
+        [submitting]="submitting()"
+        (onDepositEvent)="makeDeposit($event)"
+        (onWithdrawEvent)="makeWithdraw($event)"
+      ></app-transaction-form>
+    </div>
+  </div>
+</div>

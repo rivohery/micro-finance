@@ -35,9 +35,10 @@ public class AdminCurrencyRestResource {
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<CurrencyResponse>create(@Valid @RequestBody CreateCurrencyRequest request){
         Currency currency = CreateCurrencyRequest.toDomain(request);
+        var created = currencyService.create(currency);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(CurrencyResponse.fromDomain(currencyService.create(currency)));
+                .body(CurrencyResponse.fromDomain(created));
     }
 
 
