@@ -30,8 +30,8 @@ public class Account {
     private LocalDate createdDate;
     private LocalDate lastModifiedDate;
     private CustomerId customerId;
-
     private OverdraftLimit overdraftLimit;//Découvert en monnaie du compte calculé à partir du solde minimale (en MGA) définie par type du compte
+
 
     public void initializeNewAccount(AccountNumber accountNumber, AccountType accountType, Currency currency,OverdraftLimit overdraftLimit){
         this.accountId = AccountId.generate();
@@ -93,10 +93,7 @@ public class Account {
     public BigDecimal calculateInterestRateForSpecificDays(BigDecimal potentialSold, long nbrDays){
         String nbrDaysForYear = "365";
         BigDecimal dailyInterestRateOfAccount = this.accountType.getAnnualInterestRate().value().divide(new BigDecimal(nbrDaysForYear), 10, RoundingMode.HALF_UP);//précision de 10 chiffres après virgule
-        //System.out.println("dailyInterestRateOfAccount " + dailyInterestRateOfAccount.setScale(10).round(MathContext.DECIMAL32));
-        //System.out.println("potentialSold: " + potentialSold);
         BigDecimal dailyInterestRateFromSold = potentialSold.multiply(dailyInterestRateOfAccount);
-        //System.out.println("dailyInterestRateFromSold " + dailyInterestRateFromSold.doubleValue());
         return dailyInterestRateFromSold.multiply(new BigDecimal("" + nbrDays));
     }
 

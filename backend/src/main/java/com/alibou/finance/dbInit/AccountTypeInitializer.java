@@ -29,7 +29,7 @@ public class AccountTypeInitializer implements CommandLineRunner {
                 .minimumBalance(BigDecimal.ZERO)
                 .code("10")
                 .id(UUID.randomUUID())
-                .name("Compte Courante")
+                .name("Compte Courante".toUpperCase())
                 .build();
         AccountTypeEntity epargne = AccountTypeEntity
                 .builder()
@@ -38,7 +38,7 @@ public class AccountTypeInitializer implements CommandLineRunner {
                 .minimumBalance(BigDecimal.valueOf(1000))
                 .code("20")
                 .id(UUID.randomUUID())
-                .name("Compte Epargne")
+                .name("Compte Epargne".toUpperCase())
                 .build();
         AccountTypeEntity business = AccountTypeEntity
                 .builder()
@@ -47,7 +47,7 @@ public class AccountTypeInitializer implements CommandLineRunner {
                 .minimumBalance(BigDecimal.valueOf(1000))
                 .code("30")
                 .id(UUID.randomUUID())
-                .name("Compte Business")
+                .name("Compte Business".toUpperCase())
                 .build();
         List.of(courante, epargne, business).forEach(type -> {
             if(!accountTypeJpaRepository.existsByName(type.getName())){

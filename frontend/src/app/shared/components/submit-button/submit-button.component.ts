@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 export class SubmitButtonComponent {
   isLoading = input<boolean>(false);
   label = input<string>('Envoyer');
+  isDisabled = input<boolean>(false)
   loadingLabel = input<string>('Chargement...');
   icon = input<string>('');
 }

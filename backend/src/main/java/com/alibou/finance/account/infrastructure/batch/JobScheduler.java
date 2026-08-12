@@ -13,18 +13,15 @@ import java.time.LocalDate;
 @Component
 @RequiredArgsConstructor
 public class JobScheduler {
-
     private final JobLauncher jobLauncher;
     private final Job JobCalculInteretFinDeMois;
-
-    //@Scheduled(cron = "0 59 * * * *") seulement pour test
 
     // S'exécute tous les jours à 23:00:00
     @Scheduled(cron = "0 0 23 * * *")
     public void runEndOfMonthJob() {
         LocalDate today = LocalDate.now();
 
-        // Vérification : est-ce que aujourd'hui est le dernier jour du mois ?
+        // Vérification : aujourd'hui est-il le dernier jour du mois ?
         if (today.getDayOfMonth() == today.lengthOfMonth()) {
             try {
                 System.out.println("Lancement du Job de fin de mois...");

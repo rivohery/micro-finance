@@ -52,6 +52,7 @@
       </button>
       <app-submit-button
         [isLoading]="creating()"
+        [isDisabled]="(createForm.invalid && createForm.touched) || creating()"
         [label]="'Enregistrer'"
         [loadingLabel]="'Chargement'"
         [icon]="'check'"

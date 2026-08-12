@@ -41,3 +41,5 @@ databaseChangeLog:
       file: db/changelog/changes/020-update-some-table-after-refactoring-code.sql
   - include:
       file: db/changelog/changes/021-add-column-version-in-accounts-table.sql
+  - include:
+      file: db/changelog/changes/022-put-default-value-createdBy-in-accounts-table.sql

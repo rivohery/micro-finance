@@ -12,6 +12,7 @@ export function injectAuthsStore() {
       store.dispatch(AuthsActions.login({ loginRequest })),
     logout: () => store.dispatch(AuthsActions.logout()),
     verifyUserInfoInLS: () => store.dispatch(AuthsActions.verifyUserInfoInLS()),
+    initAuthState: () => store.dispatch(AuthsActions.initAuthState()),
     loading: store.selectSignal(authFeature.selectLoading),
     userInfos: store.selectSignal(authFeature.selectUserInfos),
     errorMsg: store.selectSignal(authFeature.selectErrorMsg),

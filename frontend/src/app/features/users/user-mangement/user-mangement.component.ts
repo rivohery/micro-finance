@@ -99,6 +99,7 @@ export class UserMangementComponent implements OnInit {
   doSearch(value: string): void {
     this.currentsearch.set(value);
     this.currentPage.set(0);
+    this.usersService.initDeleteUserState();
     this.usersService.getAllEmployes(this.currentsearch(), this.currentPage());
   }
 
@@ -126,6 +127,7 @@ export class UserMangementComponent implements OnInit {
           this.currentsearch(),
           this.currentPage()
         );
+        this.usersService.initChangeUserStatusState();
       }
     });
   }

@@ -51,7 +51,7 @@ import { AccountService } from '../../../accounts/data-access/account.service';
   templateUrl: './create-account-modal.component.html',
   styleUrl: './create-account-modal.component.css',
 })
-export class CreateAccountModalComponent implements OnInit {
+export class CreateAccountModalComponent {
   currencyService = inject(CurrencyService);
   accountTypeService = inject(AccountTypeService);
   accountService = inject(AccountService);
@@ -69,6 +69,9 @@ export class CreateAccountModalComponent implements OnInit {
 
   currencies = toSignal(this.currencyService.fetchEnableCurrency(), {
     initialValue: [],
+  });
+  accountTypes = toSignal(this.accountTypeService.findAll(), {
+    initialValue: { loading: false, error: '', data: [] },
   });
 
   currenciesLoaded = signal<boolean>(false);
@@ -105,17 +108,15 @@ export class CreateAccountModalComponent implements OnInit {
         });
         this.currenciesLoaded.set(true);
       }
-      console.log(this.currenciesLoaded());
     });
     effect(() => {
       const accountTypes = this.accountTypeService.accountTypeList$();
-      if (accountTypes?.length) {
+      if (accountTypes.length) {
         this.accountTypeOptions = accountTypes.map((accountType) => {
           return { label: accountType.name, value: accountType.code } as Option;
         });
         this.accountTypesLoaded.set(true);
       }
-      console.log(this.accountTypesLoaded());
     });
     effect(() => {
       if (this.currenciesLoaded() && this.accountTypesLoaded()) {
@@ -126,12 +127,6 @@ export class CreateAccountModalComponent implements OnInit {
         this.loading.set(false);
       }
     });
-  }
-
-  ngOnInit(): void {
-    if (!this.accountTypeService.accountTypeList$().length) {
-      this.accountTypeService.findAll();
-    }
   }
 
   onCancel(): void {

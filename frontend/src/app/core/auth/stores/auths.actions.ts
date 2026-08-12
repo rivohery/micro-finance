@@ -14,6 +14,7 @@ export const AuthsActions = createActionGroup({
     logoutFails: props<{ error: string }>(),
     verifyUserInfoInLS: emptyProps,
     refreshUserInfos: props<{ userInfos: UserResponse }>(),
+    initAuthState: emptyProps,
     emptyAction: emptyProps,
   },
 });

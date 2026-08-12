@@ -24,7 +24,7 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, UUID> {
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
 
-    @Modifying(clearAutomatically = true)//pour dire à hibernate de toujours nettoyer son cache
+    @Modifying(clearAutomatically = true)//pour dire à hibernate de nettoyer son cache
     @Query("""
         Update UserEntity u set u.password =:password where u.id =:userId
     """)

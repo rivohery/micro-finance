@@ -5,6 +5,7 @@ import com.alibou.finance.account.domain.agregate.Account;
 import com.alibou.finance.account.domain.out.repository.AccountRepository;
 import com.alibou.finance.account.domain.vo.AccountNumber;
 import com.alibou.finance.account.infrastructure.adapter.out.mapper.AccountMapper;
+import com.alibou.finance.account.infrastructure.adapter.out.persistence.entity.AccountEntity;
 import com.alibou.finance.account.infrastructure.adapter.out.persistence.projection.AccountProjection;
 import com.alibou.finance.customer.domain.vo.CustomerId;
 import com.alibou.finance.shared.application.PageResult;
@@ -26,8 +27,14 @@ public class AccountDbAdapter implements AccountRepository {
 
     @Override
     public Account save(Account account) {
-        var accountEntity = AccountMapper.domainToEntity(account);
-        return AccountMapper.entityToDomain(accountJpaRepository.save(accountEntity));
+        AccountEntity entityToSave;
+        Optional<AccountEntity>optional = accountJpaRepository.findById(account.getAccountId().value());
+        if(optional.isPresent()){
+            entityToSave = AccountMapper.updateEntityFromDomain(account, optional.get());
+        } else {
+            entityToSave = AccountMapper.domainToEntity(account);
+        }
+        return AccountMapper.entityToDomain(accountJpaRepository.save(entityToSave));
     }
 
     @Override

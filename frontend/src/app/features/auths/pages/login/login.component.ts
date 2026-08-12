@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, OnInit, effect, inject, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -38,7 +38,7 @@ import { ToastrService } from '../../../../core/services/toastr/toastr.service';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   hidePassword: boolean = true;
   fb = inject(FormBuilder);
   store = injectAuthsStore();
@@ -71,6 +71,10 @@ export class LoginComponent {
         this.router.navigateByUrl('/my-app/user-profil');
       }
     });
+  }
+
+  ngOnInit(): void {
+    this.store.initAuthState();
   }
 
   initLoginForm(): void {

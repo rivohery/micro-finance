@@ -66,6 +66,15 @@ export const authFeature = createFeature({
         userInfos: action.userInfos,
       };
     }),
+    on(AuthsActions.initAuthState, (state) => {
+      return {
+        ...state,
+        errorMsg: '',
+        loading: false,
+        successMsg: '',
+        userInfos: undefined,
+      };
+    }),
     on(AuthsActions.emptyAction, (state) => {
       return {
         ...state,

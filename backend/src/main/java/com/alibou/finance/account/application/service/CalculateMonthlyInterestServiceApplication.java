@@ -37,13 +37,10 @@ public class CalculateMonthlyInterestServiceApplication implements CalculateMont
             monthlyInterestRate  = calculInterestRateOfSpecificDays(account, account.getBalance().value(), startMonth, endMonth);
         } else {
             BigDecimal potentialInterestRate;
-            //calcul du taux avant la premiere transaction
+            //calcul du taux avant la premiere transaction du mois
             Transaction firstTransactionInMonth = transactions.get(0);
             potentialInterestRate = calculInterestRateOfSpecificDays(account, firstTransactionInMonth.getSoldBeforeTransaction().value(), startMonth, firstTransactionInMonth.getCreatedDate());
-            //System.out.println("potentialInterestRate: " + potentialInterestRate);
             monthlyInterestRate = monthlyInterestRate.add(potentialInterestRate);
-            //System.out.println("monthlyInterestRate: " + monthlyInterestRate);
-            //System.out.println("================");
             //calcul du taux entre les transactions
             for(int i = 0; i < transactions.size() - 1; i++){
                 LocalDateTime startDay = transactions.get(i).getCreatedDate();
@@ -51,17 +48,11 @@ public class CalculateMonthlyInterestServiceApplication implements CalculateMont
                 BigDecimal potentialSold = transactions.get(i + 1).getSoldBeforeTransaction().value();
                 potentialInterestRate = calculInterestRateOfSpecificDays(account, potentialSold, startDay, endDay);
                 monthlyInterestRate = monthlyInterestRate.add(potentialInterestRate);
-                //System.out.println("potentialInterestRate: " + potentialInterestRate);
-                //System.out.println("monthlyInterestRate: " + monthlyInterestRate);
-                //System.out.println("================");
             }
-            //calcul du taux après la dernière transaction
+            //calcul du taux après la dernière transaction du mois
             Transaction lastTransactionInMonth = transactions.get(transactions.size() - 1);
             potentialInterestRate = calculInterestRateOfSpecificDays(account, account.getBalance().value(), lastTransactionInMonth.getCreatedDate(), endMonth);
             monthlyInterestRate = monthlyInterestRate.add(potentialInterestRate);
-            //System.out.println("potentialInterestRate: " + potentialInterestRate);
-            //System.out.println("monthlyInterestRate: " + monthlyInterestRate);
-            //System.out.println("================");
         }
         System.out.println("monthlyInterestRate final: " + monthlyInterestRate);
         account.addMonthlyInterestRate(monthlyInterestRate);

@@ -2,7 +2,7 @@ package com.alibou.finance.account.infrastructure.config;
 
 import com.alibou.finance.account.domain.agregate.AccountStatusEnum;
 import com.alibou.finance.account.infrastructure.adapter.out.persistence.entity.AccountEntity;
-import com.alibou.finance.account.infrastructure.adapter.out.persistence.repository.AccountJpaRepository;
+//import com.alibou.finance.account.infrastructure.adapter.out.persistence.repository.AccountJpaRepository;
 import com.alibou.finance.account.infrastructure.batch.InterestItemProcessor;
 import com.alibou.finance.account.infrastructure.transactional.CalculateMonthlyInterestUseCaseProxy;
 import jakarta.persistence.EntityManagerFactory;
@@ -12,17 +12,17 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.data.RepositoryItemReader;
-import org.springframework.batch.item.data.builder.RepositoryItemReaderBuilder;
+import org.springframework.batch.item.ItemReader;
+//import org.springframework.batch.item.data.RepositoryItemReader;
+//import org.springframework.batch.item.data.builder.RepositoryItemReaderBuilder;
 import org.springframework.batch.item.database.JpaItemWriter;
+import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
-import org.springframework.batch.item.support.SynchronizedItemReader;
-import org.springframework.batch.item.support.builder.SynchronizedItemReaderBuilder;
+import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -33,11 +33,12 @@ import java.util.Set;
 @Configuration
 public class InterestRateBatchConfig {
 
+    /*
     // 1. READER: RepositoryItemReader classique (non thread-safe)
     @Bean
     public RepositoryItemReader<AccountEntity> accountReader(AccountJpaRepository accountJpaRepository){
         Map<String, Sort.Direction> triMap = new HashMap<>();
-        triMap.put("createdDate", Sort.Direction.ASC);
+        triMap.put("id", Sort.Direction.ASC);//Pour assurer l'unicité du tri pour la pagination
 
         return new RepositoryItemReaderBuilder<AccountEntity>()
                 .name("accountReader")
@@ -47,23 +48,38 @@ public class InterestRateBatchConfig {
                 .pageSize(100) // Lit les comptes par paquets de 100
                 .sorts(triMap)
                 .build();
-    }
+    }*/
 
-    // 2. Wrapper Thread-Safe => Rends n'importe quel reader non thread-safe utilisable en environnement multithread
+    // 1. JpaPagingItemReader: reader thread-safe utilisable en environnement multi-thread
     @Bean
-    public SynchronizedItemReader<AccountEntity> synchronizedAccountReader(RepositoryItemReader<AccountEntity> accountReader) {
-        return new SynchronizedItemReaderBuilder<AccountEntity>()
-                .delegate(accountReader)
+    public JpaPagingItemReader<AccountEntity> accountReader(EntityManagerFactory entityManagerFactory) {
+        // 1. Définition des paramètres de la requête JPQL
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("codes", Set.of("20", "30"));
+        parameters.put("status", AccountStatusEnum.CLOSED);
+
+        return new JpaPagingItemReaderBuilder<AccountEntity>()
+                .name("accountReader")
+                .entityManagerFactory(entityManagerFactory)
+                // 2. Requête JPQL directe avec un tri STRICTEMENT UNIQUE (id)
+                .queryString("SELECT a FROM AccountEntity a JOIN FETCH a.accountTypeEntity t JOIN FETCH a.currencyEntity c" +
+                        " WHERE a.accountTypeEntity.code IN :codes " +
+                        " AND a.accountStatus <> :status " +
+                        " ORDER BY a.createdDate ASC, a.id ASC")
+                .parameterValues(parameters)
+                .pageSize(100)
+                .transacted(false) // 1. Résout "Transaction already active" de JpaPagingItemReader
+                .saveState(false)  // 2. Supprime le WARNING de concurrent step
                 .build();
     }
 
-    // 3. LE PROCESSOR 
+    // 2. LE PROCESSOR
     @Bean
     public ItemProcessor<AccountEntity, AccountEntity> accountProcessor(CalculateMonthlyInterestUseCaseProxy calculateMonthlyInterestService) {
         return new InterestItemProcessor(calculateMonthlyInterestService);
     }
 
-    // 4. LE WRITER : Sauvegarde automatique des comptes modifiés en BDD
+    // 3. LE WRITER : Sauvegarde automatique des comptes modifiés en BDD
     @Bean
     public JpaItemWriter<AccountEntity> accountWriter(EntityManagerFactory emf) {
         return new JpaItemWriterBuilder<AccountEntity>()
@@ -71,7 +87,7 @@ public class InterestRateBatchConfig {
                 .build();
     }
 
-    // 5. TaskExecutor : Rendre le step Multithreading
+    // 4. TaskExecutor : Rendre le step Multithreading
     @Bean
     public TaskExecutor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
@@ -83,17 +99,17 @@ public class InterestRateBatchConfig {
         return executor;
     }
 
-    // 6. LE STEP : Combine le Reader, Processor et Writer par paquets (chunks) de 100
+    // 5. LE STEP : Combine le Reader, Processor et Writer par paquets (chunks) de 100
     @Bean
     public Step stepCalculInteret(JobRepository jobRepository,
                                   PlatformTransactionManager transactionManager,
-                                  SynchronizedItemReader<AccountEntity> synchronizedAccountReader,
+                                  ItemReader<AccountEntity> accountReader,
                                   ItemProcessor<AccountEntity, AccountEntity> accountProcessor,
                                   JpaItemWriter<AccountEntity> accountWriter,
                                   TaskExecutor taskExecutor) {
         return new StepBuilder("stepCalculInteret", jobRepository)
                 .<AccountEntity, AccountEntity>chunk(100, transactionManager) // Déclare les types <Entrée, Sortie> et la taille du lot
-                .reader(synchronizedAccountReader)
+                .reader(accountReader)
                 .processor(accountProcessor)
                 .writer(accountWriter)
                 .faultTolerant()
@@ -103,7 +119,7 @@ public class InterestRateBatchConfig {
                 .build();
     }
 
-    // 7. LE JOB
+    // 6. LE JOB
     @Bean
     public Job JobCalculInteretFinDeMois(JobRepository jobRepository, Step stepCalculInteret) {
         return new JobBuilder("JobCalculInteretFinDeMois", jobRepository)

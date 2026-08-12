@@ -75,9 +75,10 @@ export class UsersService extends HandleErrorService {
   initUsersState(): void {
     this.initGetAllEmployesState();
     this.initDeleteUserState();
+    this.initChangeUserStatusState();
   }
 
-  private initDeleteUserState(): void {
+  public initDeleteUserState(): void {
     this.deleteUserSignal.set(
       State.builder<GlobalResponse, string>().forInit().build()
     );

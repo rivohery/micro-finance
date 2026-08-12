@@ -1,6 +1,6 @@
 <button
   type="submit"
-  [disabled]="isLoading()"
+  [disabled]="isDisabled()"
   class="group relative w-full flex justify-center items-center gap-3 px-6 py-3 rounded-xl font-semibold tracking-wide text-white bg-blue-600 transition-all duration-200 ease-in-out hover:bg-blue-700 hover:shadow-lg active:scale-[0.97] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:shadow-none"
 >
   @if(isLoading()){
