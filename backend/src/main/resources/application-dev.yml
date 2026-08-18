@@ -1,18 +1,18 @@
 spring:
   datasource:
-    # Si la variable DB_NAME n'existe pas, Spring utilisera "db_micro_finance" par défaut
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:db_micro_finance}
     username: ${DB_USER:postgres}
-    password: ${DB_PASS:rivohery}
+    password: ${DB_PASS:secret}
+    driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
       ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
-        format_sql: false
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.yaml

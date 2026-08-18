@@ -1,137 +1,171 @@
 # Système de Micro-Finance Multi-Monétaire (Fullstack Portfolio)
 
-Ce projet est une application web de **Micro-Finance Multi-Monétaire** robuste, moderne et scalable. Conçue selon une approche pragmatique et modulaire, elle démontre la mise en œuvre d'une architecture découplée, d'une sécurité renforcée et d'un traitement transactionnel de données volumineuses.
+Application web fullstack de **Microfinance Multi-devises** conçue pour illustrer les bonnes pratiques d'ingénierie logicielle : **Architecture Hexagonale**, **traitements par lots (Spring Batch)**, **sécurité renforcée (JWT via Cookies HttpOnly + CSRF)** et **composants réactifs Angular 19 (Signals) et **Standalone**.
 
-Démonstration rapide des fonctionnalités: ./screenshots/demo.gif
 
-Le projet intègre un backend **Spring Boot** structuré en **Architecture Hexagonale (Ports & Adaptateurs)** et un frontend **Angular 19** utilisant les dernières fonctionnalités réactives (**Signals** et composants **Standalone**).
+**Démo rapide des fonctionnalités** : `./screenshots/demo.gif`
+
 
 ---
+
 
 ## 🛠️ Stack Technique
 
-### Backend (Spring Boot)
-* **Architecture && Core :** Java, Spring Boot 3, Architecture Hexagonale (Séparation stricte du code métier et des environnements techniques).
-* **Sécurité :** Spring Security, JWT stocké dans un **Cookie HTTP-Only** protection contre XSS,et protection active contre les failles **CSRF (CSRF Token)**.
-* **Persistance && Données :** PostgreSQL, Spring Data JPA, **Liquibase** pour le versioning et la migration de la base de données.
-* **Batchs && Automatisation :** **Spring Batch** combiné à l'annotation `@Scheduled` pour le calcul et l'application automatique des taux d'intérêt à chaque fin de mois pour un grand volume des comptes.
-* **Communications Extérieures :** `RestClient` (Spring Framework) sécurisé par **Resilience4j** (Gestion des pannes via Retry, Circuit Breaker) pour la résilience face aux API tierces.
-* **Notification :** `spring-boot-starter-mail` pour l'envoi automatisé d'emails.
-* **Documentation && DevOps :** Swagger UI (OpenAPI), Docker & Docker-Compose (`Dockerfile` et `docker-compose.yml`) pour une conteneurisation complète.
-* **Test : JUnit, Mockito, H2 pour le test d'intégration des JpaRepositories
+### Backend (Java / Spring Boot)
+* **Architecture & Core** : Java 17, Spring Boot 3.x, Architecture Hexagonale (Ports & Adapters).
+* **Sécurité** : Spring Security, JWT stocké dans un Cookie `HttpOnly` (protection XSS) avec validation active de tokens CSRF.
+* **Persistance & Données** : PostgreSQL, Spring Data JPA, Liquibase (versioning et migrations de schémas).
+* **Batchs & Automatisation** : Spring Batch orchestré par `@Scheduled` pour le calcul et la capitalisation automatique mensuelle des intérêts sur grand volume de comptes.
+* **Résilience & Services Tiers** : `RestClient` sécurisé avec **Resilience4j** (Retry, Circuit Breaker) pour la consommation d'API externes.
+* **Notification** : `spring-boot-starter-mail` pour l'envoi d'emails transactionnels.
+* **Documentation & DevOps** : Swagger UI (OpenAPI 3), Docker & Docker Compose.
+* **Tests** : JUnit 5, Mockito, H2 (avec `@DataJpaTest` pour la validation des repositories JPA et requêtes personnalisées).
 
 ### Frontend (Angular 19)
-* **Core Architecture :** Angular v19, Composants **Standalone**, Architecture moderne.
-* **Gestion d'État :** **Angular Signals** pour l'état local et la réactivité, **NgRx** dédié spécifiquement à la gestion globale de l'authentification (Login/Logout) pour centraliser les états et les flux du traitement et aussi faciliter la maintenance en cas d'évolution de business metier.
-* **Design && UI :** **Tailwind CSS** associé à **Angular Material** pour des composants UX/UI professionnels et réactifs.
+* **Core Architecture** : Angular v19, Composants Standalone, Architecture par fonctionnalités (Feature modules).
+* **Gestion d'État** : **Angular Signals** pour l'état local réactif, **NgRx** pour la centralisation du flux d'authentification (Session/Tokens).
+* **Design & UI** : Tailwind CSS v4 & Angular Material.
+
 
 ---
 
-## ✨ Fonctionnalités Principales (Features)
 
-### 🔓 Authentification & Profil
-* Connexion (Login) sécurisée, déconnexion (Logout) gérées par NgRx.
-* Changement sécurisé de mot de passe.
-* Gestion du profil utilisateur (Affichage et modification des informations).
+## ✨ Fonctionnalités Principales
 
-### ⚙️ Paramétrage & Administration (CRUD)
-* **Gestion des employés :** Administration des status.
-* **Gestion des monnaies :** Configuration des devises prises en charge par le système multi-monétaire.
-* **Gestion des types de comptes :** Définition des règles métier et taux d'intérêt applicables.
+### 🔓 Authentification & Sécurité
+* Connexion/Déconnexion sécurisées gérées via NgRx et cookies sécurisés.
+* Changement de mot de passe et gestion du profil utilisateur.
 
-### 👥 Gestion des Clients
-* Création de nouveaux clients.
-* Vue en liste avec support complet du **tri**, de la **recherche**, de la **pagination** et affichage détaillé.
+### ⚙️ Administration & Paramétrage
+* **Gestion des employés** : Administration des statuts et rôles.
+* **Configuration Multi-Devises** : Paramétrage des monnaies prises en charge et des taux de change.
+* **Types de Comptes** : Définition des règles de gestion, plafonds et taux d'intérêt.
 
-### 💳 Gestion des Comptes
-* Ouverture et création de comptes.
-* Consultation des soldes, listes, tris, recherches et pagination.
-* **Suivi du cycle de vie du compte :** Historique complet et traçabilité des statuts (`Création` ➡️ `Activation` ➡️ `Suspension` ➡️ `Fermeture`).
+### 👥 Gestion de la Clientèle
+* Immatriculation et création de fiches clients.
+* Data tables avec tri, recherche textuelle, pagination et vue détaillée.
 
-### 💸 Gestion des Opérations & Transactions
-* Enregistrement des opérations de **Dépôt** et de **Retrait**.
-* Exécution de **Transferts** de compte à compte par le client.
-* Consultation de l'historique des transactions et **export / import au format PDF**.
+### 💳 Gestion des Comptes & Opérations
+* Ouverture de comptes multi-devises.
+* Suivi strict du cycle de vie d'un compte : `Création ➡️ Activation ➡️ Suspension ➡️ Fermeture`.
+* Dépôts, Retraits et Transferts de compte à compte.
+* Historique des transactions avec export de relevés au format PDF.
 
-### 📊 Tableau de Bord (Dashboard Statistique)
-* Indicateurs clés (KPI) : Nombre total de clients, nombre de comptes.
-* **Solde global consolidé** exprimé en **MGA** (Ariary).
-* Répartition visuelle par type de compte (Nombre et solde).
-* Graphique d'enregistrement journalier des nouveaux clients pour suivre l'activité.
+### 📊 Tableau de Bord (Dashboard)
+* KPI clés : Nombre de clients, nombre de comptes actifs.
+* Consolidation du solde global en monnaie nationale (MGA).
+* Répartition visuelle par type de compte et suivi graphique des nouvelles adhésions.
 
 ---
 
-## 📐 Architecture Backend : Focus Hexagonal
-```
-L'application applique strictement les principes du Clean Architecture via l'**Architecture Hexagonale**.
-Cela garantit que la logique métier (le domaine) reste totalement isolée des frameworks, des bases de données et des interfaces extérieures.
 
-              ┌───────────────────────────────────────────────┐
-              │                  INFRASTRUCTURE               │
-              │                                               │
-              │   ┌───────────┐                               │               
-              │   │   REST    │                               │               
-              │   │Controllers│               ┌─────────────┐ │
-              │   │     ▲     │               │JPA Entities │ │
-              │   │     │     │               │  JPA Repo   │ │
-              │   │UseCaseProxy               │Service tiers│ │
-              └───│─────┬─────│───────────────│─────│───────│─┘
-                        │                           │
-                        ▲ appeler                   ▼ implémenter
-                        │                           │
-              ┌─────────│───────────────────────────│──────────┐
-              │         │          APPLICATION      │          │
-              │┌───────────────────┐      ┌───────────────────┐│
-              ││    Inbound Port   │      │   Outbound Port   ││
-              │UseCase/Implémentation     │Service/Repository ││
-              │└────────┼──────────┘      └─────────│─────────┘│
-              └─────────│───────────────────────────│──────────┘
-                        │                           │
-                        ▲ appeler                   ▲ appeler
-                        │                           │
-              ┌─────────│───────────────────────────│─────────┐
-              │                     DOMAIN                    │
-              │                                               │
-              │         Business Logic & Core Entities(POJO)  │
-              │                                               │
-              └───────────────────────────────────────────────┘
+## 📐 Architecture Backend : Focus Hexagonal & Isolation Transactionnelle
+
+L'application applique les principes de l'**Architecture Hexagonale / Clean Architecture** pour maintenir le noyau métier totalement isolé de dépendances techniques ou de frameworks.
+
+Pour résoudre le défi du découplage vis-à-vis du framework Spring tout en conservant la gestion déclarative des transactions, le pattern **UseCaseProxy** a été mis en œuvre au niveau de la couche d'infrastructure.
+
 ```
-* **Domain (Noyau métier) :** Contient les entités pures et les règles de gestion (calculs, validations,vo).
-* **Ports :** Interfaces qui définissent comment le monde extérieur interagit avec le domaine (`Inbound` / Use Cases) et comment le domaine interagit avec l'extérieur (`Outbound` / SPI).
-* **Adapters (Infrastructure) :** Les composants techniques externes.
-    * *Driving Adapters :* Contrôleurs REST, Jobs Spring Batch.
-    * *Driven Adapters :* Implémentations des repositories Spring Data JPA, `RestClient`(API tierces).
+              ┌─────────────────────────────────────────────────────────────┐
+              │                        INFRASTRUCTURE                       │
+              │                                                             │
+              │   ┌──────────────┐                       ┌──────────────┐   │
+              │   │     REST     │                       │  Spring Data │   │
+              │   │ Controllers  │                       │ JPA Repos &  │   │
+              │   └──────┬───────┘                       │Services Tiers│   │
+              │          │                               └──────▲───────┘   │
+              │          ▼ appeler                              │           │
+              │   ┌──────────────┐                              │           │
+              │   │ UseCaseProxy │ (Gestion du @Transactional)  │           │
+              └───│──────┬───────│──────────────────────────────│───────────┘
+                         │                                      │
+                         │ appeler                              │ implémenter
+                         ▼                                      │
+              ┌──────────│──────────────────────────────────────│───────────┐
+              │          │              APPLICATION             │           │
+              │   ┌──────┴───────┐                              │           │
+              │   │ Inbound Port │ (Interfaces des Use Cases)   │           │
+              │   └──────┬───────┘                              │           │
+              │          │                                      │           │
+              │          ▼ implémenter                          │           │
+              │   ┌──────────────┐                              │           │
+              │   │ UseCaseImpl  │ (Services Applicatifs POJO)  │           │
+              └───│──────┬───────│──────────────────────────────│───────────┘
+                         │                                      │
+                         │ utiliser                             │ appeler
+                         ▼                                      │
+              ┌──────────│──────────────────────────────────────│───────────┐
+              │          │                 DOMAIN               │           │
+              │          │                               ┌──────┴───────┐   │
+              │          └──────────────────────────────►│Outbound Port │   │
+              │                                          │ (Interfaces) │   │
+              │                                          └──────────────┘   │
+              │            Core Business Entities & POJOs                   │
+              └─────────────────────────────────────────────────────────────┘
+
+* **DOMAIN (Noyau métier pur) :** Contient les entités métiers pures, les Value Objects et les Outbound Ports (interfaces définissant les besoins de persistance et de services externes). Totalement indépendant de tout framework.
+* **APPLICATION (Orchestration des Cas d'Usage) :** 
+  * *Inbound Ports :* Interfaces définissant les contrats d'utilisation du système (Use Cases).
+  * *UseCaseImpl :* Implémentations concrètes des Use Cases. Ce sont des POJOs pur Java sans aucune annotation Spring (pas de `@Service`, `@Transactional`, etc.), garantissant une isolation totale et une testabilité unitaire ultra-rapide.
+* **INFRASTRUCTURE (Adaptateurs & Framework) :**
+  * *Driving Adapters :* Contrôleurs REST Spring MVC, Jobs Spring Batch.
+  * *Driven Adapters :* Implémentations des Repositories Spring Data JPA, adaptateurs REST (`RestClient` pour services tiers).
+  * *transactional (Pattern UseCaseProxy) :* Composants de la couche infrastructure annotés `@Service` et `@Transactional`. Ils encapsulent l'appel aux Use Cases pour gérer les frontières de transaction au niveau de l'infrastructure Web sans polluer le noyau applicatif.
+  * *config :* Configurations du framework (Spring Security, Spring Batch, RestClient) et instanciation explicite des beans `UseCaseImpl` via des méthodes `@Bean` pour les injecter dans le conteneur IoC.
+```
 
 ---
 
 ## 🚀 Installation et Démarrage
 
 ### Prérequis
-* Java 17+
-* Node.js (v20+) & Angular CLI (v19+)
-* Docker & Docker-Compose
+* **Java 17+**
+* **Node.js v20+** & **Angular CLI v19+**
+* **Docker & Docker Compose**
 
 ### 1. Cloner le projet
-```Bash```
+```bash
 git clone https://github.com/rivohery/micro-finance.git
-cd projet-microfinance
+cd micro-finance
+```
 
-### 2. Démarrage globale(environment + application)
-```Bash```
-docker-compose up -d
+### 2. Option A : Démarrage complet avec Docker (Recommandé)
+Lance l'ensemble des conteneurs (PostgreSQL, MailDev, Backend et Frontend) :
+```bash
+docker compose up -d --build
+```
+* **Frontend Angular** : `http://localhost:4200`
+* **Swagger UI (API)** : `http://localhost:8088/api/v1/swagger-ui/index.html`
+* **MailDev (Boîte mail de test)** : `http://localhost:1080`
 
-### 3. Démarrage backend
-```Bash```
-cd ../backend
-./mvnw spring-boot:run(Linux/macOS) ou mvnw spring-boot:run(Windows)
+---
 
-### 4. Démarrage frontend
-```Bash```
+### 3. Option B : Démarrage en Mode Développement Local
+
+#### Étape 1 : Lancer la base de données et les services de support
+```bash
+docker compose up -d postgres maildev
+```
+
+#### Étape 2 : Lancer le Backend (Spring Boot)
+```bash
+cd backend
+./mvnw spring-boot:run   # Linux / macOS
+# ou
+mvnw.cmd spring-boot:run # Windows
+```
+
+#### Étape 3 : Lancer le Frontend (Angular)
+```bash
 cd ../frontend
 npm install
 ng serve
+```
 
+---
 
-### API Documentation (Swagger UI) : Accessible sur http://localhost:8088/api/v1/swagger-ui/index.html une fois l'application démarrée.
-### Rendez-vous sur http://localhost:4200 pour accéder à l'application angular.
-### Utilisateur par défaut(admin): pseudo = alibou, password = 0000 
+## 🔑 Compte Administrateur par défaut
+
+Pour tester l'application après le démarrage, utilisez l'identifiant administrateur pré-configuré :
+* **Identifiant** : `alibou`
+* **Mot de passe** : `0000`

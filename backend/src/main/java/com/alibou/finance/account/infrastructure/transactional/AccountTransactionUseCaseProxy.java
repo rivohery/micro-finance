@@ -1,32 +1,39 @@
 package com.alibou.finance.account.infrastructure.transactional;
 
-import com.alibou.finance.account.application.port.dto.input.TransactionInput;
-import com.alibou.finance.account.application.port.usecase.AccountTransactionUseCase;
+import com.alibou.finance.account.application.port.dto.command.DepositCommand;
+import com.alibou.finance.account.application.port.dto.command.TransferCommand;
+import com.alibou.finance.account.application.port.dto.command.WithdrawCommand;
+import com.alibou.finance.account.application.port.dto.output.TransactionResult;
+import com.alibou.finance.account.application.port.dto.output.TransferResult;
+import com.alibou.finance.account.application.port.usecase.DepositUseCase;
+import com.alibou.finance.account.application.port.usecase.TransferUseCase;
+import com.alibou.finance.account.application.port.usecase.WithdrawUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class AccountTransactionUseCaseProxy {
 
-    private final AccountTransactionUseCase accountTransactionUseCase;
+    private final DepositUseCase depositUseCase;
+    private final WithdrawUseCase withdrawUseCase;
+    private final TransferUseCase transferUseCase;
 
     @Transactional
-    public Map<String, Object> deposit(TransactionInput input) {
-        return accountTransactionUseCase.deposit(input);
+    public TransactionResult deposit(DepositCommand input) {
+        return depositUseCase.execute(input);
     }
 
     @Transactional
-    public Map<String, Object> withdraw(TransactionInput input) {
-        return accountTransactionUseCase.withdraw(input);
+    public TransactionResult withdraw(WithdrawCommand input) {
+        return withdrawUseCase.execute(input);
     }
 
     @Transactional
-    public Map<String, Object> transfert(TransactionInput input) {
-        return accountTransactionUseCase.transfert(input);
+    public TransferResult transfert(TransferCommand input) {
+        return transferUseCase.execute(input);
     }
 
 }

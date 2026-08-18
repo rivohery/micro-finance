@@ -67,7 +67,7 @@ public class Account {
 
     public void closeAccount(){
         if(this.balance.value().compareTo(BigDecimal.ZERO) > 0){
-            throw new IllegalOperationException("Clôture interrompu car le solde n'est pas nulle");
+            throw new IllegalOperationException("Clôture interrompu: le solde du compte n'est pas nulle");
         }
         this.accountStatus = AccountStatus.close();
     }

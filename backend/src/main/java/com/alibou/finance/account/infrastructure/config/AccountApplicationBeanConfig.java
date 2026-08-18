@@ -51,7 +51,26 @@ public class AccountApplicationBeanConfig {
     }
 
     @Bean
-    public AccountTransactionUseCase createAccountTransactionUseCaseBean(
+    public DepositUseCase depositUseCase(
+            AccountRepository accountRepository,
+            CurrencyExchangePort currencyExchangePort,
+            ReferenceGenerator referenceGenerator,
+            TransactionRepository transactionRepository
+    ){
+        return new DepositServiceApplication(accountRepository, currencyExchangePort, referenceGenerator, transactionRepository);
+    }
+
+    @Bean
+    public WithdrawUseCase withdrawUseCase(
+            AccountRepository accountRepository,
+            CurrencyExchangePort currencyExchangePort,
+            ReferenceGenerator referenceGenerator,
+            TransactionRepository transactionRepository
+    ){
+        return new WithdrawServiceApplication(accountRepository, currencyExchangePort, referenceGenerator, transactionRepository);
+    }
+    @Bean
+    public TransferUseCase transferUseCase(
             TransactionRepository transactionRepository,
             AccountRepository accountRepository,
             CurrencyExchangePort currencyExchangePort,
@@ -59,15 +78,11 @@ public class AccountApplicationBeanConfig {
             ReferenceGenerator referenceGenerator,
             TransfertConfirmationPort transfertConfirmationService
     ){
-        return new AccountTransactionServiceApplication(
-                transactionRepository,
-                accountRepository,
-                currencyExchangePort,
-                customerService,
-                referenceGenerator,
-                transfertConfirmationService
+        return new TransferServiceApplication(
+                transactionRepository, accountRepository, currencyExchangePort, customerService, referenceGenerator, transfertConfirmationService
         );
     }
+
     @Bean
     public CalculateMonthlyInterestUseCase createCalculateMonthlyInterestUseCaseBean(
             TransactionRepository transactionRepository,

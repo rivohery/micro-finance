@@ -1,6 +1,7 @@
 package com.alibou.finance.account.infrastructure.adapter.in.controller;
 
-import com.alibou.finance.account.application.port.dto.input.AccountLifeCycleInput;
+import com.alibou.finance.account.application.port.dto.command.AccountLifeCycleCommand;
+import com.alibou.finance.account.application.port.dto.output.AccountLifeCycleResult;
 import com.alibou.finance.account.domain.vo.AccountId;
 import com.alibou.finance.account.application.port.dto.vo.ChangedBy;
 import com.alibou.finance.account.domain.agregate.Account;
@@ -11,7 +12,6 @@ import com.alibou.finance.account.infrastructure.transactional.AccountConsultati
 import com.alibou.finance.account.infrastructure.transactional.CreateNewAccountUseCaseProxy;
 import com.alibou.finance.auth.domain.agregate.User;
 import com.alibou.finance.auth.infrastructure.model.UserPrincipal;
-import com.alibou.finance.log.domain.vo.accountStatusHistory.AccountStatusHistoryId;
 import com.alibou.finance.log.domain.vo.accountStatusHistory.Reason;
 import com.alibou.finance.shared.application.PageResult;
 import com.alibou.finance.shared.infrastructure.dto.GlobalResponse;
@@ -77,13 +77,15 @@ public class AccountRestResource {
     ){
         User user =  ((UserPrincipal)authentication.getPrincipal()).getUser();
         var accountLifeCycleInput = buildAccountLifeCycleInput(user, request);
-        Map<String, Object> result = accountLifeCycleService.activateAccount(accountLifeCycleInput);
+        AccountLifeCycleResult result = accountLifeCycleService.activateAccount(accountLifeCycleInput);
         return ResponseEntity.ok(
                     GlobalResponse.builder()
                         .message("Le compte est maintenant activé")
+                        .status(HttpStatus.OK.value())
                         .data(Map.of(
-                                "accountId", ((AccountId)result.get("accountId")).value(),
-                                "accountHistoryId", ((AccountStatusHistoryId)result.get("accountHistoryId")).value()
+                                "accountId", result.account().getAccountId().value(),
+                                  "newStatus", result.account().getAccountStatus().value().name(),
+                                "accountHistoryId", result.history().getAccountStatusHistoryId().value()
                         ))
                         .build()
         );
@@ -101,13 +103,15 @@ public class AccountRestResource {
     ){
         var user =  ((UserPrincipal)authentication.getPrincipal()).getUser();
         var accountLifeCycleInput = buildAccountLifeCycleInput(user, request);
-        Map<String, Object> result = accountLifeCycleService.suspendAccount(accountLifeCycleInput);
+        AccountLifeCycleResult result  = accountLifeCycleService.suspendAccount(accountLifeCycleInput);
         return ResponseEntity.ok(
                 GlobalResponse.builder()
                         .message("Le compte est maintenant suspendu")
+                        .status(HttpStatus.OK.value())
                         .data(Map.of(
-                                "accountId", ((AccountId)result.get("accountId")).value(),
-                                "accountHistoryId", ((AccountStatusHistoryId)result.get("accountHistoryId")).value()
+                                "accountId", result.account().getAccountId().value(),
+                                "newStatus", result.account().getAccountStatus().value().name(),
+                                "accountHistoryId", result.history().getAccountStatusHistoryId().value()
                         ))
                         .build()
         );
@@ -125,13 +129,15 @@ public class AccountRestResource {
     ){
         var user =  ((UserPrincipal)authentication.getPrincipal()).getUser();
         var accountLifeCycleInput = buildAccountLifeCycleInput(user, request);
-        Map<String, Object> result = accountLifeCycleService.closeAccount(accountLifeCycleInput);
+        AccountLifeCycleResult result = accountLifeCycleService.closeAccount(accountLifeCycleInput);
         return ResponseEntity.ok(
                 GlobalResponse.builder()
                         .message("Le compte est maintenant clôturé définitivement")
+                        .status(HttpStatus.OK.value())
                         .data(Map.of(
-                                "accountId", ((AccountId)result.get("accountId")).value(),
-                                "accountHistoryId", ((AccountStatusHistoryId)result.get("accountHistoryId")).value()
+                                "accountId", result.account().getAccountId().value(),
+                                "newStatus", result.account().getAccountStatus().value().name(),
+                                "accountHistoryId", result.history().getAccountStatusHistoryId().value()
                         ))
                         .build()
         );
@@ -185,8 +191,8 @@ public class AccountRestResource {
         );
     }
 
-    private AccountLifeCycleInput buildAccountLifeCycleInput(User user, AccountLifeCycleRequest request){
-        return AccountLifeCycleInput.builder()
+    private AccountLifeCycleCommand buildAccountLifeCycleInput(User user, AccountLifeCycleRequest request){
+        return AccountLifeCycleCommand.builder()
                 .accountId(AccountId.from(request.accountId()))
                 .changedBy(ChangedBy.from(user.getUserId().value()))
                 .reason(new Reason(request.reason()))

@@ -1,4 +1,4 @@
-package com.alibou.finance.customer.application.model;
+package com.alibou.finance.customer.application.output;
 
 import com.alibou.finance.account.domain.agregate.Account;
 import com.alibou.finance.customer.domain.agregate.Customer;

@@ -1,6 +1,6 @@
 package com.alibou.finance.account.infrastructure.adapter.in.dto;
 
-import com.alibou.finance.account.application.port.dto.input.TransactionInput;
+import com.alibou.finance.account.application.port.dto.command.TransferCommand;
 import com.alibou.finance.account.domain.vo.AccountNumber;
 import com.alibou.finance.auth.domain.agregate.User;
 import com.alibou.finance.log.domain.vo.transaction.OriginalAmount;
@@ -26,10 +26,10 @@ public record TransfertRequest(
         BigDecimal transfertAmount
 ) {
 
-    public static TransactionInput requestToInput(TransfertRequest request, User user){
-        return TransactionInput
+    public static TransferCommand toTransfertCommand(TransfertRequest request, User user){
+        return TransferCommand
                 .builder()
-                .concernedAccountNumber(new AccountNumber(request.sourceAccountNumber()))
+                .sourceAccountNumber(new AccountNumber(request.sourceAccountNumber()))
                 .targetAccountNumber(new AccountNumber(request.targetAccountNumber()))
                 .description(new Description(request.description()))
                 .user(user)
