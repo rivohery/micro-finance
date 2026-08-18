@@ -38,7 +38,4 @@ public class AccountConsultationUseCaseProxy {
         return accountConsultationUseCase.findAllByUserConnected(user);
     }
 
-
-
-
 }

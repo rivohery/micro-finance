@@ -1,6 +1,5 @@
 package com.alibou.finance.log.application.service;
 
-import com.alibou.finance.log.application.port.input.AccountStatusHistoryInput;
 import com.alibou.finance.log.application.port.usecase.AccountStatusHistoryUseCase;
 import com.alibou.finance.log.domain.agregate.AccountStatusHistory;
 import com.alibou.finance.log.domain.repository.AccountStatusHistoryRepository;
@@ -13,9 +12,8 @@ public class AccountStatusHistoryService implements AccountStatusHistoryUseCase 
     private final AccountStatusHistoryRepository accountStatusHistoryRepository;
 
     @Override
-    public AccountStatusHistory save(AccountStatusHistoryInput input) {
-        AccountStatusHistory history = AccountStatusHistoryInput.toAgregate(input);
-        return accountStatusHistoryRepository.save(history);
+    public AccountStatusHistory save(AccountStatusHistory accountStatusHistory) {
+        return accountStatusHistoryRepository.save(accountStatusHistory);
     }
     @Override
     public PageResult<AccountStatusHistory> findAllByAccountId(AccountId accountId, int page, int size) {

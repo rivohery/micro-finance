@@ -1,12 +1,13 @@
 package com.alibou.finance.account.application.port.usecase;
 
-import com.alibou.finance.account.application.port.dto.input.AccountLifeCycleInput;
-import java.util.Map;
+import com.alibou.finance.account.application.port.dto.command.AccountLifeCycleCommand;
+import com.alibou.finance.account.application.port.dto.output.AccountLifeCycleResult;
+
 
 public interface AccountLifeCycleUseCase {
 
-    Map<String, Object> activateAccount(AccountLifeCycleInput input);
-    Map<String, Object> suspendAccount(AccountLifeCycleInput input);
-    Map<String, Object> closeAccount(AccountLifeCycleInput input);
+    AccountLifeCycleResult activateAccount(AccountLifeCycleCommand input);
+    AccountLifeCycleResult suspendAccount(AccountLifeCycleCommand input);
+    AccountLifeCycleResult closeAccount(AccountLifeCycleCommand input);
 
 }

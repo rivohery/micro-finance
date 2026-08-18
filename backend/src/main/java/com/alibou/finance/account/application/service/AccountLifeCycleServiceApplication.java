@@ -1,6 +1,7 @@
 package com.alibou.finance.account.application.service;
 
-import com.alibou.finance.account.application.port.dto.input.AccountLifeCycleInput;
+import com.alibou.finance.account.application.port.dto.command.AccountLifeCycleCommand;
+import com.alibou.finance.account.application.port.dto.output.AccountLifeCycleResult;
 import com.alibou.finance.auth.domain.vo.UserId;
 import com.alibou.finance.account.domain.vo.AccountId;
 import com.alibou.finance.account.application.port.usecase.AccountLifeCycleUseCase;
@@ -10,7 +11,7 @@ import com.alibou.finance.account.domain.exception.AccountNotFoundException;
 import com.alibou.finance.account.domain.out.repository.AccountRepository;
 import com.alibou.finance.auth.application.port.UserUseCase;
 import com.alibou.finance.auth.domain.agregate.User;
-import com.alibou.finance.log.application.port.input.AccountStatusHistoryInput;
+import com.alibou.finance.log.application.port.command.AccountStatusHistoryCommand;
 import com.alibou.finance.log.application.port.usecase.AccountStatusHistoryUseCase;
 import com.alibou.finance.log.domain.agregate.AccountStatusHistory;
 import com.alibou.finance.log.domain.vo.accountStatusHistory.DoingBy;
@@ -19,7 +20,6 @@ import com.alibou.finance.log.domain.vo.accountStatusHistory.OldStatus;
 import com.alibou.finance.log.domain.vo.accountStatusHistory.Reason;
 import com.alibou.finance.shared.domain.OperationNotPermittedException;
 import lombok.RequiredArgsConstructor;
-import java.util.Map;
 import java.util.UUID;
 
 
@@ -30,7 +30,7 @@ public class AccountLifeCycleServiceApplication implements AccountLifeCycleUseCa
     private final AccountStatusHistoryUseCase accountStatusHistoryUseCase;
 
     @Override
-    public Map<String, Object> activateAccount(AccountLifeCycleInput input) {
+    public AccountLifeCycleResult activateAccount(AccountLifeCycleCommand input) {
         User user = checkAndVerifyStatusOfEmployee(input.changedBy().value());
 
         Account account = checkAccountByAccountId(input.accountId());
@@ -40,15 +40,11 @@ public class AccountLifeCycleServiceApplication implements AccountLifeCycleUseCa
         NewStatus newStatus = new NewStatus(AccountStatusEnum.ACTIVE);
 
         AccountStatusHistory history =  prepareAndSaveAccountStatusHistory(account, user, oldStatus, newStatus, input.reason());
-        return Map.of(
-                "accountId", account.getAccountId(),
-                "accountHistoryId", history.getAccountStatusHistoryId(),
-                "newStatus", account.getAccountStatus().value()
-        );
+        return new AccountLifeCycleResult(account, history);
     }
 
     @Override
-    public Map<String, Object> suspendAccount(AccountLifeCycleInput input) {
+    public AccountLifeCycleResult suspendAccount(AccountLifeCycleCommand input) {
         User user = checkAndVerifyStatusOfEmployee(input.changedBy().value());
 
         Account account = checkAccountByAccountId(input.accountId());
@@ -58,15 +54,11 @@ public class AccountLifeCycleServiceApplication implements AccountLifeCycleUseCa
         NewStatus newStatus = new NewStatus(AccountStatusEnum.SUSPENDED);
 
         AccountStatusHistory history =  prepareAndSaveAccountStatusHistory(account, user, oldStatus, newStatus, input.reason());
-        return Map.of(
-                "accountId", account.getAccountId(),
-                "accountHistoryId", history.getAccountStatusHistoryId(),
-                "newStatus", account.getAccountStatus().value()
-        );
+        return new AccountLifeCycleResult(account, history);
     }
 
     @Override
-    public Map<String, Object> closeAccount(AccountLifeCycleInput input) {
+    public AccountLifeCycleResult closeAccount(AccountLifeCycleCommand input) {
         var user = checkAndVerifyStatusOfEmployee(input.changedBy().value());
 
         var account = checkAccountByAccountId(input.accountId());
@@ -75,12 +67,8 @@ public class AccountLifeCycleServiceApplication implements AccountLifeCycleUseCa
         account = accountRepository.save(account);
         NewStatus newStatus = new NewStatus(AccountStatusEnum.CLOSED);
 
-        var accountStatusHistory =  prepareAndSaveAccountStatusHistory(account, user, oldStatus, newStatus, input.reason());
-        return Map.of(
-                "accountId", account.getAccountId(),
-                "accountHistoryId", accountStatusHistory.getAccountStatusHistoryId(),
-                "newStatus", account.getAccountStatus().value()
-        );
+        AccountStatusHistory history =  prepareAndSaveAccountStatusHistory(account, user, oldStatus, newStatus, input.reason());
+        return new AccountLifeCycleResult(account, history);
     }
 
     private User checkAndVerifyStatusOfEmployee(UUID id){
@@ -103,7 +91,7 @@ public class AccountLifeCycleServiceApplication implements AccountLifeCycleUseCa
             NewStatus newStatus,
             Reason reason
     ){
-        AccountStatusHistoryInput accountStatusHistoryInput =  AccountStatusHistoryInput
+        AccountStatusHistoryCommand accountStatusHistoryCommand =  AccountStatusHistoryCommand
                 .builder()
                 .accountId(account.getAccountId())
                 .doingBy(DoingBy.from(user.getUsername().value()))
@@ -111,6 +99,7 @@ public class AccountLifeCycleServiceApplication implements AccountLifeCycleUseCa
                 .newStatus(newStatus)
                 .reason(reason)
                 .build();
-        return accountStatusHistoryUseCase.save(accountStatusHistoryInput);
+        AccountStatusHistory accountStatusHistory = AccountStatusHistoryCommand.toAgregate(accountStatusHistoryCommand);
+        return accountStatusHistoryUseCase.save(accountStatusHistory);
     }
 }

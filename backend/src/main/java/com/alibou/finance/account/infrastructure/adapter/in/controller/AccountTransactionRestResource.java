@@ -1,5 +1,7 @@
 package com.alibou.finance.account.infrastructure.adapter.in.controller;
 
+import com.alibou.finance.account.application.port.dto.output.TransactionResult;
+import com.alibou.finance.account.application.port.dto.output.TransferResult;
 import com.alibou.finance.account.infrastructure.adapter.in.dto.TransfertRequest;
 import com.alibou.finance.account.infrastructure.transactional.AccountTransactionUseCaseProxy;
 import com.alibou.finance.auth.infrastructure.model.UserPrincipal;
@@ -12,6 +14,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -40,10 +43,10 @@ public class AccountTransactionRestResource {
             Authentication authentication
     ){
         var user = ((UserPrincipal)authentication.getPrincipal()).getUser();
-        var transactionInput = TransactionRequest.toInput(request, user);
-        Map<String, Object> result = accountTransactionService.deposit(transactionInput);
+        var transactionInput = TransactionRequest.toDepositCommand(request, user);
+        TransactionResult result = accountTransactionService.deposit(transactionInput);
         if(result != null){
-            Transaction transaction = (Transaction)result.get("transaction");
+            Transaction transaction = result.transaction();
             return ResponseEntity.ok(
                     TransactionMapper.domainToResponse(transaction)
             );
@@ -62,10 +65,10 @@ public class AccountTransactionRestResource {
             Authentication authentication
     ){
         var user = ((UserPrincipal)authentication.getPrincipal()).getUser();
-        var transactionInput = TransactionRequest.toInput(request, user);
-        Map<String, Object> result = accountTransactionService.withdraw(transactionInput);
+        var transactionInput = TransactionRequest.toWithdrawCommand(request, user);
+        TransactionResult result = accountTransactionService.withdraw(transactionInput);
         if(result != null){
-            Transaction transaction = (Transaction)result.get("transaction");
+            Transaction transaction = result.transaction();
             return ResponseEntity.ok(
                     TransactionMapper.domainToResponse(transaction)
             );
@@ -84,12 +87,18 @@ public class AccountTransactionRestResource {
             Authentication authentication
     ){
         var user = ((UserPrincipal)authentication.getPrincipal()).getUser();
-        var transactionInput = TransfertRequest.requestToInput(request, user);
-        Map<String, Object> result = accountTransactionService.transfert(transactionInput);
+        var transactionInput = TransfertRequest.toTransfertCommand(request, user);
+        TransferResult result = accountTransactionService.transfert(transactionInput);
         if(result != null){
             return ResponseEntity.ok(
-                    GlobalResponse.builder()
+                    GlobalResponse
+                            .builder()
+                            .status(HttpStatus.OK.value())
                             .message("Transfert d'argent a été effectué avec success")
+                            .data(Map.of(
+                                    "depositTransaction", TransactionMapper.domainToResponse(result.depositTransaction()),
+                                    "withdrawTransaction", TransactionMapper.domainToResponse(result.withdrawTransaction())
+                            ))
                             .build()
             );
         }

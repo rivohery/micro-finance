@@ -1,7 +1,7 @@
 package com.alibou.finance.customer.infrastructure.transactional;
 
 import com.alibou.finance.auth.domain.agregate.User;
-import com.alibou.finance.customer.application.model.DetailCustomerWithAccount;
+import com.alibou.finance.customer.application.output.DetailCustomerWithAccount;
 import com.alibou.finance.customer.application.port.CustomerConsultationUseCase;
 import com.alibou.finance.customer.domain.agregate.Customer;
 import com.alibou.finance.customer.domain.vo.CustomerId;

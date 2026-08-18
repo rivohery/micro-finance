@@ -1,12 +1,13 @@
-package com.alibou.finance.log.application.port.input;
+package com.alibou.finance.log.application.port.command;
 
 import com.alibou.finance.account.domain.vo.AccountId;
 import com.alibou.finance.log.domain.agregate.AccountStatusHistory;
 import com.alibou.finance.log.domain.vo.accountStatusHistory.*;
+import com.alibou.finance.shared.domain.Assert;
 import lombok.Builder;
 
 @Builder
-public record AccountStatusHistoryInput(
+public record AccountStatusHistoryCommand(
       AccountId accountId,
       DoingBy doingBy,
       Reason reason,
@@ -14,7 +15,15 @@ public record AccountStatusHistoryInput(
       NewStatus newStatus
 ) {
 
-    public static AccountStatusHistory toAgregate(AccountStatusHistoryInput input){
+    public AccountStatusHistoryCommand{
+        Assert.notNull("accountId", accountId);
+        Assert.notNull("doingBy", doingBy);
+        Assert.notNull("reason", reason);
+        Assert.notNull("oldStatus", oldStatus);
+        Assert.notNull("newStatus", newStatus);
+    }
+
+    public static AccountStatusHistory toAgregate(AccountStatusHistoryCommand input){
         return AccountStatusHistory
                 .builder()
                 .accountStatusHistoryId(AccountStatusHistoryId.generate())
