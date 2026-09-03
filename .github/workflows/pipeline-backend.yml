@@ -1,0 +1,145 @@
+# ================================================================
+# PIPELINE CI - DÉVELOPPEMENT ET TESTS (SANS DÉPLOIEMENT)
+# ================================================================
+# Cette pipeline s'exécute à chaque push ou pull request
+# Objectif : Vérifier que le code compile et que les tests passent
+# ================================================================
+
+name: CI Backend - Build & Test
+
+# ================================================================
+# 1. DÉCLENCHEURS
+# ================================================================
+on:
+  push:
+    branches:
+      - main          # Production
+      - develop       # Intégration
+      - 'feature/**'  # Branches de fonctionnalités
+  pull_request:
+    branches:
+      - main
+      - develop
+
+# ================================================================
+# 2. VARIABLES ENVIRONNEMENT
+# ================================================================
+env:
+  BACKEND_DIR: ./backend      # Dossier du backend Spring Boot
+  JAVA_VERSION: 17
+
+# ================================================================
+# 3. JOBS
+# ================================================================
+jobs:
+
+  # ------------------------------------------------------------------
+  # JOB UNIQUE : BUILD, TEST ET ANALYSE DU BACKEND
+  # ------------------------------------------------------------------
+  build-and-test:
+    name: 🔧 Build, Test & Analyze
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    # ----------------------------------------------------------------
+    # SERVICES : Lance PostgreSQL pour les tests d'intégration
+    # ----------------------------------------------------------------
+    services:
+      postgres:
+        image: postgres:15-alpine          # Image PostgreSQL légère
+        env:
+          POSTGRES_USER: testuser          # Utilisateur pour les tests
+          POSTGRES_PASSWORD: testpass      # Mot de passe pour les tests
+          POSTGRES_DB: testdb              # Nom de la base de test
+        ports:
+          - 5432:5432                      # Port standard PostgreSQL
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    # ----------------------------------------------------------------
+    # STEPS : Les actions à exécuter
+    # ----------------------------------------------------------------
+    steps:
+
+      # ÉTAPE 1 : Récupérer le code source depuis GitHub
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Nécessaire pour SonarQube (analyse complète)
+
+      # ÉTAPE 2 : Installer Java
+      - name: ☕ Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'           # Distribution OpenJDK
+          cache: 'maven'                    # Cache les dépendances Maven
+
+      # ÉTAPE 3 : Vérifier les versions (débogage)
+      - name: 🔍 Check Java & Maven versions
+        run: |
+          java -version
+          cd ${{ env.BACKEND_DIR }}
+          mvn -version
+
+      # ÉTAPE 4 : Compiler et exécuter les tests
+      #          Avec le profil 'github-actions' pour utiliser PostgreSQL
+      - name: 🧪 Build and run tests
+        run: |
+          cd ${{ env.BACKEND_DIR }}
+          mvn clean test \
+            -Dspring.profiles.active=github-actions
+
+      # ÉTAPE 5 : Générer le rapport de couverture (Jacoco)
+      - name: 📊 Generate coverage report
+        run: |
+          cd ${{ env.BACKEND_DIR }}
+          mvn jacoco:report
+
+      # ÉTAPE 6 : (Optionnel) Sauvegarder le rapport de couverture
+      #          Pour le consulter après la pipeline
+      - name: 💾 Upload coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: jacoco-report
+          path: ${{ env.BACKEND_DIR }}/target/site/jacoco/
+
+      # ÉTAPE 7 : Analyser la qualité du code avec SonarQube
+      #          Nécessite les secrets configurés
+      - name: 🎯 SonarQube analysis
+        if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          cd ${{ env.BACKEND_DIR }}
+          mvn sonar:sonar \
+            -Dsonar.host.url=$SONAR_HOST_URL \
+            -Dsonar.login=$SONAR_TOKEN
+        continue-on-error: true  # Ne bloque pas la pipeline si SonarQube échoue
+
+      # ÉTAPE 8 : (Optionnel) Exécuter Spotbugs (analyse statique)
+      - name: 🐞 Spotbugs static analysis
+        run: |
+          cd ${{ env.BACKEND_DIR }}
+          mvn spotbugs:check
+        continue-on-error: true  # Ne bloque pas la pipeline
+
+      # ÉTAPE 9 : (Optionnel) Vérifier le style de code (Checkstyle)
+      - name: 📏 Checkstyle verification
+        run: |
+          cd ${{ env.BACKEND_DIR }}
+          mvn checkstyle:check
+        continue-on-error: true  # Ne bloque pas la pipeline
+
+      # ÉTAPE 10 : Notification de succès/échec
+      - name: 📊 Build summary
+        if: always()
+        run: |
+          echo "=========================================="
+          echo "✅ BUILD  : SUCCESS"
+          echo "✅ TESTS  : ${{ job.status }}"
+          echo "=========================================="

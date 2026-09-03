@@ -42,7 +42,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@ActiveProfiles("test")
 public class AccountTransactionUseCaseProxyIntegrationTest {
 
     @Autowired
@@ -71,10 +70,11 @@ public class AccountTransactionUseCaseProxyIntegrationTest {
 
     @BeforeEach
     void setUp(){
+        accountJpaRepository.deleteAll();
         accountTypeJpaRepository.deleteAll();
         currencyJpaRepository.deleteAll();
         transactionJpaRepository.deleteAll();
-        accountJpaRepository.deleteAll();
+
 
         userConnected = User.builder().username(new Username("alibou")).build();
 

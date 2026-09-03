@@ -63,7 +63,7 @@ export class TransfertComponent {
   });
   transfertAmount: FormControl = new FormControl<number>(0.0, {
     nonNullable: true,
-    validators: [Validators.required, Validators.min(100)],
+    validators: [Validators.required, Validators.min(10)],
   });
 
   transferForm: FormGroup = this.fb.nonNullable.group({

@@ -42,7 +42,7 @@ public class TransactionJpaRepositoryTest {
     @Test
     @DisplayName("Devrait retourner une liste de transaction de ce mois ci")
     void shouldCheckMonthlyTransactionOfOneAccountWithSuccess(){
-        LocalDate now = LocalDate.now();
+        LocalDate now = LocalDate.of(2026,6,15);
         LocalDateTime startMonth = now.with(TemporalAdjusters.firstDayOfMonth()).atTime(LocalTime.MIN);
         LocalDateTime endMonth = now.with(TemporalAdjusters.lastDayOfMonth()).atTime(LocalTime.MAX);
 

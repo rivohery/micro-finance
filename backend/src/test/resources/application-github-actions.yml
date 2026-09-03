@@ -1,0 +1,38 @@
+# ============================================
+# PROFIL GITHUB ACTIONS - TESTS D'INTÉGRATION
+# ============================================
+
+# ---------- BASE DE DONNÉES POSTGRESQL ----------
+# On utilise le service PostgreSQL lancé dans GitHub Actions
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/testdb
+    username: testuser
+    password: testpass
+    driver-class-name: org.postgresql.Driver
+
+  # ---------- JPA/HIBERNATE ----------
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate.ddl-auto: create-drop  # Crée et supprime la BD à chaque test
+    show-sql: false                  # Met true pour déboguer (false pour la CI)
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  # ---------- SPRING SECURITY (si tu utilises) ----------
+  # Désactiver la sécurité pour les tests (simplifie)
+  security:
+    enabled: false
+  
+# ---------- LOGGING ----------
+logging:
+  level:
+    org:
+      springframework: WARN
+      hibernate: WARN
+    com:
+      alibou:
+        finance: DEBUG  #le nom de mon package

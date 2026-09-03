@@ -236,6 +236,7 @@ public class AccountJpaRepositoryTest {
                 .toList()
                 .size()
         ).isEqualTo(3);
+
         assertThat(accounts.getContent()).extracting(a -> a.getAccountTypeEntity().getCode()).contains("20","30");
         assertThat(accounts.getContent()).extracting(a -> a.getCurrencyEntity().getCode()).contains("MGA");
     }

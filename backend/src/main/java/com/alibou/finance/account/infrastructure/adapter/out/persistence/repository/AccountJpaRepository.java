@@ -23,6 +23,9 @@ public interface AccountJpaRepository extends JpaRepository<AccountEntity, UUID>
     boolean existsByAccountNumber(String accountNumber);
 
     @EntityGraph(attributePaths = {"accountTypeEntity","currencyEntity"})
+    Optional<AccountEntity>findById(UUID id);
+
+    @EntityGraph(attributePaths = {"accountTypeEntity","currencyEntity"})
     Optional<AccountEntity>findByAccountNumber(String accountNumber);
 
     @EntityGraph(attributePaths = {"accountTypeEntity","currencyEntity"})
