@@ -18,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
@@ -193,7 +194,7 @@ public class AccountJpaRepositoryTest {
     @Test
     @DisplayName("Devrait retourner les pages des comptes dont le numéros de compte commence par un mots données")
     void shouldFindAllByAccountNumberStartsWith(){
-        Pageable pageable = PageRequest.of(0,2);
+        Pageable pageable = PageRequest.of(0,2, Sort.by("createdDate").descending());
         String start = "ACC-10";
         Page<AccountEntity> response = accountRepository.findAllByAccountNumberStartsWith(start, pageable);
 
@@ -201,7 +202,7 @@ public class AccountJpaRepositoryTest {
         assertThat(response.getContent().size()).isEqualTo(2);
         assertThat(response.getNumber()).isEqualTo(0);
         assertThat(response.getContent())
-                .extracting(AccountEntity::getAccountNumber).containsExactly("ACC-10-123456", "ACC-10-443467");
+                .extracting(AccountEntity::getAccountNumber).containsExactly("ACC-10-555456", "ACC-10-123456");
     }
 
     @Test
