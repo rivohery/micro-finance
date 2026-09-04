@@ -205,8 +205,9 @@
 							<goal>report</goal>
 						</goals>
 						<configuration>
-							<!-- Le chemin vers le rapport XML (important pour SonarQube) -->
-							<outputDirectory>target/site/jacoco</outputDirectory>
+							<formats>
+              					<format>XML</format>
+            				</formats>
 						</configuration>
 					</execution>
 				</executions>
