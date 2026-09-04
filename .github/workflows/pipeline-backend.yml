@@ -125,6 +125,7 @@ jobs:
             -Dsonar.sources=src/main/java \
             -Dsonar.tests=src/test/java \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
+            -Dsonar.autoScan=false \  # 👈 Désactiver l'analyse automatique !
             -X  # 👈 Ajoute cette option pour avoir des logs détaillés
         continue-on-error: true  # Ne bloque pas la pipeline si SonarQube échoue
 
