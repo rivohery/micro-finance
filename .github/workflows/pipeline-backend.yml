@@ -26,7 +26,7 @@ on:
 # ================================================================
 env:
   BACKEND_DIR: ./backend      # Dossier du backend Spring Boot
-  JAVA_VERSION: 17
+  JAVA_VERSION: 21            # uniquement utiliser Java 21 pour toute la pipeline (compilation + tests + SonarQube)
 
 # ================================================================
 # 3. JOBS
