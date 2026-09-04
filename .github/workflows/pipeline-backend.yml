@@ -118,7 +118,9 @@ jobs:
           cd ${{ env.BACKEND_DIR }}
           mvn sonar:sonar \
             -Dsonar.host.url=$SONAR_HOST_URL \
-            -Dsonar.login=$SONAR_TOKEN
+            -Dsonar.login=$SONAR_TOKEN \
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
+            -X  # 👈 Ajoute cette option pour avoir des logs détaillés
         continue-on-error: true  # Ne bloque pas la pipeline si SonarQube échoue
 
       # ÉTAPE 8 : (Optionnel) Exécuter Spotbugs (analyse statique)
