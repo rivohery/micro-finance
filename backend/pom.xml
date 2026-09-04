@@ -190,17 +190,24 @@
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>${jacoco.version}</version>
 				<executions>
+					<!-- 1. PRÉPARE L'AGENT AVANT LES TESTS -->
 					<execution>
+						<id>prepare-agent</id>
 						<goals>
 							<goal>prepare-agent</goal>
 						</goals>
 					</execution>
+					<!-- 2. GÉNÈRE LE RAPPORT APRÈS LES TESTS -->
 					<execution>
 						<id>report</id>
 						<phase>test</phase>
 						<goals>
 							<goal>report</goal>
 						</goals>
+						<configuration>
+							<!-- Le chemin vers le rapport XML (important pour SonarQube) -->
+							<outputDirectory>target/site/jacoco</outputDirectory>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
