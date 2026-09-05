@@ -114,8 +114,8 @@ jobs:
         run: |
           cd ${{ env.BACKEND_DIR }}
           mvn sonar:sonar \
-            -Dsonar.host.url=$SONAR_HOST_URL \
-            -Dsonar.login=$SONAR_TOKEN \
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
             -Dsonar.projectKey=rivohery_micro-finance \
             -Dsonar.organization=rivohery \
             -Dsonar.projectName=micro-finance \
