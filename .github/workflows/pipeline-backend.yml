@@ -118,7 +118,6 @@ jobs:
             -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
             -Dsonar.projectKey=rivohery_micro-finance \
             -Dsonar.organization=rivohery \
-            -Dsonar.projectName=micro-finance \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
             -Dsonar.sourceEncoding=UTF-8 
         continue-on-error: true  # Ne bloque pas la pipeline si SonarQube échoue
