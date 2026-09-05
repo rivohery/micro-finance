@@ -114,8 +114,8 @@ jobs:
         run: |
           cd ${{ env.BACKEND_DIR }}
           mvn sonar:sonar \
-            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=2cd6c583fb2c54b72edcb2260f8f041a8a2f1117 \
             -Dsonar.projectKey=rivohery_micro-finance \
             -Dsonar.organization=rivohery \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
