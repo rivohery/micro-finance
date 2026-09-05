@@ -120,8 +120,7 @@ jobs:
             -Dsonar.organization=rivohery \
             -Dsonar.projectName=micro-finance \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
-            -Dsonar.analysis.mode=preview  \ 
-            -Dsonar.scanner.skip=false   # S'assure que l'analyse n'est pas ignorée
+            -Dsonar.sourceEncoding=UTF-8 
         continue-on-error: true  # Ne bloque pas la pipeline si SonarQube échoue
 
       # ÉTAPE 8 : (Optionnel) Exécuter Spotbugs (analyse statique)
