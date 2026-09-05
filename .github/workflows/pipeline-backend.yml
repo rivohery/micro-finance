@@ -107,6 +107,18 @@ jobs:
           name: jacoco-report
           path: ${{ env.BACKEND_DIR }}/target/site/jacoco/
 
+      
+      # ÉTAPE : (Intermediaire) Désactiver l'analyse automatique via l'API SonarCloud    
+      - name: 🔧 Désactiver l'analyse automatique sur SonarCloud
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.SONAR_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"key": "sonar.autoScan", "value": "false"}' \
+            "https://sonarcloud.io/api/project_settings/set?project=rivohery_micro-finance"
+        continue-on-error: true  # Continue même si la commande échoue
+
+
       # ÉTAPE 7 : Analyser la qualité du code avec SonarQube
       #          Nécessite les secrets configurés
       - name: 🎯 SonarQube analysis
@@ -126,6 +138,8 @@ jobs:
             -Dsonar.tests=src/test/java \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
             -Dsonar.autoScan=false \  # 👈 Désactiver l'analyse automatique !
+            -Dsonar.analysis.mode=preview \   # Force SonarCloud à utiliser l'analyse CI
+            -Dsonar.scanner.skip=false \   # S'assure que l'analyse n'est pas ignorée
             -X  # 👈 Ajoute cette option pour avoir des logs détaillés
         continue-on-error: true  # Ne bloque pas la pipeline si SonarQube échoue
 
