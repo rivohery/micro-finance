@@ -26,7 +26,7 @@ on:
 # ================================================================
 env:
   BACKEND_DIR: ./backend      # Dossier du backend Spring Boot
-  JAVA_VERSION: 21            # uniquement utiliser Java 21 pour toute la pipeline (compilation + tests + SonarQube)
+  JAVA_VERSION: 17            
 
 # ================================================================
 # 3. JOBS
@@ -114,12 +114,8 @@ jobs:
         run: |
           cd ${{ env.BACKEND_DIR }}
           mvn sonar:sonar \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.login=2cd6c583fb2c54b72edcb2260f8f041a8a2f1117 \
-            -Dsonar.projectKey=rivohery_micro-finance \
-            -Dsonar.organization=rivohery \
-            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
-            -Dsonar.sourceEncoding=UTF-8 
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}  
         continue-on-error: true  # Ne bloque pas la pipeline si SonarQube échoue
 
       # ÉTAPE 8 : (Optionnel) Exécuter Spotbugs (analyse statique)
