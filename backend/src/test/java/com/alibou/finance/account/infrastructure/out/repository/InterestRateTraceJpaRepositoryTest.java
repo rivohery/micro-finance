@@ -18,7 +18,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@ActiveProfiles("test")
+@ActiveProfiles("github-actions")
 public class InterestRateTraceJpaRepositoryTest {
 
     @Autowired

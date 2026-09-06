@@ -26,7 +26,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@ActiveProfiles("test")
+@ActiveProfiles("github-actions")
 class CustomerJpaRepositoryTest {
 
     @Autowired
@@ -113,8 +113,8 @@ class CustomerJpaRepositoryTest {
         assertThat(customerUpdated.getStatus()).isEqualTo(CustomerStatus.ACTIVE);
     }
 
-    //@Test
-    //@DisplayName("Devrait retourner les statistiques de nouveau client par jour: Lundi jusqu'à Samedi pour le test")
+    @Test
+    @DisplayName("Devrait retourner les statistiques de nouveau client par jour: Lundi jusqu'à Samedi pour le test")
     void shouldGetCustomersPerDayOfWeek(){
         LocalDate monday = LocalDate.of(2026, 6, 1);
         List<LocalDate> weeks  = monday.datesUntil(LocalDate.of(2026,6,8)).toList();
@@ -181,8 +181,7 @@ class CustomerJpaRepositoryTest {
                 .containsExactlyInAnyOrder("MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY");
         for(RegistrationStatisticProj registration : statistics){
             System.out.println("============");
-            System.out.println(registration.getCreatedDate().getDayOfWeek().name().toLowerCase());
-            System.out.println(registration.getNbrCustomer());
+            System.out.println(registration.getCreatedDate().getDayOfWeek().name().toLowerCase() + " : " + registration.getNbrCustomer());
             System.out.println("============");
         }
     }

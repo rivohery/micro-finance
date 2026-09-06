@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
-@ActiveProfiles("test")
+@ActiveProfiles("github-actions")
 public class AccountJpaRepositoryTest {
     @Autowired
     private AccountJpaRepository accountRepository;
@@ -82,6 +82,7 @@ public class AccountJpaRepositoryTest {
         ));
 
     }
+
 
     @Test
     @DisplayName("Devrait retourner les statistiques de comptes groupés par type en excluant les comptes fermés")
@@ -191,10 +192,10 @@ public class AccountJpaRepositoryTest {
         assertThat(nbrAccount).isEqualTo(8);
     }
 
-    //@Test
-    //@DisplayName("Devrait retourner les pages des comptes dont le numéros de compte commence par un mots données")
+    @Test
+    @DisplayName("Devrait retourner les pages des comptes dont le numéros de compte commence par un mots données")
     void shouldFindAllByAccountNumberStartsWith(){
-        Pageable pageable = PageRequest.of(0,2);
+        Pageable pageable = PageRequest.of(0,2, Sort.by("createdDate").ascending());
         String start = "ACC-10";
         Page<AccountEntity> response = accountRepository.findAllByAccountNumberStartsWith(start, pageable);
 
@@ -202,11 +203,14 @@ public class AccountJpaRepositoryTest {
         assertThat(response.getContent().size()).isEqualTo(2);
         assertThat(response.getNumber()).isEqualTo(0);
         assertThat(response.getContent())
-                .extracting(AccountEntity::getAccountNumber).containsExactly("ACC-10-555456", "ACC-10-123456");
+                .extracting(AccountEntity::getAccountNumber).containsExactly("ACC-10-443467", "ACC-10-123456");
+        assertThat(response.getContent()).extracting(a -> a.getCurrencyEntity()).isNotNull();
+        assertThat(response.getContent()).extracting(a -> a.getAccountTypeEntity()).isNotNull();
+        assertThat(response.getContent()).extracting(a -> a.getCurrencyEntity().getCode()).containsOnly("MGA");
     }
 
-    //@Test
-    //@DisplayName("Devrait tester la methode getAllAccountByAccountNumberBegin() avec succès")
+    @Test
+    @DisplayName("Devrait tester la methode getAllAccountByAccountNumberBegin() avec succès")
     void shouldGetAllAccountByAccountNumberBeginSuccessfully(){
         Pageable pageable = PageRequest.of(0,2);
         String start = "ACC-10";

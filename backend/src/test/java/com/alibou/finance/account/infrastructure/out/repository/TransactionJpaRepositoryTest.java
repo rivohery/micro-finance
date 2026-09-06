@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
-@ActiveProfiles("test")
+@ActiveProfiles("github-actions")
 public class TransactionJpaRepositoryTest {
     @Autowired
     private TransactionJpaRepository transactionRepository;
@@ -39,8 +39,8 @@ public class TransactionJpaRepositoryTest {
         List.of(transaction0, transaction1, transaction2, transaction3,transaction4).forEach(tr -> transactionRepository.save(tr));
     }
 
-    //@Test
-    //@DisplayName("Devrait retourner une liste de transaction de ce mois ci")
+    @Test
+    @DisplayName("Devrait retourner une liste de transaction de ce mois ci")
     void shouldCheckMonthlyTransactionOfOneAccountWithSuccess(){
         LocalDate now = LocalDate.of(2026,6,15);
         LocalDateTime startMonth = now.with(TemporalAdjusters.firstDayOfMonth()).atTime(LocalTime.MIN);
@@ -49,7 +49,7 @@ public class TransactionJpaRepositoryTest {
         List<TransactionEntity> transactions = transactionRepository.checkMonthlyTransactionOfOneAccount("ACC-23-2345", startMonth, endMonth);
 
         assertThat(transactions.size()).isEqualTo(3);
-        assertThat(transactions).extracting(tr -> tr.getCreatedDate().getDayOfMonth()).containsExactlyInAnyOrder(2,17,29);
+        assertThat(transactions).extracting(tr -> tr.getCreatedDate().getDayOfMonth()).containsExactlyInAnyOrder(29,17,2);
 
     }
 

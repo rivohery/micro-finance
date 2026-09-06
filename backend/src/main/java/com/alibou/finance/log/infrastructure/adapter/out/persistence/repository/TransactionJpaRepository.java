@@ -20,7 +20,7 @@ public interface TransactionJpaRepository extends JpaRepository<TransactionEntit
     @Query("""
         select t from TransactionEntity t where t.accountNumber = :accountNumber
         and t.createdDate between :startMonth and :endMonth
-        order by t.createdDate ASC
+        order by t.createdDate DESC 
     """)
     List<TransactionEntity>checkMonthlyTransactionOfOneAccount(
             @Param("accountNumber") String accountNumber,

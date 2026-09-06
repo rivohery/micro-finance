@@ -32,6 +32,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -42,6 +43,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@ActiveProfiles("github-actions")
 public class AccountTransactionUseCaseProxyIntegrationTest {
 
     @Autowired
@@ -70,10 +72,11 @@ public class AccountTransactionUseCaseProxyIntegrationTest {
 
     @BeforeEach
     void setUp(){
+        transactionJpaRepository.deleteAll();
         accountJpaRepository.deleteAll();
         accountTypeJpaRepository.deleteAll();
         currencyJpaRepository.deleteAll();
-        transactionJpaRepository.deleteAll();
+
 
 
         userConnected = User.builder().username(new Username("alibou")).build();

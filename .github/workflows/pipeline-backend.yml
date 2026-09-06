@@ -115,7 +115,10 @@ jobs:
           cd ${{ env.BACKEND_DIR }}
           mvn sonar:sonar \
             -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }}  
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+            -Dsonar.projectKey=rivohery_micro-finance \
+            -Dsonar.organization=rivohery \ 
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
         continue-on-error: true  # Ne bloque pas la pipeline si SonarQube échoue
 
       # ÉTAPE 8 : (Optionnel) Exécuter Spotbugs (analyse statique)
