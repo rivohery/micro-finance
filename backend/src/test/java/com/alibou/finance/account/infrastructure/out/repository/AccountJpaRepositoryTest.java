@@ -14,12 +14,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -32,6 +34,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
 @ActiveProfiles("github-actions")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // ← CLÉ : désactive H2
+@TestPropertySource(properties = {
+        "spring.jpa.properties.hibernate.jdbc.time_zone=UTC",
+        "user.timezone=UTC"
+})
 public class AccountJpaRepositoryTest {
     @Autowired
     private AccountJpaRepository accountRepository;
@@ -203,7 +210,7 @@ public class AccountJpaRepositoryTest {
         assertThat(response.getContent().size()).isEqualTo(2);
         assertThat(response.getNumber()).isEqualTo(0);
         assertThat(response.getContent())
-                .extracting(AccountEntity::getAccountNumber).containsExactly("ACC-10-443467", "ACC-10-123456");
+                .extracting(AccountEntity::getAccountNumber).containsExactly("ACC-10-443467", "ACC-10-123456");//["ACC-10-443467", "ACC-10-123456"]
         assertThat(response.getContent()).extracting(a -> a.getCurrencyEntity()).isNotNull();
         assertThat(response.getContent()).extracting(a -> a.getAccountTypeEntity()).isNotNull();
         assertThat(response.getContent()).extracting(a -> a.getCurrencyEntity().getCode()).containsOnly("MGA");
@@ -221,7 +228,7 @@ public class AccountJpaRepositoryTest {
         assertThat(response.getContent().size()).isEqualTo(2);
         assertThat(response.getNumber()).isEqualTo(0);
         assertThat(response.getContent())
-                .extracting(AccountProjection::getAccountNumber).containsExactly("ACC-10-443467", "ACC-10-123456");
+                .extracting(AccountProjection::getAccountNumber).containsExactly("ACC-10-443467", "ACC-10-123456");// ["ACC-10-443467", "ACC-10-123456"]
         assertThat(response.getContent()).extracting(AccountProjection::getCurrencyCode).containsExactly("MGA","MGA");
         assertThat(response.getContent()).extracting(AccountProjection::getAccountTypeName).containsOnly("Compte courante");
     }

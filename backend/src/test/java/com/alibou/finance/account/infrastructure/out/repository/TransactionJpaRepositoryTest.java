@@ -7,8 +7,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,10 +21,14 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
 @ActiveProfiles("github-actions")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // ← CLÉ : désactive H2
+@TestPropertySource(properties = {
+        "spring.jpa.properties.hibernate.jdbc.time_zone=UTC",
+        "user.timezone=UTC"
+})
 public class TransactionJpaRepositoryTest {
     @Autowired
     private TransactionJpaRepository transactionRepository;
@@ -42,6 +49,10 @@ public class TransactionJpaRepositoryTest {
     @Test
     @DisplayName("Devrait retourner une liste de transaction de ce mois ci")
     void shouldCheckMonthlyTransactionOfOneAccountWithSuccess(){
+        System.out.println("-----------------");
+        List<TransactionEntity>transactionsRegistred = transactionRepository.findAll();
+        transactionsRegistred.forEach(t -> System.out.println(t.getCreatedDate()));
+        System.out.println("-----------------");
         LocalDate now = LocalDate.of(2026,6,15);
         LocalDateTime startMonth = now.with(TemporalAdjusters.firstDayOfMonth()).atTime(LocalTime.MIN);
         LocalDateTime endMonth = now.with(TemporalAdjusters.lastDayOfMonth()).atTime(LocalTime.MAX);
@@ -66,8 +77,8 @@ public class TransactionJpaRepositoryTest {
                 .originalAmount(BigDecimal.valueOf(300))
                 .targetCurrencyCode("MGA")
                 .transactionCurrencyCode("MGA")
-                .transactionType(TransactionTypeEnum.DEPOSIT)
                 .createdDate(createdDate)
+                .transactionType(TransactionTypeEnum.DEPOSIT)
                 .build();
     }
 }

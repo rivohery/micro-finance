@@ -7,8 +7,8 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/testdb
-    username: testuser         
-    password: testpass           
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:secret}
     driver-class-name: org.postgresql.Driver
 
   # ---------- JPA/HIBERNATE ----------

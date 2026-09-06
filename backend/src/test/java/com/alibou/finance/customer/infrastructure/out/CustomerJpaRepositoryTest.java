@@ -11,11 +11,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -27,6 +29,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @ActiveProfiles("github-actions")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // ← CLÉ : désactive H2
+@TestPropertySource(properties = {
+        "spring.jpa.properties.hibernate.jdbc.time_zone=UTC",
+        "user.timezone=UTC"
+})
 class CustomerJpaRepositoryTest {
 
     @Autowired
@@ -174,6 +181,10 @@ class CustomerJpaRepositoryTest {
         //System.out.println(endWeek.format(DateTimeFormatter.ISO_DATE));
         List<RegistrationStatisticProj> statistics =
                 customerJpaRepository.getCustomersPerDayOfWeek(startWeek, endWeek);
+
+        System.out.println("-------------------");
+        statistics.forEach(s -> System.out.println(s.getCreatedDate().getDayOfWeek().name() + " : " + s.getNbrCustomer()));
+        System.out.println("-------------------");
 
         assertThat(statistics.size()).isEqualTo(6);
         assertThat(statistics).extracting(RegistrationStatisticProj::getNbrCustomer).containsExactlyInAnyOrder(5L,4L,6L,3L, 4L, 2L);
