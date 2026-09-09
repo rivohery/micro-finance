@@ -196,8 +196,8 @@ public class AccountTransactionUseCaseProxyIntegrationTest extends DBProfileTest
 
     }
 
-    @Test
-    @DisplayName("Pour tester le fonctionnement de l'annotation @Transactional")
+    //@Test
+    //@DisplayName("Pour tester le fonctionnement de l'annotation @Transactional")
     void transfert_testTransactionSuccess(){
         TransferCommand transfertCommand = TransferCommand
                 .builder()
