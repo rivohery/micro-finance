@@ -1,15 +1,14 @@
 package com.alibou.finance.account.infrastructure.out.repository;
 
+import com.alibou.finance.BaseRepositoryTest;
 import com.alibou.finance.log.infrastructure.adapter.out.persistence.entity.InterestRateTraceEntity;
 import com.alibou.finance.log.infrastructure.adapter.out.persistence.repository.InterestRateTraceJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -17,9 +16,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
-@ActiveProfiles("test")
-public class InterestRateTraceJpaRepositoryTest {
+public class InterestRateTraceJpaRepositoryTest extends BaseRepositoryTest {
 
     @Autowired
     private InterestRateTraceJpaRepository interestRateTraceRepository;

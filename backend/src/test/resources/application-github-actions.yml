@@ -14,11 +14,8 @@ spring:
   # ---------- JPA/HIBERNATE ----------
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate.ddl-auto: create-drop  # Crée et supprime la BD à chaque test
-    show-sql: false                  # Met true pour déboguer (false pour la CI)
     properties:
       hibernate:
-        format_sql: true
         jdbc:
           lob:
             non_contextual_creation: true
@@ -33,6 +30,3 @@ logging:
     org:
       springframework: WARN
       hibernate: WARN
-    com:
-      alibou:
-        finance: DEBUG  #le nom de mon package

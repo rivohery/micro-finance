@@ -1,5 +1,6 @@
 package com.alibou.finance.account.infrastructure.out.repository;
 
+import com.alibou.finance.BaseRepositoryTest;
 import com.alibou.finance.log.domain.agregate.TransactionTypeEnum;
 import com.alibou.finance.log.infrastructure.adapter.out.persistence.entity.TransactionEntity;
 import com.alibou.finance.log.infrastructure.adapter.out.persistence.repository.TransactionJpaRepository;
@@ -7,8 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ActiveProfiles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,9 +19,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DataJpaTest
-@ActiveProfiles("test")
-public class TransactionJpaRepositoryTest {
+public class TransactionJpaRepositoryTest extends BaseRepositoryTest {
     @Autowired
     private TransactionJpaRepository transactionRepository;
 
@@ -39,8 +36,8 @@ public class TransactionJpaRepositoryTest {
         List.of(transaction0, transaction1, transaction2, transaction3,transaction4).forEach(tr -> transactionRepository.save(tr));
     }
 
-    //@Test
-    //@DisplayName("Devrait retourner une liste de transaction de ce mois ci")
+    @Test
+    @DisplayName("Devrait retourner une liste de transaction de ce mois ci")
     void shouldCheckMonthlyTransactionOfOneAccountWithSuccess(){
         LocalDate now = LocalDate.of(2026,6,15);
         LocalDateTime startMonth = now.with(TemporalAdjusters.firstDayOfMonth()).atTime(LocalTime.MIN);
