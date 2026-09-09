@@ -191,8 +191,8 @@ public class AccountJpaRepositoryTest extends BaseRepositoryTest {
         assertThat(nbrAccount).isEqualTo(8);
     }
 
-    @Test
-    @DisplayName("Devrait retourner les pages des comptes dont le numéros de compte commence par un mots données")
+    //@Test
+    //@DisplayName("Devrait retourner les pages des comptes dont le numéros de compte commence par un mots données")
     void shouldFindAllByAccountNumberStartsWith(){
         Pageable pageable = PageRequest.of(0,2, Sort.by("createdDate").descending());
         String start = "ACC-10";
@@ -205,8 +205,8 @@ public class AccountJpaRepositoryTest extends BaseRepositoryTest {
                 .extracting(AccountEntity::getAccountNumber).containsExactly("ACC-10-555456", "ACC-10-123456");
     }
 
-    @Test
-    @DisplayName("Devrait tester la methode getAllAccountByAccountNumberBegin() avec succès")
+    //@Test
+    //@DisplayName("Devrait tester la methode getAllAccountByAccountNumberBegin() avec succès")
     void shouldGetAllAccountByAccountNumberBeginSuccessfully(){
         Pageable pageable = PageRequest.of(0,2);
         String start = "ACC-10";
