@@ -39,7 +39,7 @@ jobs:
   build-and-test:
     name: 🔧 Build, Test & Analyze
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
 
     # ----------------------------------------------------------------
     # SERVICES : Lance PostgreSQL pour les tests d'intégration

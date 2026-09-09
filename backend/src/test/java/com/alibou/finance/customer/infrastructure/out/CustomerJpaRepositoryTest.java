@@ -1,5 +1,6 @@
 package com.alibou.finance.customer.infrastructure.out;
 
+import com.alibou.finance.BaseRepositoryTest;
 import com.alibou.finance.auth.domain.agregate.RoleEnum;
 import com.alibou.finance.auth.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.alibou.finance.auth.infrastructure.adapter.out.persistence.repository.UserJpaRepository;
@@ -11,11 +12,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -25,9 +24,8 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
-@ActiveProfiles("test")
-class CustomerJpaRepositoryTest {
+
+class CustomerJpaRepositoryTest extends BaseRepositoryTest {
 
     @Autowired
     private CustomerJpaRepository customerJpaRepository;
@@ -113,8 +111,8 @@ class CustomerJpaRepositoryTest {
         assertThat(customerUpdated.getStatus()).isEqualTo(CustomerStatus.ACTIVE);
     }
 
-    //@Test
-    //@DisplayName("Devrait retourner les statistiques de nouveau client par jour: Lundi jusqu'à Samedi pour le test")
+    @Test
+    @DisplayName("Devrait retourner les statistiques de nouveau client par jour: Lundi jusqu'à Samedi pour le test")
     void shouldGetCustomersPerDayOfWeek(){
         LocalDate monday = LocalDate.of(2026, 6, 1);
         List<LocalDate> weeks  = monday.datesUntil(LocalDate.of(2026,6,8)).toList();

@@ -1,14 +1,8 @@
-# ============================================
-# PROFIL GITHUB ACTIONS - TESTS D'INTÉGRATION
-# ============================================
-
-# ---------- BASE DE DONNÉES POSTGRESQL ----------
-# On utilise le service PostgreSQL lancé dans GitHub Actions
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/testdb
-    username: testuser
-    password: testpass
+    username: postgres
+    password: secret
     driver-class-name: org.postgresql.Driver
 
   # ---------- JPA/HIBERNATE ----------
@@ -18,7 +12,7 @@ spring:
   # Désactiver la sécurité pour les tests (simplifie)
   security:
     enabled: false
-  
+
 # ---------- LOGGING ----------
 logging:
   level:

@@ -1,5 +1,6 @@
 package com.alibou.finance.account.infrastructure.proxy;
 
+import com.alibou.finance.DBProfileTest;
 import com.alibou.finance.account.application.port.dto.command.TransferCommand;
 import com.alibou.finance.account.application.port.dto.output.TransferResult;
 import com.alibou.finance.account.domain.agregate.Account;
@@ -30,7 +31,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -42,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class AccountTransactionUseCaseProxyIntegrationTest {
+public class AccountTransactionUseCaseProxyIntegrationTest extends DBProfileTest {
 
     @Autowired
     private AccountTransactionUseCaseProxy accountTransaction;

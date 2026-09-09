@@ -1,5 +1,6 @@
 package com.alibou.finance.account.infrastructure.out.repository;
 
+import com.alibou.finance.BaseRepositoryTest;
 import com.alibou.finance.log.infrastructure.adapter.out.persistence.entity.InterestRateTraceEntity;
 import com.alibou.finance.log.infrastructure.adapter.out.persistence.repository.InterestRateTraceJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,9 +18,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
-@ActiveProfiles("test")
-public class InterestRateTraceJpaRepositoryTest {
+public class InterestRateTraceJpaRepositoryTest extends BaseRepositoryTest {
 
     @Autowired
     private InterestRateTraceJpaRepository interestRateTraceRepository;
