@@ -8,7 +8,7 @@ import org.springframework.test.context.TestPropertySource;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestPropertySource(properties = {
         "spring.jpa.properties.hibernate.jdbc.time_zone=UTC",
-        //"user.timezone=UTC",
+        "user.timezone=UTC",
         "spring.jpa.hibernate.ddl-auto=create-drop",
         "spring.jpa.show-sql=true",
         "spring.jpa.properties.hibernate.format_sql=false",
