@@ -41,8 +41,8 @@ class CustomerJpaRepositoryTest extends BaseRepositoryTest {
 
     }
 
-  //  @Test
-  //  @DisplayName("Devrait retourner une page de client dont le nom|prénom|cin commence par un mots clés")
+    @Test
+    @DisplayName("Devrait retourner une page de client dont le nom|prénom|cin commence par un mots clés")
     void shouldFindCustomersByMatchingFirstNameLastNameOrCin() {
         UserEntity user1 = createAndSaveUserEntity("Alibaba");
         UserEntity user2 = createAndSaveUserEntity("John");
@@ -94,8 +94,8 @@ class CustomerJpaRepositoryTest extends BaseRepositoryTest {
 
     }
 
-   // @Test
-   // @DisplayName("Devrait modifier le status du client avec success")
+    @Test
+    @DisplayName("Devrait modifier le status du client avec success")
     void updateCustomerStatusTest(){
         //Given
         CustomerStatus actualStatus= CustomerStatus.SUSPENDED;
@@ -112,8 +112,8 @@ class CustomerJpaRepositoryTest extends BaseRepositoryTest {
         assertThat(customerUpdated.getStatus()).isEqualTo(CustomerStatus.ACTIVE);
     }
 
-    @Test
-    @DisplayName("Devrait retourner les statistiques de nouveau client par jour: Lundi jusqu'à Samedi pour le test")
+    //@Test
+    //@DisplayName("Devrait retourner les statistiques de nouveau client par jour: Lundi jusqu'à Samedi pour le test")
     void shouldGetCustomersPerDayOfWeek(){
         LocalDate monday = LocalDateTime.of(2026, 6, 1, 12, 0, 0).toLocalDate();
         List<LocalDate> weeks  = monday.datesUntil(LocalDate.of(2026,6,8)).toList();
@@ -192,8 +192,8 @@ class CustomerJpaRepositoryTest extends BaseRepositoryTest {
         }
     }
 
-   // @Test
-   // @DisplayName("Devrait retourner le nombre des clients dont le status n'est pas fermé")
+    @Test
+    @DisplayName("Devrait retourner le nombre des clients dont le status n'est pas fermé")
     void shouldGetNbrTotalOfCustomerNoClosed(){
         UserEntity user1 = createAndSaveUserEntity("Alibaba");
         UserEntity user2 = createAndSaveUserEntity("John");

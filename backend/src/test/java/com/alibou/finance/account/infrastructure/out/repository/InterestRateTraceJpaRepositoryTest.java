@@ -33,7 +33,7 @@ public class InterestRateTraceJpaRepositoryTest extends BaseRepositoryTest {
         assertThat(interestRateTraceRepository.findAll().size()).isEqualTo(4);
     }
 
-   // @Test
+    @Test
     void should_getTotalMonthlyInterestRateSuccessfully(){
         BigDecimal total = interestRateTraceRepository.getTotalMonthlyInterestRate("JUNE", "2026");
         System.out.println(total.doubleValue());
@@ -42,7 +42,7 @@ public class InterestRateTraceJpaRepositoryTest extends BaseRepositoryTest {
         assertThat(total.compareTo(BigDecimal.valueOf(expected))).isEqualTo(0);
     }
 
-  //  @Test
+    @Test
     void should_findAllByMonthEqualsAndYearEqualsSuccessfully(){
         Pageable pageable = PageRequest.of(0, 10);
         Page<InterestRateTraceEntity> response = interestRateTraceRepository.findAllByMonthEqualsAndYearEquals("JUNE", "2026", pageable );

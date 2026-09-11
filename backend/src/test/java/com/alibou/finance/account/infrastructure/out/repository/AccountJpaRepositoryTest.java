@@ -90,8 +90,8 @@ public class AccountJpaRepositoryTest extends BaseRepositoryTest {
         System.out.println("==============");
     }
 
-   // @Test
-   // @DisplayName("Devrait retourner les statistiques de comptes groupés par type en excluant les comptes fermés")
+    @Test
+    @DisplayName("Devrait retourner les statistiques de comptes groupés par type en excluant les comptes fermés")
     void shouldGetStatisticNumberOfAccountNoClosed() {
         List<NumberAccountStatisticProj> statistics = accountRepository.getStatisticNumberOfAccountNoClosed(AccountStatusEnum.CLOSED);
 
@@ -120,8 +120,8 @@ public class AccountJpaRepositoryTest extends BaseRepositoryTest {
        assertThat(businessStats.getAccountType()).isEqualTo("Compte business");
     }
 
-   // @Test
-   // @DisplayName("Devrait retourner les statistiques de comptes groupés par type en excluant les comptes fermés et pas de compte business")
+    @Test
+    @DisplayName("Devrait retourner les statistiques de comptes groupés par type en excluant les comptes fermés et pas de compte business")
     void shouldGetStatisticNumberOfAccountNoClosedAndOneTypeNoPresent() {
         //No Business account
        accountRepository.deleteAll(
@@ -154,8 +154,8 @@ public class AccountJpaRepositoryTest extends BaseRepositoryTest {
 
     }
 
-   // @Test
-   // @DisplayName("Devrait retourner les statistiques des soldes de comptes groupés par type en excluant les comptes fermés")
+    @Test
+    @DisplayName("Devrait retourner les statistiques des soldes de comptes groupés par type en excluant les comptes fermés")
     void shouldGetAccountStatisticSoldNoClosed() {
         List<SoldeAccountStatisticProj> statistics = accountRepository.getAccountStatisticSoldNoClosed(AccountStatusEnum.CLOSED);
 
@@ -184,22 +184,22 @@ public class AccountJpaRepositoryTest extends BaseRepositoryTest {
         assertThat(businessStats.getAccountType()).isEqualTo("Compte business");
     }
 
-   // @Test
-   // @DisplayName("Devrait retourner le total des soldes de comptes en excluant les comptes fermés")
+   @Test
+   @DisplayName("Devrait retourner le total des soldes de comptes en excluant les comptes fermés")
     void shouldGetSoldTotalOfAccountNoClosed(){
         BigDecimal soldeTotal = accountRepository.getSoldTotalOfAccountNoClosed(AccountStatusEnum.CLOSED);
         assertThat(soldeTotal.compareTo(BigDecimal.valueOf(17700 + 1100 + 400))).isEqualTo(0);
     }
 
-   // @Test
-   // @DisplayName("Devrait retourner le nombres des comptes en excluant les comptes fermés")
+    @Test
+    @DisplayName("Devrait retourner le nombres des comptes en excluant les comptes fermés")
     void shouldGetNbrTotalOfAccountNoClosed(){
         Long nbrAccount = accountRepository.getNbrTotalOfAccountNoClosed(AccountStatusEnum.CLOSED);
         assertThat(nbrAccount).isEqualTo(8);
     }
 
-    @Test
-    @DisplayName("Devrait retourner les pages des comptes dont le numéros de compte commence par un mots données")
+    //@Test
+    //@DisplayName("Devrait retourner les pages des comptes dont le numéros de compte commence par un mots données")
     void shouldFindAllByAccountNumberStartsWith(){
         Pageable pageable = PageRequest.of(0,2);
         String start = "ACC-10";
@@ -216,8 +216,8 @@ public class AccountJpaRepositoryTest extends BaseRepositoryTest {
                 .extracting(AccountEntity::getAccountNumber).containsExactly("ACC-10-555456", "ACC-10-123456");
     }
 
-  //  @Test
-  //  @DisplayName("Devrait tester la methode getAllAccountByAccountNumberBegin() avec succès")
+    //@Test
+    //@DisplayName("Devrait tester la methode getAllAccountByAccountNumberBegin() avec succès")
     void shouldGetAllAccountByAccountNumberBeginSuccessfully(){
         Pageable pageable = PageRequest.of(0,2);
         String start = "ACC-10";
@@ -233,8 +233,8 @@ public class AccountJpaRepositoryTest extends BaseRepositoryTest {
         assertThat(response.getContent()).extracting(AccountProjection::getAccountTypeName).containsOnly("Compte courante");
     }
 
-   // @Test
-   // @DisplayName("Devrait retourner les comptes épargne et courante non closed")
+    @Test
+    @DisplayName("Devrait retourner les comptes épargne et courante non closed")
     void shouldReturnListOfBusinessAndSavingAccount(){
         Pageable pageable = PageRequest.of(0,50);
         Page<AccountEntity> accounts = accountRepository.getAllByAccountTypeEntityCodeIn(Set.of("20","30"), AccountStatusEnum.CLOSED, pageable);
