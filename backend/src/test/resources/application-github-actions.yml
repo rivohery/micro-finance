@@ -6,7 +6,7 @@
 # On utilise le service PostgreSQL lancé dans GitHub Actions
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/testdb
+    url: jdbc:postgresql://localhost:5432/testdb?options=-c%20timezone=UTC
     username: testuser
     password: testpass
     driver-class-name: org.postgresql.Driver

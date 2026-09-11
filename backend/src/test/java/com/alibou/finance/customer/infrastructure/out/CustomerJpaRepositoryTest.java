@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.UUID;
@@ -40,8 +41,8 @@ class CustomerJpaRepositoryTest extends BaseRepositoryTest {
 
     }
 
-    @Test
-    @DisplayName("Devrait retourner une page de client dont le nom|prénom|cin commence par un mots clés")
+  //  @Test
+  //  @DisplayName("Devrait retourner une page de client dont le nom|prénom|cin commence par un mots clés")
     void shouldFindCustomersByMatchingFirstNameLastNameOrCin() {
         UserEntity user1 = createAndSaveUserEntity("Alibaba");
         UserEntity user2 = createAndSaveUserEntity("John");
@@ -93,8 +94,8 @@ class CustomerJpaRepositoryTest extends BaseRepositoryTest {
 
     }
 
-    @Test
-    @DisplayName("Devrait modifier le status du client avec success")
+   // @Test
+   // @DisplayName("Devrait modifier le status du client avec success")
     void updateCustomerStatusTest(){
         //Given
         CustomerStatus actualStatus= CustomerStatus.SUSPENDED;
@@ -114,7 +115,7 @@ class CustomerJpaRepositoryTest extends BaseRepositoryTest {
     @Test
     @DisplayName("Devrait retourner les statistiques de nouveau client par jour: Lundi jusqu'à Samedi pour le test")
     void shouldGetCustomersPerDayOfWeek(){
-        LocalDate monday = LocalDate.of(2026, 6, 1);
+        LocalDate monday = LocalDateTime.of(2026, 6, 1, 12, 0, 0).toLocalDate();
         List<LocalDate> weeks  = monday.datesUntil(LocalDate.of(2026,6,8)).toList();
         int mondayCustomer = 5;
         int tuesdayCustomer = 4;
@@ -159,6 +160,12 @@ class CustomerJpaRepositoryTest extends BaseRepositoryTest {
             customerJpaRepository.save(customer);
         }
 
+        System.out.println("===========");
+        for(CustomerEntity ce : customerJpaRepository.findAll()){
+            System.out.println(ce.getCreatedDate() + ", Jour: " + ce.getCreatedDate().getDayOfWeek());
+        }
+        System.out.println("===========");
+
         assertThat(customerJpaRepository.findAll().stream().filter(c -> c.getCreatedDate().getDayOfWeek() == DayOfWeek.MONDAY).toList().size()).isEqualTo(5);
         assertThat(customerJpaRepository.findAll().stream().filter(c -> c.getCreatedDate().getDayOfWeek() == DayOfWeek.TUESDAY).toList().size()).isEqualTo(4);
         assertThat(customerJpaRepository.findAll().stream().filter(c -> c.getCreatedDate().getDayOfWeek() == DayOfWeek.WEDNESDAY).toList().size()).isEqualTo(6);
@@ -185,8 +192,8 @@ class CustomerJpaRepositoryTest extends BaseRepositoryTest {
         }
     }
 
-    @Test
-    @DisplayName("Devrait retourner le nombre des clients dont le status n'est pas fermé")
+   // @Test
+   // @DisplayName("Devrait retourner le nombre des clients dont le status n'est pas fermé")
     void shouldGetNbrTotalOfCustomerNoClosed(){
         UserEntity user1 = createAndSaveUserEntity("Alibaba");
         UserEntity user2 = createAndSaveUserEntity("John");

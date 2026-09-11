@@ -39,11 +39,15 @@ public class TransactionJpaRepositoryTest extends BaseRepositoryTest {
     @Test
     @DisplayName("Devrait retourner une liste de transaction de ce mois ci")
     void shouldCheckMonthlyTransactionOfOneAccountWithSuccess(){
-        LocalDate now = LocalDate.of(2026,6,15);
+        LocalDate now = LocalDateTime.of(2026, 6, 15, 12, 0, 0).toLocalDate();
         LocalDateTime startMonth = now.with(TemporalAdjusters.firstDayOfMonth()).atTime(LocalTime.MIN);
         LocalDateTime endMonth = now.with(TemporalAdjusters.lastDayOfMonth()).atTime(LocalTime.MAX);
 
         List<TransactionEntity> transactions = transactionRepository.checkMonthlyTransactionOfOneAccount("ACC-23-2345", startMonth, endMonth);
+
+        System.out.println("==============");
+        transactions.forEach(t -> System.out.println(t.getCreatedDate()));
+        System.out.println("==============");
 
         assertThat(transactions.size()).isEqualTo(3);
         assertThat(transactions).extracting(tr -> tr.getCreatedDate().getDayOfMonth()).containsExactlyInAnyOrder(2,17,29);

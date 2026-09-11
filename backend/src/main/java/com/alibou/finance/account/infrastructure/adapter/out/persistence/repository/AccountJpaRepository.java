@@ -29,7 +29,7 @@ public interface AccountJpaRepository extends JpaRepository<AccountEntity, UUID>
     Optional<AccountEntity>findByAccountNumber(String accountNumber);
 
     @EntityGraph(attributePaths = {"accountTypeEntity","currencyEntity"})
-    Page<AccountEntity>findAllByAccountNumberStartsWith(String accountNumber, Pageable pageable);
+    Page<AccountEntity>findAllByAccountNumberStartsWithOrderByCreatedDateDesc(String accountNumber, Pageable pageable);
 
 
     @Query("""

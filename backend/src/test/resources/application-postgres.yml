@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/testdb
+    url: jdbc:postgresql://localhost:5432/testdb?options=-c%20timezone=UTC
     username: postgres
     password: secret
     driver-class-name: org.postgresql.Driver

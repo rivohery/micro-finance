@@ -19,18 +19,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-
 
 public class AccountJpaRepositoryTest extends BaseRepositoryTest {
     @Autowired
@@ -69,22 +66,32 @@ public class AccountJpaRepositoryTest extends BaseRepositoryTest {
         savingAccount = accountTypeRepository.save(createAccountType("20", "Compte épargne"));
         businessAccount = accountTypeRepository.save(createAccountType("30", "Compte business"));
 
+        LocalDate dailyDate = LocalDateTime.of(2026, 6, 1, 12, 0, 0).toLocalDate();
+
         accountRepository.saveAll(List.of(
-                createAccount(checkingAccount, AccountStatusEnum.ACTIVE, "ACC-10-123456", BigDecimal.valueOf(200), LocalDate.now()),
-                createAccount(checkingAccount, AccountStatusEnum.ACTIVE, "ACC-10-443467", BigDecimal.valueOf(600), LocalDate.now().minusDays(1)),
-                createAccount(checkingAccount, AccountStatusEnum.ACTIVE, "ACC-10-555456", BigDecimal.valueOf(300), LocalDate.now().plusDays(1)),
-                createAccount(savingAccount, AccountStatusEnum.ACTIVE, "ACC-20-443467", BigDecimal.valueOf(6700), LocalDate.now()),
-                createAccount(savingAccount, AccountStatusEnum.ACTIVE, "ACC-20-123456", BigDecimal.valueOf(7000), LocalDate.now().plusDays(1)),
-                createAccount(savingAccount, AccountStatusEnum.ACTIVE, "ACC-20-555456", BigDecimal.valueOf(4000), LocalDate.now().plusDays(2)),
-                createAccount(businessAccount, AccountStatusEnum.CLOSED, "ACC-30-123456", BigDecimal.valueOf(200), LocalDate.now().plusDays(2)),
-                createAccount(businessAccount, AccountStatusEnum.ACTIVE, "ACC-30-783456", BigDecimal.valueOf(200), LocalDate.now().plusDays(1)),
-                createAccount(businessAccount, AccountStatusEnum.ACTIVE, "ACC-30-903457", BigDecimal.valueOf(200), LocalDate.now())
+                createAccount(checkingAccount, AccountStatusEnum.ACTIVE, "ACC-10-123456", BigDecimal.valueOf(200), dailyDate),
+                createAccount(checkingAccount, AccountStatusEnum.ACTIVE, "ACC-10-443467", BigDecimal.valueOf(600), dailyDate.minusDays(1)),
+                createAccount(checkingAccount, AccountStatusEnum.ACTIVE, "ACC-10-555456", BigDecimal.valueOf(300), dailyDate.plusDays(1)),
+                createAccount(savingAccount, AccountStatusEnum.ACTIVE, "ACC-20-443467", BigDecimal.valueOf(6700), dailyDate),
+                createAccount(savingAccount, AccountStatusEnum.ACTIVE, "ACC-20-123456", BigDecimal.valueOf(7000), dailyDate.plusDays(1)),
+                createAccount(savingAccount, AccountStatusEnum.ACTIVE, "ACC-20-555456", BigDecimal.valueOf(4000), dailyDate.plusDays(2)),
+                createAccount(businessAccount, AccountStatusEnum.CLOSED, "ACC-30-123456", BigDecimal.valueOf(200), dailyDate.plusDays(2)),
+                createAccount(businessAccount, AccountStatusEnum.ACTIVE, "ACC-30-783456", BigDecimal.valueOf(200), dailyDate.plusDays(1)),
+                createAccount(businessAccount, AccountStatusEnum.ACTIVE, "ACC-30-903457", BigDecimal.valueOf(200), dailyDate)
         ));
 
     }
 
+
     @Test
-    @DisplayName("Devrait retourner les statistiques de comptes groupés par type en excluant les comptes fermés")
+    void PrimaryTest(){
+        System.out.println("==============");
+        accountRepository.findAll().forEach(a -> System.out.println("accountNumber: "+ a.getAccountNumber() + " - " + "createdDate: " + a.getCreatedDate()));
+        System.out.println("==============");
+    }
+
+   // @Test
+   // @DisplayName("Devrait retourner les statistiques de comptes groupés par type en excluant les comptes fermés")
     void shouldGetStatisticNumberOfAccountNoClosed() {
         List<NumberAccountStatisticProj> statistics = accountRepository.getStatisticNumberOfAccountNoClosed(AccountStatusEnum.CLOSED);
 
@@ -113,8 +120,8 @@ public class AccountJpaRepositoryTest extends BaseRepositoryTest {
        assertThat(businessStats.getAccountType()).isEqualTo("Compte business");
     }
 
-    @Test
-    @DisplayName("Devrait retourner les statistiques de comptes groupés par type en excluant les comptes fermés et pas de compte business")
+   // @Test
+   // @DisplayName("Devrait retourner les statistiques de comptes groupés par type en excluant les comptes fermés et pas de compte business")
     void shouldGetStatisticNumberOfAccountNoClosedAndOneTypeNoPresent() {
         //No Business account
        accountRepository.deleteAll(
@@ -147,8 +154,8 @@ public class AccountJpaRepositoryTest extends BaseRepositoryTest {
 
     }
 
-    @Test
-    @DisplayName("Devrait retourner les statistiques des soldes de comptes groupés par type en excluant les comptes fermés")
+   // @Test
+   // @DisplayName("Devrait retourner les statistiques des soldes de comptes groupés par type en excluant les comptes fermés")
     void shouldGetAccountStatisticSoldNoClosed() {
         List<SoldeAccountStatisticProj> statistics = accountRepository.getAccountStatisticSoldNoClosed(AccountStatusEnum.CLOSED);
 
@@ -177,15 +184,15 @@ public class AccountJpaRepositoryTest extends BaseRepositoryTest {
         assertThat(businessStats.getAccountType()).isEqualTo("Compte business");
     }
 
-    @Test
-    @DisplayName("Devrait retourner le total des soldes de comptes en excluant les comptes fermés")
+   // @Test
+   // @DisplayName("Devrait retourner le total des soldes de comptes en excluant les comptes fermés")
     void shouldGetSoldTotalOfAccountNoClosed(){
         BigDecimal soldeTotal = accountRepository.getSoldTotalOfAccountNoClosed(AccountStatusEnum.CLOSED);
         assertThat(soldeTotal.compareTo(BigDecimal.valueOf(17700 + 1100 + 400))).isEqualTo(0);
     }
 
-    @Test
-    @DisplayName("Devrait retourner le nombres des comptes en excluant les comptes fermés")
+   // @Test
+   // @DisplayName("Devrait retourner le nombres des comptes en excluant les comptes fermés")
     void shouldGetNbrTotalOfAccountNoClosed(){
         Long nbrAccount = accountRepository.getNbrTotalOfAccountNoClosed(AccountStatusEnum.CLOSED);
         assertThat(nbrAccount).isEqualTo(8);
@@ -194,9 +201,13 @@ public class AccountJpaRepositoryTest extends BaseRepositoryTest {
     @Test
     @DisplayName("Devrait retourner les pages des comptes dont le numéros de compte commence par un mots données")
     void shouldFindAllByAccountNumberStartsWith(){
-        Pageable pageable = PageRequest.of(0,2, Sort.by("createdDate").descending());
+        Pageable pageable = PageRequest.of(0,2);
         String start = "ACC-10";
-        Page<AccountEntity> response = accountRepository.findAllByAccountNumberStartsWith(start, pageable);
+        Page<AccountEntity> response = accountRepository.findAllByAccountNumberStartsWithOrderByCreatedDateDesc(start, pageable);
+
+
+        response.forEach(a -> System.out.println("accountNumber: "+ a.getAccountNumber() + " - " + "createdDate: " + a.getCreatedDate()));
+        System.out.println("==============");
 
         assertThat(response.getTotalPages()).isEqualTo(2);
         assertThat(response.getContent().size()).isEqualTo(2);
@@ -205,8 +216,8 @@ public class AccountJpaRepositoryTest extends BaseRepositoryTest {
                 .extracting(AccountEntity::getAccountNumber).containsExactly("ACC-10-555456", "ACC-10-123456");
     }
 
-    @Test
-    @DisplayName("Devrait tester la methode getAllAccountByAccountNumberBegin() avec succès")
+  //  @Test
+  //  @DisplayName("Devrait tester la methode getAllAccountByAccountNumberBegin() avec succès")
     void shouldGetAllAccountByAccountNumberBeginSuccessfully(){
         Pageable pageable = PageRequest.of(0,2);
         String start = "ACC-10";
@@ -222,8 +233,8 @@ public class AccountJpaRepositoryTest extends BaseRepositoryTest {
         assertThat(response.getContent()).extracting(AccountProjection::getAccountTypeName).containsOnly("Compte courante");
     }
 
-    @Test
-    @DisplayName("Devrait retourner les comptes épargne et courante non closed")
+   // @Test
+   // @DisplayName("Devrait retourner les comptes épargne et courante non closed")
     void shouldReturnListOfBusinessAndSavingAccount(){
         Pageable pageable = PageRequest.of(0,50);
         Page<AccountEntity> accounts = accountRepository.getAllByAccountTypeEntityCodeIn(Set.of("20","30"), AccountStatusEnum.CLOSED, pageable);

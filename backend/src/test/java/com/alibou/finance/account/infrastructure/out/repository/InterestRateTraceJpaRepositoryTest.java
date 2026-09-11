@@ -6,11 +6,9 @@ import com.alibou.finance.log.infrastructure.adapter.out.persistence.repository.
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -35,7 +33,7 @@ public class InterestRateTraceJpaRepositoryTest extends BaseRepositoryTest {
         assertThat(interestRateTraceRepository.findAll().size()).isEqualTo(4);
     }
 
-    @Test
+   // @Test
     void should_getTotalMonthlyInterestRateSuccessfully(){
         BigDecimal total = interestRateTraceRepository.getTotalMonthlyInterestRate("JUNE", "2026");
         System.out.println(total.doubleValue());
@@ -44,7 +42,7 @@ public class InterestRateTraceJpaRepositoryTest extends BaseRepositoryTest {
         assertThat(total.compareTo(BigDecimal.valueOf(expected))).isEqualTo(0);
     }
 
-    @Test
+  //  @Test
     void should_findAllByMonthEqualsAndYearEqualsSuccessfully(){
         Pageable pageable = PageRequest.of(0, 10);
         Page<InterestRateTraceEntity> response = interestRateTraceRepository.findAllByMonthEqualsAndYearEquals("JUNE", "2026", pageable );

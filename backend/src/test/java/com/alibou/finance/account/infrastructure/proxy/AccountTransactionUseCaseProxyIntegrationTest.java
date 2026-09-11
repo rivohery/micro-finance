@@ -1,6 +1,7 @@
 package com.alibou.finance.account.infrastructure.proxy;
 
 import com.alibou.finance.DBProfileTest;
+import com.alibou.finance.JpaAuditingTestConfig;
 import com.alibou.finance.account.application.port.dto.command.TransferCommand;
 import com.alibou.finance.account.application.port.dto.output.TransferResult;
 import com.alibou.finance.account.domain.agregate.Account;
@@ -62,6 +63,7 @@ public class AccountTransactionUseCaseProxyIntegrationTest extends DBProfileTest
     @MockBean
     private TransfertConfirmationPort transfertConfirmationService;
 
+    AccountTypeEntity savingAccount;
     AccountEntity sourceAccount;
     AccountEntity targetAccount;
 
@@ -75,10 +77,9 @@ public class AccountTransactionUseCaseProxyIntegrationTest extends DBProfileTest
         currencyJpaRepository.deleteAll();
         transactionJpaRepository.deleteAll();
 
-
         userConnected = User.builder().username(new Username("alibou")).build();
 
-        AccountTypeEntity savingAccount = AccountTypeEntity.builder()
+        savingAccount = AccountTypeEntity.builder()
                 .accountFee(BigDecimal.ZERO)
                 .annualInterestRate(BigDecimal.valueOf(0.2))
                 .code("20")
@@ -134,10 +135,8 @@ public class AccountTransactionUseCaseProxyIntegrationTest extends DBProfileTest
                 .overdraftLimit(BigDecimal.ZERO)
                 .build();
         targetAccount = accountJpaRepository.save(targetAccount);
-
-
-
     }
+
 
     @Test
     @DisplayName("Test d'intégration pour la réussite de l'opération transfert")
