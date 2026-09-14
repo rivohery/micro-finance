@@ -1,0 +1,48 @@
+@if(accountTypeState().loading){
+<app-loader></app-loader>
+} @else {
+<div class="p-4 sm:p-8 bg-slate-50 min-h-screen">
+  <!-- TITRE DE LA PAGE -->
+  <div class="max-w-6xl mx-auto mb-8">
+    <h1 class="text-2xl font-extrabold text-slate-800 flex items-center gap-3">
+      <mat-icon class="text-blue-600 scale-125">account_balance</mat-icon>
+      Paramétrage des Types de Comptes
+    </h1>
+    <p class="text-slate-500 text-sm italic">
+      Définissez les règles métiers, taux et frais pour chaque produit
+      financier.
+    </p>
+    @if(errorMsg()){
+    <div class="my-4">
+      <app-message-box
+        [type]="'error'"
+        [message]="errorMsg()"
+        (onClose)="closeMessageBox($event)"
+      ></app-message-box>
+    </div>
+    }
+  </div>
+
+  <div class="max-w-6xl mx-auto flex flex-col gap-4">
+    <!-- SECTION GAUCHE : FORMULAIRE EN COLONNE -->
+    <div class="w-full">
+      <app-account-type-form
+        [mode]="mode()"
+        [sending]="sending()"
+        (onCreateAccountType)="createAccountType($event)"
+        (onUpdateAccountType)="updateAccountType($event)"
+      ></app-account-type-form>
+    </div>
+
+    <!-- SECTION DROITE : LISTE DES TYPES -->
+    <div class="w-full">
+      <app-account-type-list
+        [accountTypeList]="accountTypeService.accountTypeList$()"
+        [deleting]="deleting()"
+        (onDeleteEvent)="deleteType($event)"
+        (onEditEvent)="editType($event)"
+      ></app-account-type-list>
+    </div>
+  </div>
+</div>
+}

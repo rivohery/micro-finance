@@ -1,0 +1,43 @@
+<div class="flex flex-col">
+  <label
+    class="text-[11px] font-black uppercase text-slate-400 tracking-wider mb-2 flex items-center gap-1.5"
+  >
+    <mat-icon class="text-[14px] !w-[14px] !h-[14px] text-slate-400">{{
+      icon()
+    }}</mat-icon>
+    {{ label() }}
+  </label>
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>{{ matlabel() }}</mat-label>
+    <mat-select [formControl]="control()">
+      @for(option of options();track option.value){
+      <mat-option [value]="option.value" class="text-sm font-semibold">
+        {{ option.label }}
+      </mat-option>
+      }
+    </mat-select>
+    <mat-hint>{{ hint() }}</mat-hint>
+  </mat-form-field>
+</div>
+
+<!--  <div class="flex flex-col">
+      <label
+        class="text-[11px] font-black uppercase text-slate-400 tracking-wider mb-2 flex items-center gap-1.5"
+      >
+        <mat-icon class="text-[14px] !w-[14px] !h-[14px] text-slate-400"
+          >euro_symbol</mat-icon
+        >
+        Devise pivot du compte
+      </label>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Choisir la monnaie</mat-label>
+        <mat-select formControlName="currencyCode">
+          <mat-option
+            *ngFor="let currency of currencies()"
+            [value]="currency.code"
+          >
+            {{ currency.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div> -->

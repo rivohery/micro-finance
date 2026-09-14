@@ -1,0 +1,162 @@
+@if(loading()){
+<app-loader></app-loader>
+} @else {
+<div class="flex flex-col gap-5 pt-5">
+  <div class="my-4">
+    <app-search-bar
+      [placeholder]="'Pseudo utilisateur'"
+      (searchEvent)="doSearch($event)"
+      [modeSearch]="'btn-submit'"
+    ></app-search-bar>
+  </div>
+  @if(errorMsg()){
+  <app-message-box
+    [type]="'error'"
+    [message]="errorMsg()"
+    (onClose)="closeErrorMsg($event)"
+  ></app-message-box>
+  }
+  <div class="flex flex-col gap-1">
+    <div
+      class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
+    >
+      <div
+        class="p-6 border-b border-gray-100 flex justify-between items-center"
+      >
+        <h2 class="text-xl font-bold text-gray-800">Liste des Utilisateurs</h2>
+        <span
+          class="bg-blue-50 text-blue-600 text-xs font-semibold px-3 py-1 rounded-full uppercase"
+        >
+          {{ totalElements() }} Utilisateurs
+        </span>
+      </div>
+
+      <div class="flex justify-end items-center m-2">
+        <button
+          mat-flat-button
+          color="primary"
+          class="flex items-center justify-center gap-2"
+          (click)="addUser()"
+        >
+          <mat-icon>add</mat-icon>
+          <span>Nouveau employe</span>
+        </button>
+      </div>
+
+      @if(totalElements() > 0){
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr
+              class="bg-gray-50 text-gray-400 uppercase text-xs font-semibold tracking-wider"
+            >
+              <th class="px-6 py-4">Pseudo</th>
+              <th class="px-6 py-4">Email</th>
+              <th class="px-6 py-4">Rôle</th>
+              <th class="px-6 py-4 text-center">Statut</th>
+              <th class="px-6 py-4 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            @for(user of users(); track user.id){
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs"
+                  >
+                    {{
+                      user.role === "ADMIN"
+                        ? "AD"
+                        : user.role === "EMPLOYE"
+                        ? "EM"
+                        : "CL"
+                    }}
+                  </div>
+                  <span class="font-medium text-gray-700">{{
+                    user.username
+                  }}</span>
+                </div>
+              </td>
+
+              <td class="px-6 py-4 text-gray-600 text-sm">
+                {{ user.email }}
+              </td>
+
+              <td class="px-6 py-4">
+                <span
+                  class="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded"
+                >
+                  {{ user.role }}
+                </span>
+              </td>
+
+              <td class="px-6 py-4 text-center">
+                <span
+                  [ngClass]="{
+                    'bg-green-100 text-green-700': user.enable,
+                    'bg-red-100 text-red-700': !user.enable
+                  }"
+                  class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold transition-all"
+                >
+                  <span
+                    class="w-2 h-2 rounded-full mr-2"
+                    [ngClass]="user.enable ? 'bg-green-500' : 'bg-red-500'"
+                  ></span>
+                  {{ user.enable ? "Activé" : "Desactivé" }}
+                </span>
+              </td>
+
+              <td class="px-6 py-4 text-right">
+                <div class="flex justify-end gap-2">
+                  <button
+                    mat-icon-button
+                    (click)="editStatus(user)"
+                    matTooltip="Modifier le statut"
+                    class="text-blue-500 hover:bg-blue-50"
+                  >
+                    <mat-icon>published_with_changes</mat-icon>
+                  </button>
+
+                  <button
+                    mat-icon-button
+                    (click)="deleteUser(user)"
+                    matTooltip="Supprimer l'utilisateur"
+                    class="text-red-400 hover:bg-red-50"
+                  >
+                    <mat-icon>delete_outline</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div
+        class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-between items-center text-sm text-gray-500"
+      >
+        <span>Affichage de {{ users().length }} résultats</span>
+        <div class="flex gap-2">
+          <button mat-icon-button disabled>
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+          <button mat-icon-button disabled>
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        </div>
+      </div>
+      }
+    </div>
+    @if(totalElements() > 0){
+    <div class="flex flex-col justify-center items-center">
+      <app-pagination
+        [totalPages]="totalPages()"
+        [currentPage]="currentPage()"
+        (onPageChange)="goToPage($event)"
+      ></app-pagination>
+    </div>
+    }
+  </div>
+</div>
+}

@@ -1,0 +1,77 @@
+services:
+  # --- 1. LE FRONTEND (ANGULAR) ---
+  frontend-service:
+    build: ./frontend
+    container_name: angular-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend-service
+    networks:
+      - network-public
+
+  # --- 2. LE BACKEND (SPRING BOOT) ---
+  backend-service:
+    build: ./backend
+    container_name: spring-backend
+    ports:
+      - "8088:8088"
+    depends_on:
+      db-service:
+        condition: service_healthy # <--- C'est la CONDITION d'état appliquée au service 'db-service'
+      maildev-service:
+        condition: service_started # <--- C'est la condition par défaut (le conteneur est juste lancé)
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - DB_HOST=db-service
+      - DB_PORT=5432
+      - DB_NAME=db_micro_finance
+      - DB_USER=postgres
+      - DB_PASS=secret
+      - SPRING_MAIL_HOST=maildev-service
+      - SPRING_MAIL_PORT=1025
+      - SPRING_MAIL_USERNAME=test
+      - SPRING_MAIL_PSW=test
+    networks:
+      - network-public
+      - network-private
+
+  # --- 3. LA BASE DE DONNÉES (POSTGRESQL) ---
+  db-service:
+    image: postgres:15-alpine
+    container_name: postgres-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=db_micro_finance
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d db_micro_finance"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - network-private
+
+  # --- 4. SERVEUR SMTP TEST (MAILDEV) ---
+  maildev-service:
+    container_name: mail-dev-mf
+    image: maildev/maildev
+    ports:
+      - "1080:1080" # UI Web
+      - "1025:1025" # Port SMTP
+    networks:
+      - network-public
+
+networks:
+  network-public:
+    driver: bridge
+  network-private:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local

@@ -1,0 +1,172 @@
+<div
+  class="w-full max-w-lg bg-white rounded-2xl overflow-hidden shadow-2xl flex flex-col"
+>
+  <div
+    class="bg-slate-900 px-6 py-5 flex items-center justify-between text-white relative"
+  >
+    <div class="flex items-center gap-3">
+      <div
+        [ngClass]="getTxTypeStyles(tx.transactionType).bg"
+        class="p-2 rounded-xl"
+      >
+        <mat-icon class="scale-110">{{
+          getTxTypeStyles(tx.transactionType).icon
+        }}</mat-icon>
+      </div>
+      <div>
+        <h2
+          class="text-xs font-black tracking-widest text-slate-400 uppercase m-0"
+        >
+          Ticket de Transaction
+        </h2>
+        <span class="text-sm font-mono font-bold text-white tracking-wider">{{
+          tx.reference
+        }}</span>
+      </div>
+    </div>
+
+    <button
+      mat-icon-button
+      (click)="onClose()"
+      class="text-slate-400 hover:text-white transition-colors"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="p-6 flex flex-col gap-5 overflow-y-auto max-h-[75vh]">
+    <div
+      class="bg-slate-50 rounded-2xl p-4 text-center border border-slate-100"
+    >
+      <span
+        class="text-[10px] font-black uppercase text-slate-400 tracking-wider block mb-1"
+      >
+        Montant Impacté sur le compte
+      </span>
+      <div class="flex items-baseline justify-center gap-1.5">
+        <span
+          class="text-3xl font-black tracking-tight"
+          [ngClass]="getTxTypeStyles(tx.transactionType).color"
+        >
+          {{ tx.transactionType === "WITHDRAWAL" ? "-" : "+" }}
+          {{ tx.originalAmount | number : "1.2-2" }}
+        </span>
+        <span class="text-xs font-black text-slate-500 font-mono">{{
+          tx.transactionCurrency
+        }}</span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+      <div
+        class="flex flex-col p-3 bg-slate-50/50 rounded-xl border border-slate-100"
+      >
+        <span
+          class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wide mb-1"
+          >Numéro de Compte</span
+        >
+        <span class="font-mono font-bold text-slate-700">{{
+          tx.accountNumber
+        }}</span>
+      </div>
+
+      <div
+        class="flex flex-col p-3 bg-slate-50/50 rounded-xl border border-slate-100"
+      >
+        <span
+          class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wide mb-1"
+          >Nature de l'opération</span
+        >
+        <span class="font-bold text-slate-800 uppercase text-[11px]">{{
+          getTxTypeStyles(tx.transactionType).label
+        }}</span>
+      </div>
+
+      <div
+        class="flex flex-col p-3 bg-slate-50/50 rounded-xl border border-slate-100"
+      >
+        <span
+          class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wide mb-1"
+          >Versement Initial</span
+        >
+        <span class="font-bold text-slate-800">
+          {{ tx.originalAmount | number : "1.2-2" }}
+          <span class="font-mono text-slate-700 text-[10px]">{{
+            tx.transactionCurrency
+          }}</span>
+        </span>
+      </div>
+
+      <div
+        class="flex flex-col p-3 bg-slate-50/50 rounded-xl border border-slate-100"
+      >
+        <span
+          class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wide mb-1"
+          >En monnaie du compte</span
+        >
+        <span class="font-bold text-slate-800">
+          {{ tx.finalAmount | number : "1.2-2" }}
+          <span class="font-mono text-slate-700 text-[10px]">
+            {{ tx.targetCurrency }}
+          </span>
+        </span>
+      </div>
+
+      <div
+        class="flex flex-col p-3 bg-slate-50/50 rounded-xl border border-slate-100"
+      >
+        <span
+          class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wide mb-1"
+          >Cours du change</span
+        >
+        <span class="font-mono font-bold text-indigo-600">
+          {{ tx.exchangeRate | number : "1.2-2" }}
+        </span>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="flex flex-col">
+      <span
+        class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider mb-1.5"
+        >Libellé / Motif de l'écriture</span
+      >
+      <p
+        class="text-xs text-slate-600 font-medium bg-slate-50 p-3 rounded-xl border border-slate-100 leading-relaxed"
+      >
+        {{ tx.description }}
+      </p>
+    </div>
+
+    <div
+      class="bg-indigo-950/5 rounded-xl p-3 border border-indigo-100/40 flex flex-col sm:flex-row justify-between gap-2 text-[11px] text-slate-500"
+    >
+      <div class="flex items-center gap-3">
+        <mat-icon class="text-[14px] !w-[14px] !h-[14px] text-indigo-700"
+          >person</mat-icon
+        >
+        <span
+          >Guichetier :
+          <b class="text-slate-700 font-semibold">{{
+            tx.operatorName
+          }}</b></span
+        >
+      </div>
+      <div class="flex items-center gap-3 font-mono text-slate-400">
+        <mat-icon class="text-[14px] !w-[14px] !h-[14px]">schedule</mat-icon>
+        <span>{{ tx.createdDate | date : "dd/MM/yyyy HH:mm:ss" }}</span>
+      </div>
+    </div>
+
+    <div class="flex justify-end pt-2">
+      <button
+        mat-stroked-button
+        (click)="onClose()"
+        class="!px-6 !py-5 !rounded-xl !text-slate-700 !border-slate-200 bg-slate-300 hover:!bg-slate-400 font-bold text-xs uppercase tracking-wider w-full sm:w-auto"
+      >
+        Fermer le guichet
+      </button>
+    </div>
+  </div>
+</div>

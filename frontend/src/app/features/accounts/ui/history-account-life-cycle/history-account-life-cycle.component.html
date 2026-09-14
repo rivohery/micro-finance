@@ -1,0 +1,62 @@
+<table class="w-full text-left border-collapse">
+  <thead>
+    <tr
+      class="bg-slate-50/30 text-slate-400 text-[10px] font-black uppercase tracking-widest border-b border-slate-100"
+    >
+      <th class="px-6 py-4.5">ID Log</th>
+      <th class="px-6 py-4.5 text-center">Mutation Statut</th>
+      <th class="px-6 py-4.5">Motif / Raison</th>
+      <th class="px-6 py-4.5">Opérateur</th>
+      <th class="px-6 py-4.5 text-right">Date d'effet</th>
+    </tr>
+  </thead>
+  <tbody class="divide-y divide-slate-100 text-xs text-slate-600">
+    @for(log of lifecycleLogs();track log.id){
+    <tr class="hover:bg-slate-50/60 transition-colors">
+      <td class="px-6 py-4 font-mono font-bold text-slate-400">
+        {{ log.id }}
+      </td>
+      <td class="px-6 py-4">
+        <div class="flex items-center justify-center gap-1.5">
+          <span
+            [ngClass]="getStatusClass(log.oldStatus)"
+            class="px-2 py-0.5 rounded text-[9px] font-bold border uppercase tracking-tight"
+          >
+            {{ log.oldStatus }}
+          </span>
+          <mat-icon class="text-slate-300 text-[14px] !w-[14px] !h-[14px]"
+            >trending_flat</mat-icon
+          >
+          <span
+            [ngClass]="getStatusClass(log.newStatus)"
+            class="px-2 py-0.5 rounded text-[9px] font-bold border uppercase tracking-tight"
+          >
+            {{ log.newStatus }}
+          </span>
+        </div>
+      </td>
+      <td
+        class="px-6 py-4 max-w-xs truncate font-medium text-slate-700"
+        [matTooltip]="log.reason"
+      >
+        {{ log.reason }}
+      </td>
+      <td class="px-6 py-4 font-semibold text-slate-800">
+        {{ log.doingBy }}
+      </td>
+      <td class="px-6 py-4 text-right font-mono text-slate-400">
+        {{ log.doingAt | date : "dd/MM/yyyy HH:mm" }}
+      </td>
+    </tr>
+    }
+  </tbody>
+</table>
+@if(totalPages() > 0){
+<div class="mt-4 flex w-full max-w-lg mx-auto">
+  <app-pagination
+    [currentPage]="currentPage()"
+    [totalPages]="totalPages()"
+    (onPageChange)="goToPage($event)"
+  ></app-pagination>
+</div>
+}

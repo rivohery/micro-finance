@@ -1,0 +1,8 @@
+@if(loading()){
+<app-loader></app-loader>
+} @else {
+<app-form-client
+  [mode]="mode"
+  [editedCustomer]="editedCustomer"
+></app-form-client>
+}

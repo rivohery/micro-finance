@@ -1,0 +1,29 @@
+<mat-form-field appearance="outline" class="w-full">
+  <mat-label>{{ label() }}</mat-label>
+  <input
+    matInput
+    [placeholder]="placeholder()"
+    [formControl]="control()"
+    [type]="type()"
+  />
+  <!-- <mat-icon></mat-icon> -->
+  @if(iconPosition() === 'prefix'){
+  <mat-icon matPrefix class="ml-2 text-gray-400">{{ icon() }}</mat-icon>
+  } @else {
+  <mat-icon matSuffix class="text-gray-400">{{ icon() }}</mat-icon>
+  }
+  <!-- <mat-hint></mat-hint> -->
+  @if(hint()){
+  <mat-hint>{{ hint() }}</mat-hint>
+  }
+  <!-- <mat-error></mat-error> -->
+  @if(invalidControl){
+  <mat-error>
+    @for(error of errors(); track error.value) {
+    <span *ngxControlError="control(); track: error.value">
+      {{ error.message }}
+    </span>
+    }
+  </mat-error>
+  }
+</mat-form-field>

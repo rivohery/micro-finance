@@ -1,0 +1,97 @@
+@if(loading()){
+<app-loader></app-loader>
+} @else {
+<div class="p-4 sm:p-8 bg-slate-50 min-h-screen flex flex-col gap-8">
+  <!-- Pour afficher le message d'erreur -->
+  @if(errorMsg()){
+  <app-message-box
+    [type]="'error'"
+    [message]="errorMsg()"
+    (onClose)="closeErrorMsg($event)"
+  ></app-message-box>
+  }
+  <!-- DIV SUPÉRIEUR : PROFIL DU CLIENT (ENTIÈREMENT CENTRÉ) -->
+  @if(customer().id){
+  <div class="w-full max-w-4xl mx-auto">
+    <div
+      class="bg-white rounded-2xl border border-slate-300 shadow-lg p-8 flex flex-col items-center text-center relative overflow-hidden"
+    >
+      <!-- Décoration d'arrière-plan discrète -->
+      <div
+        class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"
+      ></div>
+
+      <!-- Photo / Avatar centré -->
+      <div
+        class="w-28 h-28 rounded-2xl bg-gradient-to-tr from-indigo-600 to-blue-500 text-white flex items-center justify-center text-3xl font-black shadow-lg shadow-indigo-100 mb-4 border-4 border-white"
+      >
+        @if(customer().photo){
+        <img
+          [src]="`data:image/jpg;base64,${customer().photo}`"
+          alt="Photo client"
+          class="w-full h-full object-cover rounded-2xl"
+        />
+        } @else {
+        <span>{{ customer().firstName[0] }}{{ customer().lastName[0] }}</span>
+        }
+      </div>
+
+      <!-- Identité -->
+      <h1
+        class="text-2xl font-extrabold text-slate-800 tracking-tight uppercase m-0"
+      >
+        {{ customer().lastName }}
+        <span class="text-indigo-600 capitalize font-medium">{{
+          customer().firstName
+        }}</span>
+      </h1>
+
+      <!-- Statut Badge -->
+      <span
+        [ngClass]="getStatusClass(customer().status)"
+        class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black border uppercase tracking-widest mt-2 mb-4"
+      >
+        <span
+          class="w-1.5 h-1.5 rounded-full mr-1.5 bg-current animate-pulse"
+        ></span>
+        {{ customer().status }}
+      </span>
+
+      <!-- Informations de contact coordonnées -->
+      <div
+        class="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-sm text-slate-500 mb-6 font-medium"
+      >
+        <div class="flex items-center gap-1.5">
+          <mat-icon class="text-slate-400 text-[18px] !w-[18px] !h-[18px]"
+            >email</mat-icon
+          >
+          <span class="hover:text-indigo-600 transition-colors">{{
+            customer().email
+          }}</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <mat-icon class="text-slate-400 text-[18px] !w-[18px] !h-[18px]"
+            >phone</mat-icon
+          >
+          <span>{{ customer().phoneNumber | phoneFormat }}</span>
+        </div>
+      </div>
+
+      <!-- Bouton d'action principal -->
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="onCreateNewAccount(customer())"
+        class="!px-6 !py-5 !rounded-xl !bg-blue-500 hover:!bg-blue-600 !text-white shadow-lg shadow-blue-100 font-bold transition-transform active:scale-95"
+      >
+        <mat-icon class="mr-2">add_card</mat-icon>
+        Ouvrir un nouveau compte
+      </button>
+    </div>
+  </div>
+  }
+
+  <!-- DIV INFÉRIEUR : LISTE DES COMPTES (GRID RESPONSIVE) -->
+  <app-account-card-list [accounts]="accounts()"></app-account-card-list>
+</div>
+}

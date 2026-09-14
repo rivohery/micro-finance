@@ -1,0 +1,11 @@
+<div
+  class="flex flex-col items-center justify-center w-full h-full min-h-[200px]"
+>
+  <div
+    class="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-500 border-t-transparent"
+  ></div>
+
+  <p class="mt-4 text-gray-600 font-medium animate-pulse">
+    {{ message() ? message() : "Chargement en cours..." }}
+  </p>
+</div>

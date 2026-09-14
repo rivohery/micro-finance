@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation de Transfert</title>
+
+    <style>
+        /* Styles Généraux */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            color: #333333;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        /* Header / Bannière */
+        .email-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .email-header h1 {
+            margin: 0;
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* Corps du message */
+        .email-body {
+            padding: 30px 30px 20px 30px;
+        }
+        .welcome-text {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #555555;
+        }
+        .intro-text {
+            margin: 0 0 25px 0;
+            font-size: 15px;
+            line-height: 1.5;
+            color: #555555;
+        }
+
+        /* Encadré des Comptes (Source -> Cible) */
+        .account-box {
+            background-color: #f8fafc;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid #e2e8f0;
+            width: 100%;
+        }
+        .account-col-source {
+            width: 45%;
+            vertical-align: top;
+        }
+        .account-col-arrow {
+            width: 10%;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 20px;
+            color: #4a5568;
+        }
+        .account-col-target {
+            width: 45%;
+            vertical-align: top;
+            text-align: right;
+        }
+        .account-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #718096;
+            font-weight: 600;
+        }
+        .account-number {
+            font-size: 15px;
+            font-weight: bold;
+            color: #1a202c;
+            margin-top: 4px;
+        }
+
+        /* Tableau des Détails Financiers */
+        .details-table {
+            width: 100%;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+        .details-label {
+            padding: 10px 0;
+            border-bottom: 1px solid #edf2f7;
+            color: #718096;
+        }
+        .details-value {
+            padding: 10px 0;
+            border-bottom: 1px solid #edf2f7;
+            text-align: right;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        /* Modificateurs de couleur pour les montants */
+        .value-negative { color: #e53e3e; }
+        .value-positive { color: #38a169; }
+
+        /* Alertes et Footer */
+        .alert-text {
+            margin: 30px 0 0 0;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #718096;
+        }
+        .email-footer {
+            background-color: #f8fafc;
+            padding: 20px 30px;
+            text-align: center;
+            border-top: 1px solid #edf2f7;
+        }
+        .footer-text {
+            margin: 0;
+            font-size: 12px;
+            color: #a0aec0;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" class="email-container">
+
+    <tr>
+        <td class="email-header">
+            <h1>Confirmation de Virement</h1>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="email-body">
+            <p class="welcome-text">
+                Bonjour <strong th:text="${client}">Jean Dupont</strong>,
+            </p>
+            <p class="intro-text">
+                Nous vous confirmons l'exécution de votre transfert interne. Les fonds ont été débités et transférés avec succès selon les détails ci-dessous :
+            </p>
+
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="account-box">
+                <tr>
+                    <td class="account-col-source">
+                        <span class="account-label">Compte Source</span>
+                        <div class="account-number" th:text="${sourceAccountNumber}">N° 1234567890</div>
+                    </td>
+                    <td class="account-col-arrow">➔</td>
+                    <td class="account-col-target">
+                        <span class="account-label">Compte Cible</span>
+                        <div class="account-number" th:text="${targetAccountNumber}">N° 0987654321</div>
+                    </td>
+                </tr>
+            </table>
+
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="details-table">
+                <tr>
+                    <td class="details-label">Date de transaction</td>
+                    <td class="details-value" th:text="${#temporals.format(dateTransfert, 'dd/MM/yyyy HH:mm')}">27/05/2026 13:40</td>
+                </tr>
+                <tr>
+                    <td class="details-label">Montant débité</td>
+                    <td class="details-value value-negative" th:text="${#numbers.formatDecimal(originalAmont, 1, 'WHITESPACE', 2, 'COMMA')} + ' ' + ${transfertCurrency}">500 000,00 MGA</td>
+                </tr>
+                <tr>
+                    <td class="details-label">Taux d'échange</td>
+                    <td class="details-value value-positive" th:text="${#numbers.formatDecimal(exchangeRate, 1, 'WHITESPACE', 2, 'COMMA')}">115,50 USD</td>
+                </tr>
+                <tr>
+                    <td class="details-label">Montant avec le monnaie du compte cible</td>
+                    <td class="details-value value-positive" th:text="${#numbers.formatDecimal(finalAmount, 1, 'WHITESPACE', 2, 'COMMA')} + ' ' + ${targetCurrency}">500 000,00 MGA</td>
+                </tr>
+            </table>
+
+            <p class="alert-text">
+                Si vous n'êtes pas à l'origine de cette opération, veuillez contacter immédiatement notre service client.
+            </p>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="email-footer">
+            <p class="footer-text">
+                Ceci est un message automatique, merci de ne pas y répondre.<br>
+                &copy; 2026 Votre Institution Financière. Tous droits réservés.
+            </p>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

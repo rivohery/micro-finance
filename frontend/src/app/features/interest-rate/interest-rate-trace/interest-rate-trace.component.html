@@ -1,0 +1,139 @@
+@if(loading()){
+<app-loader></app-loader>
+}@else {
+<div class="p-6 bg-slate-50 min-h-screen">
+  <div
+    class="max-w-6xl mx-auto bg-white rounded-xl shadow-sm border border-slate-200 p-6"
+  >
+    <div class="flex items-center gap-3 mb-6">
+      <mat-icon class="text-indigo-600 scale-125">account_balance</mat-icon>
+      <h2 class="text-xl font-bold text-slate-800 tracking-tight">
+        Historique des Taux d'Intérêt
+      </h2>
+    </div>
+
+    @if(errorMsg()){
+    <div class="my-4 w-full">
+      <app-message-box
+        [type]="'error'"
+        [message]="errorMsg()"
+        (onClose)="closeErrorMsg($event)"
+      ></app-message-box>
+    </div>
+    }
+
+    <div
+      class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 bg-slate-50 rounded-lg border border-slate-150 mb-6"
+    >
+      <div class="flex items-center gap-3 min-w-[200px]">
+        <mat-icon class="text-slate-500">calendar_month</mat-icon>
+        <mat-form-field appearance="outline" class="w-full dense-form-field">
+          <mat-label>Choisir un mois</mat-label>
+          <mat-select
+            [value]="selectedMonth()"
+            (selectionChange)="onChange($event.value)"
+          >
+            @for (month of availableMonths; track month.value) {
+            <mat-option [value]="month.value">{{ month.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="flex items-center">
+        <div
+          class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-lg animate-fade-in"
+        >
+          <span
+            class="text-xs font-semibold text-emerald-700 uppercase tracking-wider"
+            >Total :</span
+          >
+          <span class="text-base font-bold text-emerald-800"
+            >{{ totalInterestRateMonthly() | number : "1.2-2" }} MGA</span
+          >
+        </div>
+      </div>
+    </div>
+    @if(totalElements() > 0){
+    <div class="overflow-x-auto rounded-lg border border-slate-200 shadow-sm">
+      <table
+        class="w-full text-left border-collapse bg-white text-sm text-slate-600"
+      >
+        <thead
+          class="bg-slate-100 border-b border-slate-200 text-slate-700 font-semibold uppercase text-xs tracking-wider"
+        >
+          <tr>
+            <th class="px-6 py-4">N° Compte</th>
+            <th class="px-6 py-4">Taux d' Intérêt</th>
+            <th class="px-6 py-4">Montant mensuelle</th>
+            <th class="px-6 py-4">Montant en MGA</th>
+            <th class="px-6 py-4">Mois</th>
+            <th class="px-6 py-4 text-right">Année</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          @for (record of interestRateTraceList(); track record.id) {
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td
+              class="px-6 py-4 font-medium text-slate-900 flex items-center gap-2"
+            >
+              <mat-icon class="text-slate-400 text-sm">credit_card</mat-icon>
+              {{ record.accountNumber }}
+            </td>
+            <td class="px-6 py-4 font-medium text-indigo-600">
+              {{ record.interestRate | number : "1.2-2" }} %
+            </td>
+            <td class="px-6 py-4 items-center justify-center gap-2">
+              <span class="font-semibold text-slate-800">{{
+                record.amount | number
+              }}</span>
+              <span class="font-light text-slate-600 text-sm">{{
+                record.currencyCode
+              }}</span>
+            </td>
+            <td class="px-6 py-4 items-center justify-center gap-2">
+              <span class="font-semibold text-slate-800">{{
+                record.mgaAmount | number
+              }}</span>
+              <span class="font-light text-slate-600 text-sm">MGA</span>
+            </td>
+            <td class="px-6 py-4">
+              <span
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-800"
+              >
+                {{ record.month }}
+              </span>
+            </td>
+            <td class="px-6 py-4 text-right text-slate-500 font-mono">
+              {{ record.year }}
+            </td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="6" class="px-6 py-10 text-center text-slate-400">
+              <mat-icon class="text-4xl mb-2 text-slate-300"
+                >layers_clear</mat-icon
+              >
+              <p>Aucun historique trouvé.</p>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    } @else {
+    <div class="text-gray-700 font-normal">
+      Aucun historique des taux d'intérêts enregistrés
+    </div>
+    } @if(totalPages() > 0){
+    <div class="flex flex-col items-center justify-center mt-4">
+      <app-pagination
+        [totalPages]="totalPages()"
+        [currentPage]="currentPage()"
+        (onPageChange)="goToPage($event)"
+      ></app-pagination>
+    </div>
+    }
+  </div>
+</div>
+}

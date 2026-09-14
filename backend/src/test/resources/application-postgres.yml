@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/testdb?options=-c%20timezone=UTC
+    username: postgres
+    password: secret
+    driver-class-name: org.postgresql.Driver
+
+  # ---------- JPA/HIBERNATE ----------
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  # ---------- SPRING SECURITY (si tu utilises) ----------
+  # Désactiver la sécurité pour les tests (simplifie)
+  security:
+    enabled: false
+
+# ---------- LOGGING ----------
+logging:
+  level:
+    org:
+      springframework: WARN
+      hibernate: WARN

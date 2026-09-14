@@ -1,0 +1,59 @@
+<div class="min-h-[80vh] flex items-center justify-center px-4">
+  <div class="max-w-md w-full text-center">
+    <div class="relative mb-8">
+      <div
+        class="mx-auto w-32 h-32 bg-amber-50 rounded-full flex items-center justify-center animate-pulse"
+      >
+        <mat-icon class="text-amber-500 !w-16 !h-16 text-[64px]">lock</mat-icon>
+      </div>
+      <div class="absolute top-0 right-1/4">
+        <mat-icon class="text-red-400 animate-bounce">gpp_maybe</mat-icon>
+      </div>
+    </div>
+
+    <h1 class="text-6xl font-extrabold text-gray-900 mb-2">403</h1>
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Accès Restreint</h2>
+
+    <p class="text-gray-500 mb-8 leading-relaxed">
+      Désolé, il semble que vous n'ayez pas les permissions nécessaires pour
+      accéder à cette section. Cette zone est réservée exclusivement au
+      personnel autorisé
+      <span class="font-semibold text-gray-700"
+        >(Administration / Employés)</span
+      >.
+    </p>
+
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <button
+        mat-stroked-button
+        color="primary"
+        (click)="goBack()"
+        class="w-full sm:w-auto !py-2"
+      >
+        <mat-icon>arrow_back</mat-icon>
+        Retourner en arrière
+      </button>
+
+      <button
+        mat-raised-button
+        color="primary"
+        routerLink="/my-app/user-profil"
+        class="w-full sm:w-auto !py-2"
+      >
+        <mat-icon>person</mat-icon>
+        Aller à votre profile
+      </button>
+    </div>
+
+    <div class="mt-12 pt-6 border-t border-gray-100">
+      <p class="text-sm text-gray-400">
+        Vous pensez qu'il s'agit d'une erreur ?
+        <a
+          href="javascript.void(0)"
+          class="text-blue-500 hover:underline font-medium"
+          >Contactez l'administrateur</a
+        >
+      </p>
+    </div>
+  </div>
+</div>

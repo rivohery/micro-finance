@@ -1,0 +1,100 @@
+<div
+  class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden w-full"
+>
+  <div class="flex items-center gap-2">
+    <mat-icon class="text-gray-600 text-sm">settings_input_component</mat-icon>
+    <h2 class="text-gray-800 font-bold m-0 uppercase text-xs tracking-widest">
+      Configuration
+    </h2>
+  </div>
+
+  <form
+    [formGroup]="accountTypeForm"
+    (ngSubmit)="
+      mode() === 'create'
+        ? addAccountType(formDirective)
+        : updateAccountType(formDirective)
+    "
+    #formDirective="ngForm"
+    class="p-3 flex flex-col gap-1"
+  >
+    <div class="grid grid-cols-1 md:grid-cols-2 md:items-center md:gap-3">
+      <app-input
+        [label]="'Nom du type'"
+        [control]="name"
+        [icon]="'label'"
+        [iconPosition]="'suffix'"
+        [placeholder]="'Ex: Compte Épargne'"
+        [errors]="[
+          { value: 'required', message: 'Nom du type du compte est récquis' }
+        ]"
+      ></app-input>
+
+      <app-input
+        [label]="'Code'"
+        [control]="code"
+        [icon]="'qr_code'"
+        [iconPosition]="'suffix'"
+        [placeholder]="'Ex: 10 => compte epargne'"
+        [errors]="[
+          { value: 'required', message: 'Nom du type du compte est récquis' },
+          { value: 'pattern', message: 'Code invalide' }
+        ]"
+      ></app-input>
+    </div>
+
+    <div class="flex flex-col md:flex-row md:items-center md:gap-3">
+      <app-number
+        [control]="interestRate"
+        [placeholder]="'Ex: 0.01'"
+        [label]="'Taux intérêt (%)'"
+        [icon]="'trending_up'"
+        [iconPosition]="'suffix'"
+        [step]="0.01"
+        [min]="0.0"
+        [max]="1.0"
+      ></app-number>
+
+      <app-number
+        [control]="minimumBalance"
+        [placeholder]="'0.0'"
+        [label]="'Découvert (Solde minimale)'"
+        [icon]="'account_balance_wallet'"
+        [iconPosition]="'suffix'"
+        [min]="0.0"
+      ></app-number>
+
+      <app-number
+        [control]="accountFee"
+        [placeholder]="'0.0'"
+        [label]="'Frais de tenue de compte'"
+        [icon]="'payments'"
+        [iconPosition]="'suffix'"
+        [min]="0.0"
+      ></app-number>
+    </div>
+
+    <div class="max-w-xl mx-auto">
+      <button
+        mat-raised-button
+        [disabled]="sending() || accountTypeForm.invalid"
+        color="primary"
+        type="submit"
+        class="w-full !py-3 !px-8 !rounded-xl shadow-lg"
+      >
+        @if(sending()){
+        <span>Envoie en cours ...</span>
+        } @else {
+        <span class="flex items-center justify-center">
+          <mat-icon class="mr-2">save</mat-icon>
+          {{
+            mode() === "create"
+              ? "Ajouter un type compte"
+              : "Modifier un type compte"
+          }}
+        </span>
+        }
+      </button>
+    </div>
+  </form>
+</div>

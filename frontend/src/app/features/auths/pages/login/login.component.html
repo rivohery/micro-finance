@@ -1,0 +1,67 @@
+@if(loginForm){
+<div
+  class="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8"
+>
+  <div
+    class="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-xl border border-gray-100"
+  >
+    <div class="text-center">
+      <div
+        class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100 mb-4"
+      >
+        <mat-icon class="text-indigo-600">lock_open</mat-icon>
+      </div>
+      <h2 class="text-2xl font-extrabold text-gray-900 tracking-tight">
+        Espace Micro-finance
+      </h2>
+      <p class="mt-2 text-sm text-gray-500">Connectez-vous à votre compte</p>
+    </div>
+
+    @if(errorMsg()){
+    <app-message-box
+      [type]="'error'"
+      [message]="errorMsg()"
+      (onClose)="closeMsgBox($event)"
+    ></app-message-box>
+    }
+
+    <form class="mt-8 space-y-4" [formGroup]="loginForm" (ngSubmit)="login()">
+      <app-input
+        [control]="username"
+        [placeholder]="'Ex. jean_dupont'"
+        [icon]="'person'"
+        [label]="'Pseudo'"
+        [errors]="[
+          { value: 'required', message: 'Votre pseudo est récquis' },
+          { value: 'minlength', message: 'Le pseudo a au moins 4 caractères' }
+        ]"
+      ></app-input>
+
+      <app-password
+        [control]="password"
+        [label]="'Mot de passe'"
+        [errors]="[
+          { value: 'required', message: 'Votre mots de passe est récquis' }
+        ]"
+      >
+      </app-password>
+
+      <div class="flex items-center justify-end">
+        <a
+          routerLink="/change-password"
+          class="text-sm font-medium text-indigo-600 hover:text-indigo-500 transition-colors"
+        >
+          Changer le mots de passe ?
+        </a>
+      </div>
+
+      <app-submit-button
+        [isLoading]="store.loading()"
+        [label]="'Se connecter'"
+        [loadingLabel]="'Connexion...'"
+        [icon]="'send'"
+      ></app-submit-button>
+    </form>
+  </div>
+</div>
+}
