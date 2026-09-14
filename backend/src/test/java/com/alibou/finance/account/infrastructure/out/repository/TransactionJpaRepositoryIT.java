@@ -5,8 +5,6 @@ import com.alibou.finance.log.domain.agregate.TransactionTypeEnum;
 import com.alibou.finance.log.infrastructure.adapter.out.persistence.entity.TransactionEntity;
 import com.alibou.finance.log.infrastructure.adapter.out.persistence.repository.TransactionJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -19,7 +17,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class TransactionJpaRepositoryTest extends BaseRepositoryTest {
+public class TransactionJpaRepositoryIT extends BaseRepositoryTest {
     @Autowired
     private TransactionJpaRepository transactionRepository;
 

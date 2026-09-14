@@ -1,7 +1,6 @@
 package com.alibou.finance.account.infrastructure.proxy;
 
-import com.alibou.finance.DBProfileTest;
-import com.alibou.finance.JpaAuditingTestConfig;
+import com.alibou.finance.BaseIntegrationTest;
 import com.alibou.finance.account.application.port.dto.command.TransferCommand;
 import com.alibou.finance.account.application.port.dto.output.TransferResult;
 import com.alibou.finance.account.domain.agregate.Account;
@@ -30,7 +29,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.math.BigDecimal;
@@ -42,8 +40,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class AccountTransactionUseCaseProxyIntegrationTest extends DBProfileTest {
+
+public class AccountTransactionUseCaseProxyIT extends BaseIntegrationTest {
 
     @Autowired
     private AccountTransactionUseCaseProxy accountTransaction;

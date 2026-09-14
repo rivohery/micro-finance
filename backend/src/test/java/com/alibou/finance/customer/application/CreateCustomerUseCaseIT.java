@@ -1,8 +1,8 @@
 package com.alibou.finance.customer.application;
 
+import com.alibou.finance.BaseIntegrationTest;
 import com.alibou.finance.auth.domain.agregate.RoleEnum;
 import com.alibou.finance.auth.domain.agregate.User;
-import com.alibou.finance.auth.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.alibou.finance.auth.infrastructure.adapter.out.persistence.repository.UserJpaRepository;
 import com.alibou.finance.customer.application.port.CreateCustomerUseCase;
 import com.alibou.finance.customer.domain.agregate.Customer;
@@ -18,18 +18,16 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
+
 
 import java.time.LocalDate;
 
 import static org.mockito.Mockito.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@ActiveProfiles("test")
-public class CreateCustomerUseCaseIntegrationTest {
+
+public class CreateCustomerUseCaseIT extends BaseIntegrationTest {
 
     @Autowired
     private CustomerJpaRepository customerJpaRepository;
