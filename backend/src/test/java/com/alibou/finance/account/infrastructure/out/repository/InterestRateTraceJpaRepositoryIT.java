@@ -16,7 +16,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class InterestRateTraceJpaRepositoryTest extends BaseRepositoryTest {
+public class InterestRateTraceJpaRepositoryIT extends BaseRepositoryTest {
 
     @Autowired
     private InterestRateTraceJpaRepository interestRateTraceRepository;
