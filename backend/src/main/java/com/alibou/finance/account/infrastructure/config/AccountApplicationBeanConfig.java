@@ -84,11 +84,11 @@ public class AccountApplicationBeanConfig {
     }
 
     @Bean
-    public CalculateMonthlyInterestUseCase createCalculateMonthlyInterestUseCaseBean(
+    public AddMonthlyInterestUseCase addMonthlyInterestUseCaseBean(
             TransactionRepository transactionRepository,
             CurrencyExchangePort currencyExchangePort,
             InterestRateUseCase interestRateUseCase
     ){
-        return new CalculateMonthlyInterestServiceApplication(transactionRepository, currencyExchangePort, interestRateUseCase);
+        return new AddMonthlyInterestServiceApplication(transactionRepository, currencyExchangePort, interestRateUseCase);
     }
 }

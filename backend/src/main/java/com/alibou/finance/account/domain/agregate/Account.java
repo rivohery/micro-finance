@@ -20,6 +20,8 @@ import java.time.LocalDate;
 @Builder
 @Getter
 public class Account {
+
+    private static final String NB_DAYS_OF_YEAR = "365";
     private AccountId accountId;
     private AccountNumber accountNumber;
     private Balance balance;
@@ -44,10 +46,11 @@ public class Account {
         this.mgaBalance = new MgaBalance(BigDecimal.ZERO);
     }
 
-    public void calculMgaBalance(BigDecimal exchangeRateToMga){
+    public MgaBalance calculMgaBalance(BigDecimal exchangeRateToMga){
         //On calcule mgaBalance à partir de la valeur du solde (balance) du compte à chaque nouvelle opération : deposit|withdraw
         BigDecimal mgaBalanceValue = this.balance.value().multiply(exchangeRateToMga).setScale(2, RoundingMode.HALF_UP);
         this.mgaBalance = new MgaBalance(mgaBalanceValue);
+        return this.mgaBalance;
     }
 
 
@@ -91,14 +94,14 @@ public class Account {
     }
 
     public BigDecimal calculateInterestRateForSpecificDays(BigDecimal potentialSold, long nbrDays){
-        String nbrDaysForYear = "365";
-        BigDecimal dailyInterestRateOfAccount = this.accountType.getAnnualInterestRate().value().divide(new BigDecimal(nbrDaysForYear), 10, RoundingMode.HALF_UP);//précision de 10 chiffres après virgule
-        BigDecimal dailyInterestRateFromSold = potentialSold.multiply(dailyInterestRateOfAccount);
-        return dailyInterestRateFromSold.multiply(new BigDecimal("" + nbrDays));
+        //annualInterestRate est donnée en %tage
+        BigDecimal dailyInterestRateOfAccount = this.accountType.getAnnualInterestRate().value().divide(new BigDecimal("100")).divide(new BigDecimal(NB_DAYS_OF_YEAR), 10, RoundingMode.HALF_UP);//précision de 10 chiffres après virgule
+        return potentialSold.multiply(dailyInterestRateOfAccount).multiply(new BigDecimal("" + nbrDays));
     }
 
-    public void addMonthlyInterestRate(BigDecimal monthlyInterestRate){
+    public Balance addMonthlyInterestRate(BigDecimal monthlyInterestRate){
         this.balance = this.balance.add(monthlyInterestRate);
+        return this.balance;
     }
 
     /*For Test only*/
