@@ -3,7 +3,7 @@ package com.alibou.finance.log.infrastructure.adapter.out.persistence.repository
 import com.alibou.finance.log.infrastructure.adapter.out.mappers.AccountStatusHistoryMapper;
 import com.alibou.finance.log.infrastructure.adapter.out.persistence.entity.AccountStatusHistoryEntity;
 import com.alibou.finance.log.domain.agregate.AccountStatusHistory;
-import com.alibou.finance.log.domain.repository.AccountStatusHistoryRepository;
+import com.alibou.finance.log.domain.out.repository.AccountStatusHistoryRepository;
 import com.alibou.finance.account.domain.vo.AccountId;
 import com.alibou.finance.shared.application.PageResult;
 import com.alibou.finance.shared.infrastructure.mapper.PageMapper;

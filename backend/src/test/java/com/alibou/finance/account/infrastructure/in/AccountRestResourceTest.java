@@ -1,7 +1,5 @@
 package com.alibou.finance.account.infrastructure.in;
 
-import com.alibou.finance.account.application.port.usecase.AccountConsultationUseCase;
-import com.alibou.finance.account.application.port.usecase.AccountLifeCycleUseCase;
 import com.alibou.finance.account.domain.agregate.Account;
 import com.alibou.finance.account.domain.agregate.AccountStatusEnum;
 import com.alibou.finance.account.domain.vo.AccountStatus;

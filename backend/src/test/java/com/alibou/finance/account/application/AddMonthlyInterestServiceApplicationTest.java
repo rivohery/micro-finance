@@ -1,5 +1,6 @@
 package com.alibou.finance.account.application;
 
+import com.alibou.finance.account.domain.exception.ThirdPartyServiceException;
 import com.alibou.finance.log.application.port.usecase.InterestRateUseCase;
 import com.alibou.finance.account.application.service.AddMonthlyInterestServiceApplication;
 import com.alibou.finance.account.domain.agregate.Account;
@@ -11,10 +12,12 @@ import com.alibou.finance.account.domain.out.service.CurrencyExchangePort;
 import com.alibou.finance.account.domain.vo.AccountNumber;
 import com.alibou.finance.account.domain.vo.Balance;
 import com.alibou.finance.account.domain.vo.MgaBalance;
+import com.alibou.finance.log.domain.out.service.InterestRateTraceFactory;
 import com.alibou.finance.log.domain.vo.transaction.SoldBeforeTransaction;
 import com.alibou.finance.currency.domain.agregate.Currency;
 import com.alibou.finance.currency.domain.vo.CurrencyCode;
 import com.alibou.finance.log.domain.vo.accountStatusHistory.InterestRate;
+import com.alibou.finance.shared.domain.IllegalArgumentException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,6 +35,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.Collections;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -45,6 +49,8 @@ public class AddMonthlyInterestServiceApplicationTest {
     private CurrencyExchangePort currencyExchangePort;
     @Mock
     private InterestRateUseCase interestRateUseCase;
+    @Mock
+    private InterestRateTraceFactory interestRateTraceFactory;
     @InjectMocks
     private AddMonthlyInterestServiceApplication addMonthlyInterestService;
 
@@ -55,6 +61,8 @@ public class AddMonthlyInterestServiceApplicationTest {
     private LocalDateTime startOfMonth;
     private LocalDateTime endOfMonth;
 
+    private InterestRateTrace fakeTrace = mock(InterestRateTrace.class);
+
     @BeforeEach
     void setUp(){
         accountType = AccountType.builder().annualInterestRate(new InterestRate(BigDecimal.valueOf(3.65))).build();//=> dailyRate: 0.0001
@@ -64,14 +72,6 @@ public class AddMonthlyInterestServiceApplicationTest {
         startOfMonth = today.with(TemporalAdjusters.firstDayOfMonth()).atTime(LocalTime.MIN);
         endOfMonth = today.with(TemporalAdjusters.lastDayOfMonth()).atTime(LocalTime.MAX);
 
-        // Compte avec un solde de 1 000 000 MGA
-        account = Account.builder()
-                .accountNumber(new AccountNumber("056-10-0123456789"))
-                .accountType(accountType)
-                .currency(currency)
-                .balance(new Balance(new BigDecimal("1000000"))) //Solde à la fin du mois
-                .mgaBalance(new MgaBalance(new BigDecimal("1000000")))
-                .build();
     }
 
     @Test
@@ -84,6 +84,15 @@ public class AddMonthlyInterestServiceApplicationTest {
 
     @Test
     void shouldCalculateInterestRateOfSpecificDaysWithSuccess(){
+        // Compte avec un solde de 1 000 000 MGA
+        account = Account.builder()
+                .accountNumber(new AccountNumber("056-10-0123456789"))
+                .accountType(accountType)
+                .currency(currency)
+                .balance(new Balance(new BigDecimal("1000000"))) //Solde à la fin du mois
+                .mgaBalance(new MgaBalance(new BigDecimal("1000000")))
+                .build();
+
         BigDecimal potentialSold = BigDecimal.valueOf(400);
         LocalDateTime startTime = LocalDateTime.of(2026,6,10,0,0,0);
         LocalDateTime endTime = LocalDateTime.of(2026,6,17,0,0,0);
@@ -103,6 +112,15 @@ public class AddMonthlyInterestServiceApplicationTest {
     @DisplayName("execute - cas succès avec plusieurs transactions : calcul de l'intérêt segmenté")
     void execute_shouldCalculateInterestForEachSegmentBetweenTransactions() {
         //GIVEN
+        // Compte avec un solde de 1 000 000 MGA
+        account = Account.builder()
+                .accountNumber(new AccountNumber("056-10-0123456789"))
+                .accountType(accountType)
+                .currency(currency)
+                .balance(new Balance(new BigDecimal("1000000"))) //Solde à la fin du mois
+                .mgaBalance(new MgaBalance(new BigDecimal("1000000")))
+                .build();
+
         // Taux d'intérêt journalier simulé pour le compte : 0.0001 (soit 3.65%/an)
         BigDecimal dailyRate = new BigDecimal("0.0001");
         BigDecimal actualBalance = new BigDecimal("1000000");
@@ -124,6 +142,8 @@ public class AddMonthlyInterestServiceApplicationTest {
         // Taux de change MGA
         BigDecimal mgaExchangeRate = new BigDecimal("1.0");
         when(currencyExchangePort.getExchangeRate(anyString(), eq("MGA"))).thenReturn(mgaExchangeRate);
+
+        when(interestRateTraceFactory.prepare(any(Account.class), any(BigDecimal.class), any(BigDecimal.class))).thenReturn(fakeTrace);
 
         // WHEN
         Account result = addMonthlyInterestService.execute(account);
@@ -162,6 +182,8 @@ public class AddMonthlyInterestServiceApplicationTest {
         // Vérification que le taux de change a été demandé
         verify(currencyExchangePort).getExchangeRate(anyString(), eq("MGA"));
 
+        verify(interestRateTraceFactory).prepare(any(Account.class), any(BigDecimal.class), any(BigDecimal.class));
+
         // Vérification que la trace a été persistée
         ArgumentCaptor<InterestRateTrace> traceCaptor = ArgumentCaptor.forClass(InterestRateTrace.class);
         verify(interestRateUseCase).save(traceCaptor.capture());
@@ -176,6 +198,7 @@ public class AddMonthlyInterestServiceApplicationTest {
         // ----- Given -----
         BigDecimal balance = new BigDecimal("500000");
         BigDecimal dailyRate = new BigDecimal("0.0002");
+
         account = mock(Account.class);
         Currency eurCurrency = Currency.builder().code(new CurrencyCode("EUR")).build();
         when(account.getAccountNumber()).thenReturn(new AccountNumber("056-10-0123456789"));
@@ -191,6 +214,7 @@ public class AddMonthlyInterestServiceApplicationTest {
                 .thenReturn(Collections.emptyList());
         BigDecimal mgaExchangeRate = new BigDecimal("5000");
         when(currencyExchangePort.getExchangeRate(eq("EUR"), eq("MGA"))).thenReturn(mgaExchangeRate);
+        when(interestRateTraceFactory.prepare(any(Account.class), any(BigDecimal.class), any(BigDecimal.class))).thenReturn(fakeTrace);
 
         // ----- When -----
         Account result = addMonthlyInterestService.execute(account);
@@ -210,9 +234,85 @@ public class AddMonthlyInterestServiceApplicationTest {
         verify(account, times(1)).calculateInterestRateForSpecificDays(any(BigDecimal.class), anyLong());
 
         verify(account).calculMgaBalance(mgaExchangeRate);
+
+        verify(interestRateTraceFactory).prepare(any(Account.class), any(BigDecimal.class), any(BigDecimal.class));
+
         verify(interestRateUseCase).save(any(InterestRateTrace.class));
         assertThat(result).isSameAs(account);
-        BigDecimal expectedBalance = balance.add(expectedInterest);
+    }
+
+    @Test
+    @DisplayName("execute - doit lever une exception NullPointerException si l'un des paramètres dans interestRateTraceFactory.prepare est nul")
+    void execute_shouldHandleNullPointerException(){
+        //GIVEN
+        BigDecimal balance = new BigDecimal("1000000");
+        BigDecimal dailyRate = new BigDecimal("0.001");
+        BigDecimal exchangeRate = new BigDecimal("4500");
+
+        account = mock(Account.class);
+        Currency eurCurrency = Currency.builder().code(new CurrencyCode("EUR")).build();
+        when(account.getAccountNumber()).thenReturn(new AccountNumber("056-10-0123456789"));
+        when(account.getBalance()).thenReturn(new Balance(balance));
+        when(account.getCurrency()).thenReturn(eurCurrency);
+        when(transactionRepository.checkMonthlyTransactionOfAccount(any(AccountNumber.class), eq(startOfMonth), eq(endOfMonth)))
+                .thenReturn(Collections.emptyList());
+        when(account.calculateInterestRateForSpecificDays(any(BigDecimal.class), any(Long.class))).thenAnswer(i -> {
+            BigDecimal sold = i.getArgument(0);
+            Long nbrDays = i.getArgument(1);
+            return sold.multiply(dailyRate).multiply(new BigDecimal("" + nbrDays));
+        });
+        when(currencyExchangePort.getExchangeRate(eq("EUR"), eq("MGA"))).thenReturn(exchangeRate);
+
+        doThrow(new NullPointerException("Some parameter is null"))
+                .when(interestRateTraceFactory)
+                .prepare(any(Account.class), any(BigDecimal.class), any(BigDecimal.class));
+
+        assertThatThrownBy(() -> addMonthlyInterestService.execute(account))
+                .isInstanceOfAny(NullPointerException.class, IllegalArgumentException.class)
+                .hasMessage("Some parameter is null");
+
+        verify(account).addMonthlyInterestRate(any(BigDecimal.class));
+        verify(currencyExchangePort).getExchangeRate(anyString(), anyString());
+        verify(account).calculMgaBalance(any(BigDecimal.class));
+        verify(interestRateUseCase, never()).save(any(InterestRateTrace.class));
+
+    }
+
+
+    @Test
+    @DisplayName("execute - doit lever une exception ThirdPartyServiceException si la connexion avec API externe pour le taux d'échange est interrompu")
+    void execute_shouldHandleThirdPartyServiceException(){
+        //GIVEN
+        BigDecimal balance = new BigDecimal("1000000");
+        BigDecimal dailyRate = new BigDecimal("0.001");
+        BigDecimal exchangeRate = new BigDecimal("4500");
+
+        account = mock(Account.class);
+        Currency eurCurrency = Currency.builder().code(new CurrencyCode("EUR")).build();
+        when(account.getAccountNumber()).thenReturn(new AccountNumber("056-10-0123456789"));
+        when(account.getBalance()).thenReturn(new Balance(balance));
+        when(account.getCurrency()).thenReturn(eurCurrency);
+        when(transactionRepository.checkMonthlyTransactionOfAccount(any(AccountNumber.class), eq(startOfMonth), eq(endOfMonth)))
+                .thenReturn(Collections.emptyList());
+        when(account.calculateInterestRateForSpecificDays(any(BigDecimal.class), any(Long.class))).thenAnswer(i -> {
+            BigDecimal sold = i.getArgument(0);
+            Long nbrDays = i.getArgument(1);
+            return sold.multiply(dailyRate).multiply(new BigDecimal("" + nbrDays));
+        });
+
+        doThrow(new ThirdPartyServiceException("Le service de conversion monétaire est temporairement indisponible. Veuillez réessayer plus tard."))
+                .when(currencyExchangePort)
+                .getExchangeRate(eq("EUR"), eq("MGA"));
+
+        assertThatThrownBy(() -> addMonthlyInterestService.execute(account))
+                .isInstanceOf(ThirdPartyServiceException.class)
+                .hasMessage("Le service de conversion monétaire est temporairement indisponible. Veuillez réessayer plus tard.");
+
+        verify(account).addMonthlyInterestRate(any(BigDecimal.class));
+        verify(currencyExchangePort).getExchangeRate(anyString(), anyString());
+        verify(account, never()).calculMgaBalance(any(BigDecimal.class));
+        verify(interestRateUseCase, never()).save(any(InterestRateTrace.class));
+
     }
 
     private Transaction mockTransaction(LocalDateTime createdDate, BigDecimal soldBeforeTransaction) {
@@ -221,6 +321,7 @@ public class AddMonthlyInterestServiceApplicationTest {
         when(tx.getSoldBeforeTransaction()).thenReturn(new SoldBeforeTransaction(soldBeforeTransaction));
         return tx;
     }
+
 }
 
 

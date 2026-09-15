@@ -1,4 +1,4 @@
-package com.alibou.finance.log.domain.repository;
+package com.alibou.finance.log.domain.out.repository;
 
 import com.alibou.finance.log.domain.agregate.AccountStatusHistory;
 import com.alibou.finance.account.domain.vo.AccountId;

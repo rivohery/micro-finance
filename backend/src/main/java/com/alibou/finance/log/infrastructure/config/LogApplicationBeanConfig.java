@@ -8,8 +8,8 @@ import com.alibou.finance.log.application.port.usecase.TransactionConsultationUs
 import com.alibou.finance.log.application.service.AccountStatusHistoryService;
 import com.alibou.finance.log.application.service.InterestRateServiceApplication;
 import com.alibou.finance.log.application.service.TransactionConsultationService;
-import com.alibou.finance.log.domain.repository.AccountStatusHistoryRepository;
-import com.alibou.finance.log.domain.repository.InterestRateTraceRepository;
+import com.alibou.finance.log.domain.out.repository.AccountStatusHistoryRepository;
+import com.alibou.finance.log.domain.out.repository.InterestRateTraceRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

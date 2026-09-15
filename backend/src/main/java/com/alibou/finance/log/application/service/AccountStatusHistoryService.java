@@ -2,7 +2,7 @@ package com.alibou.finance.log.application.service;
 
 import com.alibou.finance.log.application.port.usecase.AccountStatusHistoryUseCase;
 import com.alibou.finance.log.domain.agregate.AccountStatusHistory;
-import com.alibou.finance.log.domain.repository.AccountStatusHistoryRepository;
+import com.alibou.finance.log.domain.out.repository.AccountStatusHistoryRepository;
 import com.alibou.finance.account.domain.vo.AccountId;
 import com.alibou.finance.shared.application.PageResult;
 import lombok.RequiredArgsConstructor;

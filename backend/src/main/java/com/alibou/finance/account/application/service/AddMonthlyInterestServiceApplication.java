@@ -7,6 +7,7 @@ import com.alibou.finance.log.domain.agregate.InterestRateTrace;
 import com.alibou.finance.log.domain.agregate.Transaction;
 import com.alibou.finance.account.domain.out.repository.TransactionRepository;
 import com.alibou.finance.account.domain.out.service.CurrencyExchangePort;
+import com.alibou.finance.log.domain.out.service.InterestRateTraceFactory;
 import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
@@ -16,12 +17,14 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 public class AddMonthlyInterestServiceApplication implements AddMonthlyInterestUseCase {
     private static final String CURRENCY_REFERENCE_CODE = "MGA";
     private final TransactionRepository transactionRepository;
     private final CurrencyExchangePort currencyExchangePort;
+    private final InterestRateTraceFactory interestRateTraceFactory;
     private final InterestRateUseCase interestRateUseCase;
 
     @Override
@@ -55,8 +58,10 @@ public class AddMonthlyInterestServiceApplication implements AddMonthlyInterestU
         BigDecimal mgaExchangeRate= currencyExchangePort.getExchangeRate(account.getCurrency().getCode().value(), CURRENCY_REFERENCE_CODE);
         account.calculMgaBalance(mgaExchangeRate);
 
-        InterestRateTrace interestRateTrace = InterestRateTrace.prepareToDataBase(account, mgaExchangeRate, monthlyInterestRate);
-        interestRateUseCase.save(interestRateTrace);
+        InterestRateTrace interestRateTrace = interestRateTraceFactory.prepare(account, mgaExchangeRate, monthlyInterestRate);
+        if(Objects.nonNull(interestRateTrace)){
+            interestRateUseCase.save(interestRateTrace);
+        }
         return account;
     }
 
