@@ -2,7 +2,7 @@ package com.alibou.finance.log.application.service;
 
 import com.alibou.finance.log.application.port.usecase.InterestRateUseCase;
 import com.alibou.finance.log.domain.agregate.InterestRateTrace;
-import com.alibou.finance.log.domain.repository.InterestRateTraceRepository;
+import com.alibou.finance.log.domain.out.repository.InterestRateTraceRepository;
 import com.alibou.finance.shared.application.PageResult;
 import lombok.RequiredArgsConstructor;
 import java.math.BigDecimal;

@@ -16,6 +16,7 @@ import com.alibou.finance.customer.application.port.CustomerLifeCycleUseCase;
 import com.alibou.finance.customer.domain.out.repository.CustomerRepository;
 import com.alibou.finance.log.application.port.usecase.AccountStatusHistoryUseCase;
 import com.alibou.finance.log.application.port.usecase.InterestRateUseCase;
+import com.alibou.finance.log.domain.out.service.InterestRateTraceFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -84,11 +85,12 @@ public class AccountApplicationBeanConfig {
     }
 
     @Bean
-    public CalculateMonthlyInterestUseCase createCalculateMonthlyInterestUseCaseBean(
+    public AddMonthlyInterestUseCase addMonthlyInterestUseCaseBean(
             TransactionRepository transactionRepository,
             CurrencyExchangePort currencyExchangePort,
+            InterestRateTraceFactory interestRateTraceFactory,
             InterestRateUseCase interestRateUseCase
     ){
-        return new CalculateMonthlyInterestServiceApplication(transactionRepository, currencyExchangePort, interestRateUseCase);
+        return new AddMonthlyInterestServiceApplication(transactionRepository, currencyExchangePort, interestRateTraceFactory, interestRateUseCase);
     }
 }

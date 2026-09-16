@@ -2,9 +2,8 @@ package com.alibou.finance.account.infrastructure.config;
 
 import com.alibou.finance.account.domain.agregate.AccountStatusEnum;
 import com.alibou.finance.account.infrastructure.adapter.out.persistence.entity.AccountEntity;
-//import com.alibou.finance.account.infrastructure.adapter.out.persistence.repository.AccountJpaRepository;
 import com.alibou.finance.account.infrastructure.batch.InterestItemProcessor;
-import com.alibou.finance.account.infrastructure.transactional.CalculateMonthlyInterestUseCaseProxy;
+import com.alibou.finance.account.infrastructure.transactional.AddMonthlyInterestUseCaseProxy;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -13,8 +12,6 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
-//import org.springframework.batch.item.data.RepositoryItemReader;
-//import org.springframework.batch.item.data.builder.RepositoryItemReaderBuilder;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
@@ -32,23 +29,6 @@ import java.util.Set;
 
 @Configuration
 public class InterestRateBatchConfig {
-
-    /*
-    // 1. READER: RepositoryItemReader classique (non thread-safe)
-    @Bean
-    public RepositoryItemReader<AccountEntity> accountReader(AccountJpaRepository accountJpaRepository){
-        Map<String, Sort.Direction> triMap = new HashMap<>();
-        triMap.put("id", Sort.Direction.ASC);//Pour assurer l'unicité du tri pour la pagination
-
-        return new RepositoryItemReaderBuilder<AccountEntity>()
-                .name("accountReader")
-                .repository(accountJpaRepository)
-                .methodName("getAllByAccountTypeEntityCodeIn")
-                .arguments(Set.of("20","30"), AccountStatusEnum.CLOSED)//pour le paramètre Pageable;spring batch s'en charge automatiquement via pageSize()
-                .pageSize(100) // Lit les comptes par paquets de 100
-                .sorts(triMap)
-                .build();
-    }*/
 
     // 1. JpaPagingItemReader: reader thread-safe utilisable en environnement multi-thread
     @Bean
@@ -75,8 +55,8 @@ public class InterestRateBatchConfig {
 
     // 2. LE PROCESSOR
     @Bean
-    public ItemProcessor<AccountEntity, AccountEntity> accountProcessor(CalculateMonthlyInterestUseCaseProxy calculateMonthlyInterestService) {
-        return new InterestItemProcessor(calculateMonthlyInterestService);
+    public ItemProcessor<AccountEntity, AccountEntity> accountProcessor(AddMonthlyInterestUseCaseProxy addMonthlyInterestService) {
+        return new InterestItemProcessor(addMonthlyInterestService);
     }
 
     // 3. LE WRITER : Sauvegarde automatique des comptes modifiés en BDD

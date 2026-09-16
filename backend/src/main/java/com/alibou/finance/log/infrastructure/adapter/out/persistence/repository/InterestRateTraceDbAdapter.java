@@ -1,7 +1,7 @@
 package com.alibou.finance.log.infrastructure.adapter.out.persistence.repository;
 
 import com.alibou.finance.log.domain.agregate.InterestRateTrace;
-import com.alibou.finance.log.domain.repository.InterestRateTraceRepository;
+import com.alibou.finance.log.domain.out.repository.InterestRateTraceRepository;
 import com.alibou.finance.log.infrastructure.adapter.out.mappers.InterestRateTraceMapper;
 import com.alibou.finance.log.infrastructure.adapter.out.persistence.entity.InterestRateTraceEntity;
 import com.alibou.finance.shared.application.PageResult;

@@ -1,6 +1,6 @@
 package com.alibou.finance.account.infrastructure.transactional;
 
-import com.alibou.finance.account.application.port.usecase.CalculateMonthlyInterestUseCase;
+import com.alibou.finance.account.application.port.usecase.AddMonthlyInterestUseCase;
 import com.alibou.finance.account.domain.agregate.Account;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -8,13 +8,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class CalculateMonthlyInterestUseCaseProxy {
+public class AddMonthlyInterestUseCaseProxy {
 
-    private final CalculateMonthlyInterestUseCase calculateMonthlyInterestUseCase;
+    private final AddMonthlyInterestUseCase addMonthlyInterestUseCase;
 
     @Transactional
     public Account execute(Account account) {
-        return calculateMonthlyInterestUseCase.execute(account);
+        return addMonthlyInterestUseCase.execute(account);
     }
 
 }
