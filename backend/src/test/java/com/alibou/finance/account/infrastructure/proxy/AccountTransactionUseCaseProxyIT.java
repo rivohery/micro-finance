@@ -1,6 +1,6 @@
 package com.alibou.finance.account.infrastructure.proxy;
 
-import com.alibou.finance.BaseIntegrationTest;
+import com.alibou.finance.BaseServiceIT;
 import com.alibou.finance.account.application.port.dto.command.TransferCommand;
 import com.alibou.finance.account.application.port.dto.output.TransferResult;
 import com.alibou.finance.account.domain.agregate.Account;
@@ -21,9 +21,9 @@ import com.alibou.finance.currency.infrastructure.adapter.out.entity.CurrencyEnt
 import com.alibou.finance.currency.infrastructure.adapter.out.repository.CurrencyJpaRepository;
 import com.alibou.finance.customer.application.port.CustomerConsultationUseCase;
 import com.alibou.finance.customer.domain.vo.CustomerId;
-import com.alibou.finance.log.domain.agregate.Transaction;
-import com.alibou.finance.log.domain.vo.transaction.OriginalAmount;
-import com.alibou.finance.log.infrastructure.adapter.out.persistence.repository.TransactionJpaRepository;
+import com.alibou.finance.history.domain.agregate.Transaction;
+import com.alibou.finance.history.domain.vo.transaction.OriginalAmount;
+import com.alibou.finance.history.infrastructure.adapter.out.persistence.repository.TransactionJpaRepository;
 import com.alibou.finance.shared.vo.domain.Description;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 
-public class AccountTransactionUseCaseProxyIT extends BaseIntegrationTest {
+public class AccountTransactionUseCaseProxyIT extends BaseServiceIT {
 
     @Autowired
     private AccountTransactionUseCaseProxy accountTransaction;

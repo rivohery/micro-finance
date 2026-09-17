@@ -1,6 +1,6 @@
 package com.alibou.finance.customer.application;
 
-import com.alibou.finance.BaseIntegrationTest;
+import com.alibou.finance.BaseServiceIT;
 import com.alibou.finance.auth.domain.agregate.RoleEnum;
 import com.alibou.finance.auth.domain.agregate.User;
 import com.alibou.finance.auth.infrastructure.adapter.out.persistence.repository.UserJpaRepository;
@@ -27,7 +27,7 @@ import java.time.LocalDate;
 import static org.mockito.Mockito.*;
 
 
-public class CreateCustomerUseCaseIT extends BaseIntegrationTest {
+public class CreateCustomerUseCaseIT extends BaseServiceIT {
 
     @Autowired
     private CustomerJpaRepository customerJpaRepository;

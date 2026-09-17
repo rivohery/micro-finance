@@ -5,7 +5,7 @@ import com.alibou.finance.account.domain.exception.InsufficientBalanceException;
 import com.alibou.finance.account.domain.vo.*;
 import com.alibou.finance.accountType.domain.agregate.AccountType;
 import com.alibou.finance.currency.domain.agregate.Currency;
-import com.alibou.finance.log.domain.vo.transaction.FinalAmount;
+import com.alibou.finance.history.domain.vo.transaction.FinalAmount;
 import com.alibou.finance.customer.domain.vo.CustomerId;
 import com.alibou.finance.shared.domain.IllegalOperationException;
 import com.alibou.finance.shared.domain.OperationNotPermittedException;
@@ -95,7 +95,9 @@ public class Account {
 
     public BigDecimal calculateInterestRateForSpecificDays(BigDecimal potentialSold, long nbrDays){
         //annualInterestRate est donnée en %tage
-        BigDecimal dailyInterestRateOfAccount = this.accountType.getAnnualInterestRate().value().divide(new BigDecimal("100")).divide(new BigDecimal(NB_DAYS_OF_YEAR), 10, RoundingMode.HALF_UP);//précision de 10 chiffres après virgule
+        BigDecimal dailyInterestRateOfAccount = this.accountType.getAnnualInterestRate().value()
+                .divide(new BigDecimal("100"))
+                .divide(new BigDecimal(NB_DAYS_OF_YEAR), 10, RoundingMode.HALF_UP);//précision de 10 chiffres après virgule
         return potentialSold.multiply(dailyInterestRateOfAccount).multiply(new BigDecimal("" + nbrDays));
     }
 

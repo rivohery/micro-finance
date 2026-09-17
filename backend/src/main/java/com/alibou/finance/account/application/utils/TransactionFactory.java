@@ -7,9 +7,9 @@ import com.alibou.finance.account.domain.out.service.CurrencyExchangePort;
 import com.alibou.finance.account.domain.out.service.ReferenceGenerator;
 import com.alibou.finance.account.domain.vo.AccountNumber;
 import com.alibou.finance.auth.domain.agregate.User;
-import com.alibou.finance.log.domain.agregate.Transaction;
-import com.alibou.finance.log.domain.agregate.TransactionTypeEnum;
-import com.alibou.finance.log.domain.vo.transaction.*;
+import com.alibou.finance.history.domain.agregate.Transaction;
+import com.alibou.finance.history.domain.agregate.TransactionTypeEnum;
+import com.alibou.finance.history.domain.vo.transaction.*;
 import com.alibou.finance.shared.vo.domain.Description;
 import com.alibou.finance.shared.vo.domain.OperatorName;
 

@@ -6,9 +6,9 @@ import com.alibou.finance.account.infrastructure.adapter.in.dto.TransfertRequest
 import com.alibou.finance.account.infrastructure.transactional.AccountTransactionUseCaseProxy;
 import com.alibou.finance.auth.infrastructure.model.UserPrincipal;
 import com.alibou.finance.account.infrastructure.adapter.in.dto.TransactionRequest;
-import com.alibou.finance.log.infrastructure.adapter.in.dto.TransactionResponse;
-import com.alibou.finance.log.infrastructure.adapter.out.mappers.TransactionMapper;
-import com.alibou.finance.log.domain.agregate.Transaction;
+import com.alibou.finance.history.infrastructure.adapter.in.dto.TransactionResponse;
+import com.alibou.finance.history.infrastructure.adapter.out.mappers.TransactionMapper;
+import com.alibou.finance.history.domain.agregate.Transaction;
 import com.alibou.finance.shared.infrastructure.dto.GlobalResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

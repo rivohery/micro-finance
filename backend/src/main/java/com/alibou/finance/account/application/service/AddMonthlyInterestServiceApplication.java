@@ -1,13 +1,13 @@
 package com.alibou.finance.account.application.service;
 
 import com.alibou.finance.account.application.port.usecase.AddMonthlyInterestUseCase;
-import com.alibou.finance.log.application.port.usecase.InterestRateUseCase;
+import com.alibou.finance.history.application.port.usecase.InterestRateUseCase;
 import com.alibou.finance.account.domain.agregate.Account;
-import com.alibou.finance.log.domain.agregate.InterestRateTrace;
-import com.alibou.finance.log.domain.agregate.Transaction;
+import com.alibou.finance.history.domain.agregate.InterestRateTrace;
+import com.alibou.finance.history.domain.agregate.Transaction;
 import com.alibou.finance.account.domain.out.repository.TransactionRepository;
 import com.alibou.finance.account.domain.out.service.CurrencyExchangePort;
-import com.alibou.finance.log.domain.out.service.InterestRateTraceFactory;
+import com.alibou.finance.history.domain.out.service.InterestRateTraceFactory;
 import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
@@ -56,7 +56,6 @@ public class AddMonthlyInterestServiceApplication implements AddMonthlyInterestU
         account.addMonthlyInterestRate(monthlyInterestRate);
 
         BigDecimal mgaExchangeRate= currencyExchangePort.getExchangeRate(account.getCurrency().getCode().value(), CURRENCY_REFERENCE_CODE);
-        account.calculMgaBalance(mgaExchangeRate);
 
         InterestRateTrace interestRateTrace = interestRateTraceFactory.prepare(account, mgaExchangeRate, monthlyInterestRate);
         if(Objects.nonNull(interestRateTrace)){

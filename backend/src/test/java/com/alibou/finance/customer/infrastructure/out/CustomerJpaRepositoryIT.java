@@ -1,6 +1,6 @@
 package com.alibou.finance.customer.infrastructure.out;
 
-import com.alibou.finance.BaseRepositoryTest;
+import com.alibou.finance.BaseRepositoryIT;
 import com.alibou.finance.auth.domain.agregate.RoleEnum;
 import com.alibou.finance.auth.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.alibou.finance.auth.infrastructure.adapter.out.persistence.repository.UserJpaRepository;
@@ -26,7 +26,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-class CustomerJpaRepositoryIT extends BaseRepositoryTest {
+class CustomerJpaRepositoryIT extends BaseRepositoryIT {
 
     @Autowired
     private CustomerJpaRepository customerJpaRepository;

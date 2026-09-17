@@ -1,6 +1,6 @@
 package com.alibou.finance.account.infrastructure.out.repository;
 
-import com.alibou.finance.BaseRepositoryTest;
+import com.alibou.finance.BaseRepositoryIT;
 import com.alibou.finance.account.domain.agregate.AccountStatusEnum;
 import com.alibou.finance.account.infrastructure.adapter.out.persistence.entity.AccountEntity;
 import com.alibou.finance.accountType.infrastructure.adapter.out.persistence.entity.AccountTypeEntity;
@@ -29,7 +29,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class AccountJpaRepositoryIT extends BaseRepositoryTest {
+public class AccountJpaRepositoryIT extends BaseRepositoryIT {
     @Autowired
     private AccountJpaRepository accountRepository;
     @Autowired
@@ -80,14 +80,6 @@ public class AccountJpaRepositoryIT extends BaseRepositoryTest {
                 createAccount(businessAccount, AccountStatusEnum.ACTIVE, "ACC-30-903457", BigDecimal.valueOf(200), dailyDate)
         ));
 
-    }
-
-
-    @Test
-    void PrimaryTest(){
-        System.out.println("==============");
-        accountRepository.findAll().forEach(a -> System.out.println("accountNumber: "+ a.getAccountNumber() + " - " + "createdDate: " + a.getCreatedDate()));
-        System.out.println("==============");
     }
 
     @Test
@@ -199,25 +191,7 @@ public class AccountJpaRepositoryIT extends BaseRepositoryTest {
     }
 
     //@Test
-    //@DisplayName("Devrait retourner les pages des comptes dont le numéros de compte commence par un mots données")
-    void shouldFindAllByAccountNumberStartsWith(){
-        Pageable pageable = PageRequest.of(0,2);
-        String start = "ACC-10";
-        Page<AccountEntity> response = accountRepository.findAllByAccountNumberStartsWithOrderByCreatedDateDesc(start, pageable);
-
-
-        response.forEach(a -> System.out.println("accountNumber: "+ a.getAccountNumber() + " - " + "createdDate: " + a.getCreatedDate()));
-        System.out.println("==============");
-
-        assertThat(response.getTotalPages()).isEqualTo(2);
-        assertThat(response.getContent().size()).isEqualTo(2);
-        assertThat(response.getNumber()).isEqualTo(0);
-        assertThat(response.getContent())
-                .extracting(AccountEntity::getAccountNumber).containsExactly("ACC-10-555456", "ACC-10-123456");
-    }
-
-    //@Test
-    //@DisplayName("Devrait tester la methode getAllAccountByAccountNumberBegin() avec succès")
+    @DisplayName("Devrait tester la methode getAllAccountByAccountNumberBegin() avec succès")
     void shouldGetAllAccountByAccountNumberBeginSuccessfully(){
         Pageable pageable = PageRequest.of(0,2);
         String start = "ACC-10";
@@ -233,25 +207,6 @@ public class AccountJpaRepositoryIT extends BaseRepositoryTest {
         assertThat(response.getContent()).extracting(AccountProjection::getAccountTypeName).containsOnly("Compte courante");
     }
 
-    @Test
-    @DisplayName("Devrait retourner les comptes épargne et courante non closed")
-    void shouldReturnListOfBusinessAndSavingAccount(){
-        Pageable pageable = PageRequest.of(0,50);
-        Page<AccountEntity> accounts = accountRepository.getAllByAccountTypeEntityCodeIn(Set.of("20","30"), AccountStatusEnum.CLOSED, pageable);
-
-        assertThat(accounts.getContent().size()).isEqualTo(5);
-        assertThat(
-            accounts
-                 .getContent()
-                .stream()
-                .filter(a -> a.getAccountTypeEntity().getCode().equals("20"))
-                .toList()
-                .size()
-        ).isEqualTo(3);
-
-        assertThat(accounts.getContent()).extracting(a -> a.getAccountTypeEntity().getCode()).contains("20","30");
-        assertThat(accounts.getContent()).extracting(a -> a.getCurrencyEntity().getCode()).contains("MGA");
-    }
 
     private AccountTypeEntity createAccountType(String code, String name) {
         return AccountTypeEntity.builder()

@@ -1,8 +1,8 @@
 package com.alibou.finance.account.infrastructure.out.repository;
 
-import com.alibou.finance.BaseRepositoryTest;
-import com.alibou.finance.log.infrastructure.adapter.out.persistence.entity.InterestRateTraceEntity;
-import com.alibou.finance.log.infrastructure.adapter.out.persistence.repository.InterestRateTraceJpaRepository;
+import com.alibou.finance.BaseRepositoryIT;
+import com.alibou.finance.history.infrastructure.adapter.out.persistence.entity.InterestRateTraceEntity;
+import com.alibou.finance.history.infrastructure.adapter.out.persistence.repository.InterestRateTraceJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class InterestRateTraceJpaRepositoryIT extends BaseRepositoryTest {
+public class InterestRateTraceJpaRepositoryIT extends BaseRepositoryIT {
 
     @Autowired
     private InterestRateTraceJpaRepository interestRateTraceRepository;

@@ -15,11 +15,11 @@ import com.alibou.finance.account.domain.out.service.dto.TransfertConfirmationIn
 import com.alibou.finance.auth.domain.agregate.User;
 import com.alibou.finance.customer.application.port.CustomerConsultationUseCase;
 import com.alibou.finance.customer.domain.vo.CustomerId;
-import com.alibou.finance.log.domain.agregate.Transaction;
-import com.alibou.finance.log.domain.agregate.TransactionTypeEnum;
-import com.alibou.finance.log.domain.vo.transaction.FinalAmount;
-import com.alibou.finance.log.domain.vo.transaction.SoldBeforeTransaction;
-import com.alibou.finance.log.domain.vo.transaction.TransactionCurrencyCode;
+import com.alibou.finance.history.domain.agregate.Transaction;
+import com.alibou.finance.history.domain.agregate.TransactionTypeEnum;
+import com.alibou.finance.history.domain.vo.transaction.FinalAmount;
+import com.alibou.finance.history.domain.vo.transaction.SoldBeforeTransaction;
+import com.alibou.finance.history.domain.vo.transaction.TransactionCurrencyCode;
 import com.alibou.finance.shared.domain.OperationNotPermittedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

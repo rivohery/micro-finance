@@ -14,7 +14,7 @@ import com.alibou.finance.currency.domain.vo.CurrencyCode;
 import com.alibou.finance.currency.domain.vo.CurrencyName;
 import com.alibou.finance.customer.application.port.CustomerLifeCycleUseCase;
 import com.alibou.finance.customer.domain.vo.CustomerId;
-import com.alibou.finance.log.domain.vo.accountStatusHistory.InterestRate;
+import com.alibou.finance.history.domain.vo.accountStatusHistory.InterestRate;
 import com.alibou.finance.shared.domain.OperationNotPermittedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
