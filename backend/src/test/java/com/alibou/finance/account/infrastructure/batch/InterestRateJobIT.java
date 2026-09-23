@@ -68,6 +68,11 @@ public class InterestRateJobIT extends BaseServiceIT {
 
     @BeforeEach
     void setUp(){
+        accountJpaRepository.deleteAll();
+        currencyJpaRepository.deleteAll();
+        accountTypeJpaRepository.deleteAll();
+        interestRateTraceJpaRepository.deleteAll();
+
         checkingAccount = createMinType("10", "Compte courante");
         savingAccount = createMinType("20", "Compte épargne");
         businessAccount = createMinType("30", "Compte business");
