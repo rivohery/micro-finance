@@ -40,7 +40,7 @@ public class AuthService {
         cookie.setSecure(true);
         cookie.setAttribute("SameSite", "Lax");
         cookie.setPath("/");
-        cookie.setMaxAge(0); // Expirer le cookie immédiatement
+        cookie.setMaxAge(0);
         response.addCookie(cookie);
     }
 

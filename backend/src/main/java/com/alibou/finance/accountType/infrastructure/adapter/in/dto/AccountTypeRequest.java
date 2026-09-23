@@ -5,7 +5,7 @@ import com.alibou.finance.accountType.domain.vo.AccountFee;
 import com.alibou.finance.accountType.domain.vo.AccountTypeCode;
 import com.alibou.finance.accountType.domain.vo.AccountTypeName;
 import com.alibou.finance.accountType.domain.vo.MinimumBalance;
-import com.alibou.finance.log.domain.vo.accountStatusHistory.InterestRate;
+import com.alibou.finance.history.domain.vo.accountStatusHistory.InterestRate;
 import jakarta.validation.constraints.NotBlank;
 
 import java.math.BigDecimal;

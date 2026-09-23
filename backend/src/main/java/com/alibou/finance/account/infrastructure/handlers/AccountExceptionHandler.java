@@ -39,7 +39,7 @@ public class AccountExceptionHandler {
                 );
     }
 
-    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)//ou OptimisticLockingFailureException.class
     public ResponseEntity<HttpErrorResponse> handleException(ObjectOptimisticLockingFailureException exp) {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)//code 409

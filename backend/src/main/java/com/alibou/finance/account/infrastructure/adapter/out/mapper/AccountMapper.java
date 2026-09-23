@@ -51,11 +51,8 @@ public class AccountMapper {
         accountEntity.setAccountNumber(account.getAccountNumber().value());
         accountEntity.setAccountStatus(account.getAccountStatus().value());
         accountEntity.setOverdraftLimit(account.getOverdraftLimit().value());
-        accountEntity.setAccountTypeEntity(AccountTypeMapper.domainToEntity(account.getAccountType()));
         accountEntity.setBalance(account.getBalance().value());
-        accountEntity.setCurrencyEntity(CurrencyMapper.domainToEntity(account.getCurrency()));
         accountEntity.setMgaBalance(account.getMgaBalance().value());
-        accountEntity.setCustomerId(account.getCustomerId().value());
         return accountEntity;
     }
 

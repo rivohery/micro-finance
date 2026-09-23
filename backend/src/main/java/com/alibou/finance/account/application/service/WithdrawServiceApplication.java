@@ -9,10 +9,10 @@ import com.alibou.finance.account.domain.out.repository.AccountRepository;
 import com.alibou.finance.account.domain.out.repository.TransactionRepository;
 import com.alibou.finance.account.domain.out.service.CurrencyExchangePort;
 import com.alibou.finance.account.domain.out.service.ReferenceGenerator;
-import com.alibou.finance.log.domain.agregate.Transaction;
-import com.alibou.finance.log.domain.agregate.TransactionTypeEnum;
-import com.alibou.finance.log.domain.vo.transaction.FinalAmount;
-import com.alibou.finance.log.domain.vo.transaction.SoldBeforeTransaction;
+import com.alibou.finance.history.domain.agregate.Transaction;
+import com.alibou.finance.history.domain.agregate.TransactionTypeEnum;
+import com.alibou.finance.history.domain.vo.transaction.FinalAmount;
+import com.alibou.finance.history.domain.vo.transaction.SoldBeforeTransaction;
 import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;

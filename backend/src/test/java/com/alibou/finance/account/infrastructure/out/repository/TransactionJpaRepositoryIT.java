@@ -1,9 +1,9 @@
 package com.alibou.finance.account.infrastructure.out.repository;
 
-import com.alibou.finance.BaseRepositoryTest;
-import com.alibou.finance.log.domain.agregate.TransactionTypeEnum;
-import com.alibou.finance.log.infrastructure.adapter.out.persistence.entity.TransactionEntity;
-import com.alibou.finance.log.infrastructure.adapter.out.persistence.repository.TransactionJpaRepository;
+import com.alibou.finance.BaseRepositoryIT;
+import com.alibou.finance.history.domain.agregate.TransactionTypeEnum;
+import com.alibou.finance.history.infrastructure.adapter.out.persistence.entity.TransactionEntity;
+import com.alibou.finance.history.infrastructure.adapter.out.persistence.repository.TransactionJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigDecimal;
@@ -17,7 +17,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class TransactionJpaRepositoryIT extends BaseRepositoryTest {
+public class TransactionJpaRepositoryIT extends BaseRepositoryIT {
     @Autowired
     private TransactionJpaRepository transactionRepository;
 

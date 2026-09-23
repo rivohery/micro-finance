@@ -28,9 +28,6 @@ public interface AccountJpaRepository extends JpaRepository<AccountEntity, UUID>
     @EntityGraph(attributePaths = {"accountTypeEntity","currencyEntity"})
     Optional<AccountEntity>findByAccountNumber(String accountNumber);
 
-    @EntityGraph(attributePaths = {"accountTypeEntity","currencyEntity"})
-    Page<AccountEntity>findAllByAccountNumberStartsWithOrderByCreatedDateDesc(String accountNumber, Pageable pageable);
-
 
     @Query("""
         Select ae.id as id, ae.balance as balance, ae.createdDate as createdDate, ae.lastModifiedDate as lastModifiedDate,
@@ -71,13 +68,6 @@ public interface AccountJpaRepository extends JpaRepository<AccountEntity, UUID>
         select count(ae.id) from AccountEntity ae where ae.accountStatus != :accountStatus
     """)
     Long getNbrTotalOfAccountNoClosed(@Param("accountStatus") AccountStatusEnum accountStatus);
-
-    @EntityGraph(attributePaths = {"accountTypeEntity","currencyEntity"})
-    @Query("""
-        Select ae from AccountEntity ae 
-        where ae.accountTypeEntity.code in :codes and ae.accountStatus != :status
-    """)
-    Page<AccountEntity>getAllByAccountTypeEntityCodeIn(@Param("codes") Set<String>codes,@Param("status")AccountStatusEnum status, Pageable pageable);
 
 
 

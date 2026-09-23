@@ -12,7 +12,7 @@ import com.alibou.finance.account.infrastructure.transactional.AccountConsultati
 import com.alibou.finance.account.infrastructure.transactional.CreateNewAccountUseCaseProxy;
 import com.alibou.finance.auth.domain.agregate.User;
 import com.alibou.finance.auth.infrastructure.model.UserPrincipal;
-import com.alibou.finance.log.domain.vo.accountStatusHistory.Reason;
+import com.alibou.finance.history.domain.vo.accountStatusHistory.Reason;
 import com.alibou.finance.shared.application.PageResult;
 import com.alibou.finance.shared.infrastructure.dto.GlobalResponse;
 import com.alibou.finance.shared.infrastructure.dto.PageResponse;

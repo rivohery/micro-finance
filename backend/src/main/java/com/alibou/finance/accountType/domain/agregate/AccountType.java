@@ -1,7 +1,7 @@
 package com.alibou.finance.accountType.domain.agregate;
 
 import com.alibou.finance.accountType.domain.vo.*;
-import com.alibou.finance.log.domain.vo.accountStatusHistory.InterestRate;
+import com.alibou.finance.history.domain.vo.accountStatusHistory.InterestRate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +17,7 @@ public class AccountType {
     private AccountTypeId accountTypeId;
     private AccountTypeName name;//Épargne-courante-business
     private AccountTypeCode code; // 10=>courante;20=>épargne;30=>business
-    private AccountFee accountFee;// Frais du compte pour le compte courant par exemple
+    private AccountFee accountFee;
     private InterestRate annualInterestRate;// Taux d'intérêt annuel en pourcentage
     private MinimumBalance minimumBalance;//solde minimum (découvert) pour certain type de compte (ex : compte épargne exige un solde bloqué 300MGA - compte courant 0MGA)
 

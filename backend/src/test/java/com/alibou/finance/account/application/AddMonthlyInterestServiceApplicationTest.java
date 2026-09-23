@@ -1,22 +1,22 @@
 package com.alibou.finance.account.application;
 
 import com.alibou.finance.account.domain.exception.ThirdPartyServiceException;
-import com.alibou.finance.log.application.port.usecase.InterestRateUseCase;
+import com.alibou.finance.history.application.port.usecase.InterestRateUseCase;
 import com.alibou.finance.account.application.service.AddMonthlyInterestServiceApplication;
 import com.alibou.finance.account.domain.agregate.Account;
 import com.alibou.finance.accountType.domain.agregate.AccountType;
-import com.alibou.finance.log.domain.agregate.InterestRateTrace;
-import com.alibou.finance.log.domain.agregate.Transaction;
+import com.alibou.finance.history.domain.agregate.InterestRateTrace;
+import com.alibou.finance.history.domain.agregate.Transaction;
 import com.alibou.finance.account.domain.out.repository.TransactionRepository;
 import com.alibou.finance.account.domain.out.service.CurrencyExchangePort;
 import com.alibou.finance.account.domain.vo.AccountNumber;
 import com.alibou.finance.account.domain.vo.Balance;
 import com.alibou.finance.account.domain.vo.MgaBalance;
-import com.alibou.finance.log.domain.out.service.InterestRateTraceFactory;
-import com.alibou.finance.log.domain.vo.transaction.SoldBeforeTransaction;
+import com.alibou.finance.history.domain.out.service.InterestRateTraceFactory;
+import com.alibou.finance.history.domain.vo.transaction.SoldBeforeTransaction;
 import com.alibou.finance.currency.domain.agregate.Currency;
 import com.alibou.finance.currency.domain.vo.CurrencyCode;
-import com.alibou.finance.log.domain.vo.accountStatusHistory.InterestRate;
+import com.alibou.finance.history.domain.vo.accountStatusHistory.InterestRate;
 import com.alibou.finance.shared.domain.IllegalArgumentException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -118,7 +118,6 @@ public class AddMonthlyInterestServiceApplicationTest {
                 .accountType(accountType)
                 .currency(currency)
                 .balance(new Balance(new BigDecimal("1000000"))) //Solde à la fin du mois
-                .mgaBalance(new MgaBalance(new BigDecimal("1000000")))
                 .build();
 
         // Taux d'intérêt journalier simulé pour le compte : 0.0001 (soit 3.65%/an)
@@ -174,9 +173,6 @@ public class AddMonthlyInterestServiceApplicationTest {
         assertThat(result.getBalance().value())
                 .as("Le solde après l'ajout du taux d'intérêts mensuel")
                 .isEqualByComparingTo(expectedBalance);
-        assertThat(result.getMgaBalance().value())
-                .as("Le solde en MGA après l'ajout du taux d'intérêts mensuel")
-                .isEqualByComparingTo(expectedBalance.multiply(mgaExchangeRate));
 
 
         // Vérification que le taux de change a été demandé
@@ -233,7 +229,6 @@ public class AddMonthlyInterestServiceApplicationTest {
         // Un seul appel au calcul segmenté
         verify(account, times(1)).calculateInterestRateForSpecificDays(any(BigDecimal.class), anyLong());
 
-        verify(account).calculMgaBalance(mgaExchangeRate);
 
         verify(interestRateTraceFactory).prepare(any(Account.class), any(BigDecimal.class), any(BigDecimal.class));
 
@@ -273,7 +268,6 @@ public class AddMonthlyInterestServiceApplicationTest {
 
         verify(account).addMonthlyInterestRate(any(BigDecimal.class));
         verify(currencyExchangePort).getExchangeRate(anyString(), anyString());
-        verify(account).calculMgaBalance(any(BigDecimal.class));
         verify(interestRateUseCase, never()).save(any(InterestRateTrace.class));
 
     }
@@ -310,7 +304,6 @@ public class AddMonthlyInterestServiceApplicationTest {
 
         verify(account).addMonthlyInterestRate(any(BigDecimal.class));
         verify(currencyExchangePort).getExchangeRate(anyString(), anyString());
-        verify(account, never()).calculMgaBalance(any(BigDecimal.class));
         verify(interestRateUseCase, never()).save(any(InterestRateTrace.class));
 
     }

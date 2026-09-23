@@ -36,7 +36,7 @@ public class CreateNewAccountServiceApplication implements CreateNewAccountUseCa
         var currency = currencyUseCase.findByCode(account.getCurrency().getCode());
 
         //On calcule le découvert à partir du cel définie dans le type du compte (minimumBalance en MGA) et le taux d'échange au moment de la création du compte
-        BigDecimal exchangeRate = currencyExchangePort.getExchangeRate(CURRENCY_REFERENCE_CODE, currency.getCode().value());//Ex MGA => EUR
+        BigDecimal exchangeRate = currencyExchangePort.getExchangeRate(CURRENCY_REFERENCE_CODE, currency.getCode().value());
         OverdraftLimit overdraftLimit = OverdraftLimit.calculate(accountType.getMinimumBalance().value(), exchangeRate);
 
         String accountNumberValue = accountNumberGenerator.generateUniqueAccountNumber(
