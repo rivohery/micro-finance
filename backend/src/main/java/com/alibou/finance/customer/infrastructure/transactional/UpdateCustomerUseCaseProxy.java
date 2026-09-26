@@ -1,6 +1,7 @@
 package com.alibou.finance.customer.infrastructure.transactional;
 
-import com.alibou.finance.customer.application.port.UpdateCustomerUseCase;
+import com.alibou.finance.customer.application.command.UpdateCustomerCommand;
+import com.alibou.finance.customer.application.usecase.UpdateCustomerUseCase;
 import com.alibou.finance.customer.domain.agregate.Customer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,8 +14,8 @@ public class UpdateCustomerUseCaseProxy {
     private final UpdateCustomerUseCase updateCustomerUseCase;
 
     @Transactional
-    public Customer execute(Customer customer, byte[] contentFile, String fileName) {
-        return updateCustomerUseCase.execute(customer, contentFile, fileName);
+    public Customer execute(UpdateCustomerCommand ucd, byte[] contentFile, String fileName) {
+        return updateCustomerUseCase.execute(ucd, contentFile, fileName);
     }
 
 }

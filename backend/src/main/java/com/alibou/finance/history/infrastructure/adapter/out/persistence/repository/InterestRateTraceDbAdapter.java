@@ -4,7 +4,7 @@ import com.alibou.finance.history.domain.agregate.InterestRateTrace;
 import com.alibou.finance.history.domain.out.repository.InterestRateTraceRepository;
 import com.alibou.finance.history.infrastructure.adapter.out.mappers.InterestRateTraceMapper;
 import com.alibou.finance.history.infrastructure.adapter.out.persistence.entity.InterestRateTraceEntity;
-import com.alibou.finance.shared.application.PageResult;
+import com.alibou.finance.shared.application.result.PageResult;
 import com.alibou.finance.shared.infrastructure.mapper.PageMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

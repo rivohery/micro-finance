@@ -228,7 +228,11 @@ export class FormClientComponent implements OnInit {
 
     console.log(customerInfo);
     const formData = new FormData();
-    formData.append('customerInfo', JSON.stringify(customerInfo));
+    // Créer un Blob avec le type 'application/json'
+    const customerInfoBlob = new Blob([JSON.stringify(customerInfo)], {
+      type: 'application/json',
+    });
+    formData.append('customerInfo', customerInfoBlob);
     formData.append('file', this.selectedImage);
     this.sending.set(true);
     this.clientService.createClient(formData);
@@ -247,9 +251,14 @@ export class FormClientComponent implements OnInit {
       userId: this.editedCustomer().userId,
     };
     console.log(customerInfo);
+    const formData = new FormData();
+
+    const customerInfoBlob = new Blob([JSON.stringify(customerInfo)], {
+      type: 'application/json',
+    });
     const formdata = new FormData();
     formdata.append('customerId', this.editedCustomer().id);
-    formdata.append('customerInfo', JSON.stringify(customerInfo));
+    formdata.append('customerInfo', customerInfoBlob);
     formdata.append('file', this.selectedImage);
     this.sending.set(true);
     this.clientService.updateClient(formdata);

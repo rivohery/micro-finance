@@ -1,8 +1,11 @@
 package com.alibou.finance.account.infrastructure.transactional;
 
-import com.alibou.finance.account.application.port.dto.command.AccountLifeCycleCommand;
-import com.alibou.finance.account.application.port.dto.output.AccountLifeCycleResult;
-import com.alibou.finance.account.application.port.usecase.AccountLifeCycleUseCase;
+import com.alibou.finance.account.application.port.command.AccountLifeCycleCommand;
+import com.alibou.finance.account.application.port.result.AccountLifeCycleResult;
+import com.alibou.finance.account.application.port.usecase.ActivateAccountUseCase;
+import com.alibou.finance.account.application.port.usecase.CloseAccountUseCase;
+import com.alibou.finance.account.application.port.usecase.ReactivateAccountUseCase;
+import com.alibou.finance.account.application.port.usecase.SuspendedAccountUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,21 +15,32 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AccountLifeCycleUseCaseProxy {
 
-    private final AccountLifeCycleUseCase accountLifeCycleUseCase;
+
+   private final ActivateAccountUseCase activateAccountUseCase;
+   private final ReactivateAccountUseCase reactivateAccountUseCase;
+   private final SuspendedAccountUseCase suspendedAccountUseCase;
+   private final CloseAccountUseCase closeAccountUseCase;
 
     @Transactional
     public AccountLifeCycleResult activateAccount(AccountLifeCycleCommand input) {
-        return accountLifeCycleUseCase.activateAccount(input);
+        return activateAccountUseCase.execute(input);
+    }
+
+    @Transactional
+    public AccountLifeCycleResult reactivateAccount(AccountLifeCycleCommand input) {
+        return reactivateAccountUseCase.execute(input);
     }
 
     @Transactional
     public AccountLifeCycleResult suspendAccount(AccountLifeCycleCommand input) {
-        return accountLifeCycleUseCase.suspendAccount(input);
+        return suspendedAccountUseCase.execute(input);
     }
 
     @Transactional
     public AccountLifeCycleResult closeAccount(AccountLifeCycleCommand input) {
-        return accountLifeCycleUseCase.closeAccount(input);
+        return closeAccountUseCase.execute(input);
     }
+
+
 
 }

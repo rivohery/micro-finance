@@ -1,5 +1,6 @@
 package com.alibou.finance.account.infrastructure.transactional;
 
+import com.alibou.finance.account.application.port.command.CreateAccountCommand;
 import com.alibou.finance.account.application.port.usecase.CreateNewAccountUseCase;
 import com.alibou.finance.account.domain.agregate.Account;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ public class CreateNewAccountUseCaseProxy {
     private final CreateNewAccountUseCase createNewAccountUseCase;
 
     @Transactional
-    public Account execute(Account account) {
-        return createNewAccountUseCase.execute(account);
+    public Account execute(CreateAccountCommand createAccountCommand) {
+        return createNewAccountUseCase.execute(createAccountCommand);
     }
 }

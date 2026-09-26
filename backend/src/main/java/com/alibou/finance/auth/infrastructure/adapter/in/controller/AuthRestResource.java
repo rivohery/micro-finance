@@ -1,7 +1,7 @@
 package com.alibou.finance.auth.infrastructure.adapter.in.controller;
 
 import com.alibou.finance.auth.infrastructure.adapter.in.dto.LoginRequest;
-import com.alibou.finance.auth.infrastructure.utils.AuthService;
+import com.alibou.finance.auth.infrastructure.security.AuthService;
 import com.alibou.finance.shared.infrastructure.dto.GlobalResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;

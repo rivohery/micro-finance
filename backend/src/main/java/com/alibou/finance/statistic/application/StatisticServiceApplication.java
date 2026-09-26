@@ -1,53 +1,43 @@
 package com.alibou.finance.statistic.application;
 
-import com.alibou.finance.customer.infrastructure.adapter.out.persistence.projection.RegistrationStatisticProj;
-import com.alibou.finance.statistic.domain.agregate.NumberAccountStatistic;
-import com.alibou.finance.statistic.domain.agregate.RegistrationStatistic;
-import com.alibou.finance.statistic.domain.agregate.SoldeAccountStatistic;
-import com.alibou.finance.statistic.domain.service.AccountServicePort;
-import com.alibou.finance.statistic.domain.service.CustomerServicePort;
-import com.alibou.finance.statistic.infrastructure.adapter.mapper.AccountStatisticMapper;
-import com.alibou.finance.statistic.infrastructure.adapter.mapper.RegistrationStatisticMapper;
+import com.alibou.finance.shared.infrastructure.dto.NumberAccountStatistic;
+import com.alibou.finance.shared.infrastructure.dto.RegistrationStatistic;
+import com.alibou.finance.shared.infrastructure.dto.SoldeAccountStatistic;
+import com.alibou.finance.statistic.domain.out.AccountStatisticLinker;
+import com.alibou.finance.statistic.domain.out.CustomerStatisticLinker;
 import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
-import java.util.Comparator;
 import java.util.List;
 
 @RequiredArgsConstructor
 public class StatisticServiceApplication implements StatisticUseCase{
 
-    private final AccountServicePort accountServicePort;
-    private final CustomerServicePort customerServicePort;
+    private final AccountStatisticLinker accountStatisticLinker;
+    private final CustomerStatisticLinker customerStatisticLinker;
 
     @Override
     public List<NumberAccountStatistic> getAccountStatisticNumber() {
-        return accountServicePort.getAccountStatisticNumber()
-                .stream()
-                .map(AccountStatisticMapper::ofNumberAccount)
-                .toList();
+        return accountStatisticLinker.getAccountStatisticNumber();
     }
     @Override
     public List<SoldeAccountStatistic> getAccountStatisticSold() {
-        return accountServicePort.getAccountStatisticSold()
-                .stream()
-                .map(AccountStatisticMapper::ofSoldAccount)
-                .toList();
+        return accountStatisticLinker.getAccountStatisticSold();
     }
     @Override
     public BigDecimal getSoldeTotalOfAccountInMga() {
-        return accountServicePort.getSoldeTotalOfAccountInMga();
+        return accountStatisticLinker.getSoldeTotalOfAccountInMga();
     }
     @Override
     public Long getNbrTotalOfAccount() {
-        return accountServicePort.getNbrTotalOfAccount();
+        return accountStatisticLinker.getNbrTotalOfAccount();
     }
     @Override
     public Long getNbrTotalOfCustomer() {
-        return customerServicePort.getNbrTotalOfCustomer();
+        return customerStatisticLinker.getNbrTotalOfCustomer();
     }
     @Override
     public List<RegistrationStatistic> getRegistrationStatisticsByWeek() {
@@ -57,10 +47,6 @@ public class StatisticServiceApplication implements StatisticUseCase{
 
         LocalDate endWeek = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
 
-        return customerServicePort.getRegistrationStatisticsByWeek(startWeek, endWeek)
-                .stream()
-                .sorted(Comparator.comparing(RegistrationStatisticProj::getCreatedDate))
-                .map(RegistrationStatisticMapper::fromProjection)
-                .toList();
+        return customerStatisticLinker.getRegistrationStatisticsByWeek(startWeek, endWeek);
     }
 }

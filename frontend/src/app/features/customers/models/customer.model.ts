@@ -16,7 +16,7 @@ export interface CustomerRequest {
   addressCountry: string;
 }
 
-export type CustomerStatus = 'ACTIVE' | 'SUSPENDED' | 'PENDING' | 'CLOSED';
+export type CustomerStatus = 'ACTIVE' | 'SUSPENDED' | 'PENDING_KYC' | 'CLOSED';
 
 export interface CustomerMinResponse {
   id: string;
@@ -39,7 +39,7 @@ export const initCustomerValue = {
   phoneNumber: '',
   photo: '',
   dateOfBirth: new Date(),
-  status: 'PENDING',
+  status: 'PENDING_KYC',
   createdDate: new Date(),
   lastModifiedDate: new Date(),
 } as CustomerMinResponse;

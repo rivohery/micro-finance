@@ -2,49 +2,40 @@ package com.alibou.finance.account.infrastructure.config;
 
 import com.alibou.finance.account.application.port.usecase.*;
 import com.alibou.finance.account.application.service.*;
+import com.alibou.finance.account.application.utils.MonthlyInterestCalculator;
+import com.alibou.finance.account.domain.out.linker.*;
 import com.alibou.finance.account.domain.out.repository.AccountRepository;
 import com.alibou.finance.account.domain.out.repository.TransactionRepository;
 import com.alibou.finance.account.domain.out.service.AccountNumberGenerator;
-import com.alibou.finance.account.domain.out.service.CurrencyExchangePort;
-import com.alibou.finance.account.domain.out.service.ReferenceGenerator;
-import com.alibou.finance.account.domain.out.service.TransfertConfirmationPort;
-import com.alibou.finance.accountType.application.port.AccountTypeUseCase;
-import com.alibou.finance.auth.application.port.UserUseCase;
-import com.alibou.finance.currency.application.port.CurrencyUseCase;
-import com.alibou.finance.customer.application.port.CustomerConsultationUseCase;
-import com.alibou.finance.customer.application.port.CustomerLifeCycleUseCase;
-import com.alibou.finance.customer.domain.out.repository.CustomerRepository;
-import com.alibou.finance.history.application.port.usecase.AccountStatusHistoryUseCase;
-import com.alibou.finance.history.application.port.usecase.InterestRateUseCase;
-import com.alibou.finance.history.domain.out.service.InterestRateTraceFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.time.Clock;
 
 @Configuration
 public class AccountApplicationBeanConfig {
 
     @Bean
-    public AccountConsultationUseCase createAccountConsultationUseCaseBean(AccountRepository accountRepository, CustomerRepository customerRepository){
-        return new AccountConsultationServiceApplication(accountRepository, customerRepository);
+    public AccountConsultationUseCase accountConsultationUseCase(
+            AccountRepository accountRepository,
+            CustomerLinkerPort customerLinkerPort
+    ){
+        return new AccountConsultationServiceApplication(accountRepository, customerLinkerPort);
     }
 
     @Bean
-    public AccountLifeCycleUseCase createAccountLifeCycleUseCaseBean(AccountRepository accountRepository, UserUseCase userUseCase, AccountStatusHistoryUseCase accountStatusHistoryUseCase){
-        return new AccountLifeCycleServiceApplication(accountRepository, userUseCase, accountStatusHistoryUseCase);
-    }
-    @Bean
-    public CreateNewAccountUseCase buildCreateNewAccountUseCaseBean(
-            CustomerLifeCycleUseCase customerLifeCycleUseCase,
-            AccountTypeUseCase accountTypeUseCase,
-            CurrencyUseCase currencyUseCase,
+    public CreateNewAccountUseCase createNewAccountUseCase(
+            AccountTypeLinkerPort accountTypeLinkerPort,
+            CurrencyLinkerPort currencyLinkerPort,
+            CustomerLinkerPort customerLinkerPort,
             AccountNumberGenerator accountNumberGenerator,
             CurrencyExchangePort currencyExchangePort,
             AccountRepository accountRepository
     ){
         return new CreateNewAccountServiceApplication(
-                customerLifeCycleUseCase,
-                accountTypeUseCase,
-                currencyUseCase,
+                accountTypeLinkerPort,
+                currencyLinkerPort,
+                customerLinkerPort,
                 accountNumberGenerator,
                 currencyExchangePort,
                 accountRepository
@@ -52,50 +43,27 @@ public class AccountApplicationBeanConfig {
     }
 
     @Bean
-    public DepositUseCase depositUseCase(
-            AccountRepository accountRepository,
-            CurrencyExchangePort currencyExchangePort,
-            ReferenceGenerator referenceGenerator,
-            TransactionRepository transactionRepository
-    ){
-        return new DepositServiceApplication(accountRepository, currencyExchangePort, referenceGenerator, transactionRepository);
-    }
-
-    @Bean
-    public WithdrawUseCase withdrawUseCase(
-            AccountRepository accountRepository,
-            CurrencyExchangePort currencyExchangePort,
-            ReferenceGenerator referenceGenerator,
-            TransactionRepository transactionRepository
-    ){
-        return new WithdrawServiceApplication(accountRepository, currencyExchangePort, referenceGenerator, transactionRepository);
-    }
-    @Bean
-    public TransferUseCase transferUseCase(
+    public AddMonthlyInterestUseCase addMonthlyInterestUseCase(
             TransactionRepository transactionRepository,
-            AccountRepository accountRepository,
-            CurrencyExchangePort currencyExchangePort,
-            CustomerConsultationUseCase customerService,
-            ReferenceGenerator referenceGenerator,
-            TransfertConfirmationPort transfertConfirmationService
+            HistoryTraceLinker historyTraceLinker,
+            MonthlyInterestCalculator monthlyInterestCalculator,
+            Clock clock
     ){
-        return new TransferServiceApplication(
-                transactionRepository, accountRepository, currencyExchangePort, customerService, referenceGenerator, transfertConfirmationService
+        return new AddMonthlyInterestServiceApplication(
+                transactionRepository,
+                historyTraceLinker,
+                monthlyInterestCalculator,
+                clock
         );
-    }
-
-    @Bean
-    public AddMonthlyInterestUseCase addMonthlyInterestUseCaseBean(
-            TransactionRepository transactionRepository,
-            CurrencyExchangePort currencyExchangePort,
-            InterestRateTraceFactory interestRateTraceFactory,
-            InterestRateUseCase interestRateUseCase
-    ){
-        return new AddMonthlyInterestServiceApplication(transactionRepository, currencyExchangePort, interestRateTraceFactory, interestRateUseCase);
     }
 
     @Bean
     public CalculMgaBalanceUseCase calculMgaBalanceUseCase(CurrencyExchangePort currencyExchangePort){
         return new CalculMgaBalanceServiceApplication(currencyExchangePort);
+    }
+
+    @Bean
+    public ChangeAnnualInterestRateUseCase changeAnnualInterestRateUseCase(AccountRepository accountRepository){
+        return new ChangeAnnualInterestRateServiceApplication(accountRepository);
     }
 }

@@ -1,9 +1,11 @@
 package com.alibou.finance.accountType.infrastructure.adapter.in.controller;
 
+import com.alibou.finance.accountType.application.command.AccountTypeCommand;
 import com.alibou.finance.accountType.domain.agregate.AccountType;
-import com.alibou.finance.accountType.domain.vo.AccountTypeId;
+import com.alibou.finance.shared.domain.vo.accountType.AccountTypeId;
 import com.alibou.finance.accountType.infrastructure.adapter.in.dto.AccountTypeRequest;
 import com.alibou.finance.accountType.infrastructure.adapter.in.dto.AccountTypeResponse;
+import com.alibou.finance.accountType.infrastructure.adapter.out.mapper.AccountTypeMapper;
 import com.alibou.finance.accountType.infrastructure.transactional.AccountTypeUseCaseProxy;
 import com.alibou.finance.shared.infrastructure.dto.GlobalResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,7 +38,7 @@ public class AccountTypeRestResource {
     public ResponseEntity<AccountTypeResponse>findById(@PathVariable("accountTypeId") UUID accountTypeIdValue){
         AccountTypeId accountTypeId = AccountTypeId.from(accountTypeIdValue);
         return ResponseEntity.ok(
-                AccountTypeResponse.from(accountTypeService.findById(accountTypeId))
+                AccountTypeResponse.fromDomain(accountTypeService.findById(accountTypeId))
         );
     }
 
@@ -50,7 +52,7 @@ public class AccountTypeRestResource {
         return ResponseEntity.ok(
                 accountTypeService.findAll()
                         .stream()
-                        .map(AccountTypeResponse::from)
+                        .map(AccountTypeResponse::fromDomain)
                         .toList()
         );
     }
@@ -64,9 +66,10 @@ public class AccountTypeRestResource {
     public ResponseEntity<AccountTypeResponse>create(
             @Valid @RequestBody AccountTypeRequest request
     ){
-        AccountType accountType = AccountTypeRequest.toDomain(request);
+        AccountTypeCommand accountTypeCommand = AccountTypeMapper.requestToAccountTypeCommand(request);
+        AccountType newAccountType = accountTypeService.create(accountTypeCommand);
         return ResponseEntity.ok(
-                AccountTypeResponse.from(accountTypeService.create(accountType))
+                AccountTypeResponse.fromDomain(newAccountType)
         );
     }
 
@@ -77,14 +80,12 @@ public class AccountTypeRestResource {
     @PutMapping("/{accountTypeId}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<AccountTypeResponse>update(
-            @PathVariable("accountTypeId") UUID accountTypeIdValue,
+            @PathVariable("accountTypeId") UUID accountTypeId,
             @Valid @RequestBody AccountTypeRequest request
     ){
-        AccountType accountType = AccountTypeRequest.toDomain(request);
-        accountType.buildAccountTypeIdFrom(accountTypeIdValue);
-        return ResponseEntity.ok(
-                AccountTypeResponse.from(accountTypeService.update(accountType))
-        );
+        AccountTypeCommand accountTypeCommand = AccountTypeMapper.requestToAccountTypeCommand(request);
+        AccountType updated = accountTypeService.update(accountTypeCommand, new AccountTypeId(accountTypeId));
+        return ResponseEntity.ok(AccountTypeResponse.fromDomain(updated));
     }
 
     @Operation(

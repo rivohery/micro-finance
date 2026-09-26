@@ -1,9 +1,10 @@
 package com.alibou.finance.accountType.infrastructure.transactional;
 
+import com.alibou.finance.accountType.application.command.AccountTypeCommand;
 import com.alibou.finance.accountType.application.port.AccountTypeUseCase;
 import com.alibou.finance.accountType.domain.agregate.AccountType;
-import com.alibou.finance.accountType.domain.vo.AccountTypeCode;
-import com.alibou.finance.accountType.domain.vo.AccountTypeId;
+import com.alibou.finance.shared.domain.vo.accountType.AccountTypeCode;
+import com.alibou.finance.shared.domain.vo.accountType.AccountTypeId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,13 +18,13 @@ public class AccountTypeUseCaseProxy {
     private final AccountTypeUseCase accountTypeUseCase;
 
     @Transactional
-    public AccountType create(AccountType accountType){
-        return accountTypeUseCase.create(accountType);
+    public AccountType create(AccountTypeCommand accountTypeCommand){
+        return accountTypeUseCase.create(accountTypeCommand);
     }
 
     @Transactional
-    public AccountType update(AccountType accountType){
-        return accountTypeUseCase.update(accountType);
+    public AccountType update(AccountTypeCommand accountTypeCommand, AccountTypeId accountTypeId){
+        return accountTypeUseCase.update(accountTypeCommand, accountTypeId);
     }
 
     @Transactional(readOnly = true)
@@ -37,8 +38,8 @@ public class AccountTypeUseCaseProxy {
     }
 
     @Transactional
-    public AccountTypeId deleteById(AccountTypeId accountTypeId){
-        return accountTypeUseCase.deleteById(accountTypeId);
+    public void deleteById(AccountTypeId accountTypeId){
+        accountTypeUseCase.deleteById(accountTypeId);
     }
 
     @Transactional(readOnly = true)

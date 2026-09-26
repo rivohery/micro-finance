@@ -1,13 +1,27 @@
 package com.alibou.finance.accountType.infrastructure.adapter.out.mapper;
 
+import com.alibou.finance.accountType.application.command.AccountTypeCommand;
 import com.alibou.finance.accountType.domain.agregate.AccountType;
+import com.alibou.finance.accountType.infrastructure.adapter.in.dto.AccountTypeRequest;
 import com.alibou.finance.accountType.infrastructure.adapter.out.persistence.entity.AccountTypeEntity;
 import com.alibou.finance.accountType.domain.vo.*;
-import com.alibou.finance.history.domain.vo.accountStatusHistory.InterestRate;
+import com.alibou.finance.shared.domain.vo.accountType.*;
 
 import java.util.Objects;
 
 public class AccountTypeMapper {
+
+    public static AccountTypeCommand requestToAccountTypeCommand(
+            AccountTypeRequest request
+    ){
+        return new AccountTypeCommand(
+                new AccountTypeCode(request.code()),
+                new AccountTypeName(request.name()),
+                new AccountFee(request.accountFee()),
+                new InterestRate(request.interestRate()),
+                new MinimumBalance(request.minimumBalance())
+        );
+    }
 
     public static AccountTypeEntity domainToEntity(AccountType accountType){
         if(Objects.nonNull(accountType)) {

@@ -1,8 +1,8 @@
 package com.alibou.finance.currency.infrastructure.adapter.in.dto;
 
 import com.alibou.finance.currency.domain.agregate.Currency;
-import com.alibou.finance.currency.domain.vo.CurrencyCode;
-import com.alibou.finance.currency.domain.vo.CurrencyId;
+import com.alibou.finance.shared.domain.vo.currency.CurrencyCode;
+import com.alibou.finance.shared.domain.vo.currency.CurrencyId;
 import com.alibou.finance.currency.domain.vo.CurrencyName;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -1,54 +1,39 @@
 package com.alibou.finance.customer.infrastructure.adapter.in.dto;
 
-import com.alibou.finance.auth.domain.agregate.RoleEnum;
-import com.alibou.finance.auth.domain.agregate.User;
-import com.alibou.finance.auth.domain.vo.Address;
-import com.alibou.finance.customer.domain.agregate.Customer;
-import com.alibou.finance.customer.domain.vo.*;
-import com.alibou.finance.shared.vo.domain.Email;
-import com.fasterxml.jackson.annotation.JsonFormat;
-
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 import java.util.UUID;
 
 public record CustomerRequest(
+
+        @NotBlank(message = "Le prénom ne doit pas être vide")
         String firstName,
+        @NotBlank(message = "Le prénom ne doit pas être vide")
         String lastName,
         UUID userId,
+
         String username,
 
-        //@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) :Pour spring pour verifier le format
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")//pour verifier le format de la date (ISO)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        @NotNull(message = "La date de naissance ne doit pas être vide")
         LocalDate dateOfBirth,
+        @NotBlank(message = "Le numéro du telephone ne doit pas être vide")
         String phoneNumber,
+
+        @jakarta.validation.constraints.Email(message = "L'adresse email invalide")
         String email,
+        @NotBlank(message = "Le CIN ne doit pas être vide")
         String cin,
+        @NotBlank(message = "L'occupation ne doit pas être vide")
         String occupation,
+        @NotBlank(message = "L'adresse physique ne doit pas être vide")
         String addressValue,
+        @NotBlank(message = "Le ville ne doit pas être vide")
         String addressCity,
+        @NotBlank(message = "Le code postal ne doit pas être vide")
         String addressZipCode,
+        @NotBlank(message = "Le pays ne doit pas être vide")
         String addressCountry
-) {
-
-    public static Customer toDomain(CustomerRequest request) {
-        User user;
-        if(request.userId() == null){
-            user = User.create(request.username(), request.email(), RoleEnum.CLIENT);
-        } else {
-            user = User.update(request.userId(), request.username(), request.email());
-        }
-        return Customer.builder()
-                .user(user)
-                .phoneNumber(new PhoneNumber(request.phoneNumber()))
-                .firstName(new FirstName(request.firstName()))
-                .dateOfBirth(new DateOfBirth(request.dateOfBirth()))
-                .lastName(new LastName(request.lastName()))
-                .email(new Email(request.email()))
-                .cin(new Cin(request.cin()))
-                .address(new Address(request.addressValue(), request.addressCity(), request.addressZipCode(), request.addressCountry()))
-                .occupation(new Occupation(request.occupation()))
-                .build();
-
-    }
-
-}
+) { }

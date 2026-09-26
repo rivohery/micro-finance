@@ -3,13 +3,12 @@ package com.alibou.finance.account.application.service;
 import com.alibou.finance.account.application.port.usecase.AccountConsultationUseCase;
 import com.alibou.finance.account.domain.agregate.Account;
 import com.alibou.finance.account.domain.exception.AccountNotFoundException;
+import com.alibou.finance.account.domain.out.linker.CustomerLinkerPort;
 import com.alibou.finance.account.domain.out.repository.AccountRepository;
-import com.alibou.finance.account.domain.vo.AccountNumber;
-import com.alibou.finance.auth.domain.agregate.User;
-import com.alibou.finance.customer.domain.exception.CustomerNotFoundException;
-import com.alibou.finance.customer.domain.out.repository.CustomerRepository;
-import com.alibou.finance.customer.domain.vo.CustomerId;
-import com.alibou.finance.shared.application.PageResult;
+import com.alibou.finance.shared.domain.vo.account.AccountNumber;
+import com.alibou.finance.shared.domain.vo.user.UserId;
+import com.alibou.finance.shared.domain.vo.user.CustomerId;
+import com.alibou.finance.shared.application.result.PageResult;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -18,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AccountConsultationServiceApplication implements AccountConsultationUseCase {
     private final AccountRepository accountRepository;
-    private final CustomerRepository customerRepository;
+    private final CustomerLinkerPort customerLinkerPort;
 
     @Override
     public Account findByAccountNumber(AccountNumber accountNumber) {
@@ -38,10 +37,8 @@ public class AccountConsultationServiceApplication implements AccountConsultatio
     }
 
     @Override
-    public List<Account> findAllByUserConnected(User user) {
-        CustomerId customerId = customerRepository.findCustomerIdByUser(user).orElseThrow(
-                () -> new CustomerNotFoundException("Aucun ID client correspond au utilisateur connecté")
-        );
+    public List<Account> findAllByUserConnected(UserId userId) {
+        CustomerId customerId = customerLinkerPort.findCustomerIdByUserId(userId);
         return accountRepository.findAllByCustomerId(customerId);
     }
 }

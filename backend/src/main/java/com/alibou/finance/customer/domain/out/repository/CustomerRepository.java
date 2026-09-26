@@ -1,11 +1,15 @@
 package com.alibou.finance.customer.domain.out.repository;
 
-import com.alibou.finance.auth.domain.agregate.User;
+import com.alibou.finance.customer.domain.vo.PhoneNumber;
+import com.alibou.finance.shared.domain.vo.user.UserId;
 import com.alibou.finance.customer.domain.agregate.Customer;
-import com.alibou.finance.customer.domain.agregate.CustomerStatus;
-import com.alibou.finance.customer.domain.vo.CustomerId;
-import com.alibou.finance.shared.application.PageResult;
+import com.alibou.finance.customer.domain.vo.Cin;
+import com.alibou.finance.shared.domain.vo.user.CustomerId;
+import com.alibou.finance.customer.infrastructure.adapter.out.persistence.projection.RegistrationStatisticProj;
+import com.alibou.finance.shared.application.result.PageResult;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -14,18 +18,20 @@ public interface CustomerRepository {
 
     Optional<Customer>findById(CustomerId customerId);
 
-    Optional<CustomerId> findCustomerIdByUser(User user);
+    Optional<Customer>getCustomerByUserId(UserId userId);
 
-    boolean existsByCin(String cin);
+    Optional<CustomerId> findCustomerIdByUserId(UserId userId);
 
-    PageResult<Customer> fetchAllEnableCustomerBySearchBegin(String search, int page, int size);
+    boolean existsByCin(Cin cin);
+    boolean existsByPhoneNumber(PhoneNumber phoneNumber);
 
-    PageResult<Customer>findAllCustomerBySearchBegin(String search,  int page, int size);
+    PageResult<Customer> searchOperableCustomer(String search, int page, int size);
 
-    CustomerStatus updateCustomerStatus(Customer customer);
-
-    void closeAccount(Customer customer);
+    PageResult<Customer>fetchAllCustomerBySearchStart(String search,  int page, int size);
 
     boolean existsById(UUID customerId);
+
+    Long getNbrTotalOfCustomerNoClosed();
+    List<RegistrationStatisticProj> getDailyCustomerRegistrationOfWeek(LocalDate startWeek, LocalDate endWeek);
 
 }

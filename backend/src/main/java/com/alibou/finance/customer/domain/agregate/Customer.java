@@ -1,14 +1,16 @@
 package com.alibou.finance.customer.domain.agregate;
 
-import com.alibou.finance.auth.domain.agregate.User;
-import com.alibou.finance.auth.domain.vo.Address;
+import com.alibou.finance.customer.domain.vo.Address;
+import com.alibou.finance.shared.domain.vo.user.UserId;
 import com.alibou.finance.customer.domain.vo.*;
-import com.alibou.finance.shared.domain.OperationNotPermittedException;
-import com.alibou.finance.shared.vo.domain.Email;
+import com.alibou.finance.shared.domain.exception.OperationNotPermittedException;
+import com.alibou.finance.shared.domain.vo.user.CustomerId;
+import com.alibou.finance.shared.domain.vo.user.Email;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -25,7 +27,7 @@ public class Customer {
     private PhoneNumber phoneNumber;
     private Email email;
     private Cin cin;
-    private Status status;
+    private CustomerStatus customerStatus;
     private Address address;
     private Occupation occupation;
     private ImageUrl imageUrl;
@@ -33,106 +35,80 @@ public class Customer {
     private LocalDate lastModifiedDate;
     private UUID createdBy;
     private UUID lastModifiedBy;
-    private User user;
+    private UserId userId;
 
-    public void updateCustomerId(CustomerId customerId){
-        if(Objects.isNull(customerId)){
-            return;
+    /**
+     * Règle métier : ne modifier un champ que s'il a effectivement changé.
+     * Le domaine décide, la couche application ne fait qu'appeler.
+     */
+    public void updateProfile(
+            FirstName firstName,
+            LastName lastName,
+            Occupation occupation,
+            PhoneNumber phoneNumber,
+            DateOfBirth dateOfBirth,
+            Address address
+    ) {
+        if (!Objects.equals(this.firstName, firstName)) {
+            this.firstName = firstName;
         }
-        this.customerId = customerId;
-    }
-
-    public void updateImageUrl(String filePath){
-        if(filePath == null || filePath.length() == 0){
-            return;
+        if (!Objects.equals(this.lastName, lastName)) {
+            this.lastName = lastName;
         }
-        this.imageUrl = new ImageUrl(filePath);
-    }
-    public void updateUser(User user){
-        if(Objects.isNull(user)){
-            return;
+        if (!Objects.equals(this.occupation, occupation)) {
+            this.occupation = occupation;
         }
-        this.user = user;
-    }
-
-    public void updateCin(Cin cin){
-        if(Objects.isNull(cin)){
-            return;
+        if (!Objects.equals(this.phoneNumber, phoneNumber)) {
+            this.phoneNumber = phoneNumber;
         }
-        this.cin = cin;
-    }
-
-    public void updatePhoneNumber(PhoneNumber phoneNumber){
-        if(Objects.isNull(phoneNumber)){
-            return;
+        if (!Objects.equals(this.dateOfBirth, dateOfBirth)) {
+            this.dateOfBirth = dateOfBirth;
         }
-        this.phoneNumber = phoneNumber;
+        if (!Objects.equals(this.address, address)) {
+            this.address = address;
+        }
     }
 
-    public void updateFirstName(FirstName firstName){
-        if(Objects.isNull(firstName)){
-            return;
+    public void updateEmail(Email newEmail){
+        if(!Objects.equals(this.email, newEmail)){
+            this.email = newEmail;
         }
-        this.firstName = firstName;
     }
 
-    public void updateLastName(LastName lastName){
-        if(Objects.isNull(lastName)){
-            return;
+    public void updateImageUrl(String imageUrl) {
+        if (StringUtils.isNotBlank(imageUrl)) {
+            this.imageUrl = new ImageUrl(imageUrl);
         }
-        this.lastName = lastName;
     }
 
-    public void updateAdresse(Address adresse){
-        if(Objects.isNull(adresse)){
-            return;
-        }
-        this.address = adresse;
-    }
-    public void updateDateOfBirth(DateOfBirth dateOfBirth){
-        if(Objects.isNull(dateOfBirth)){
-            return;
-        }
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public void updateEmail(Email email){
-        if(Objects.isNull(email)){
-            return;
-        }
-        this.email = email;
-    }
-    public void updateOccupation(Occupation occupation){
-        if(Objects.isNull(occupation)){
-            return;
-        }
-        this.occupation = occupation;
-    }
 
     public void initCustomer(){
         this.customerId =  CustomerId.generate();
-        this.status = Status.pending();
+        this.customerStatus = CustomerStatus.pending();
     }
 
     public void suspend(){
-        if(this.status.value() == CustomerStatus.ACTIVE){
-            this.status = Status.suspended();
+        if(this.customerStatus.value() == CustomerStatusEnum.ACTIVE){
+            this.customerStatus = CustomerStatus.suspended();
         } else {
-            throw new OperationNotPermittedException("Le status de ce client être encore 'PENDING'");
+            throw new OperationNotPermittedException("On ne peut suspendre que les clients actives");
         }
     }
 
     public void active(){
-        if(this.status.value() == CustomerStatus.PENDING || this.status.value() == CustomerStatus.SUSPENDED){
-            this.status = Status.active();
+        if(this.customerStatus.value() == CustomerStatusEnum.PENDING_KYC || this.customerStatus.value() == CustomerStatusEnum.SUSPENDED){
+            this.customerStatus = CustomerStatus.active();
+        } else {
+            throw new OperationNotPermittedException("Les clients dont le status est 'CLOSED' ne sont plus activables");
         }
     }
 
     public void close(){
-        if(this.status.value() != CustomerStatus.SUSPENDED){
-            throw new OperationNotPermittedException("Clôture du compte client interrompu: soit le client est active ou encore en attente");
+        if(this.customerStatus.value() != CustomerStatusEnum.CLOSED){
+            this.customerStatus = CustomerStatus.close();
+        } else {
+           System.out.println("Le status est deja CLOSED");
         }
-        this.status = Status.close();
     }
 
 }

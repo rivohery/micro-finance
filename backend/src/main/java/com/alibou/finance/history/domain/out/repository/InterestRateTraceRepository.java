@@ -1,7 +1,7 @@
 package com.alibou.finance.history.domain.out.repository;
 
 import com.alibou.finance.history.domain.agregate.InterestRateTrace;
-import com.alibou.finance.shared.application.PageResult;
+import com.alibou.finance.shared.application.result.PageResult;
 
 import java.math.BigDecimal;
 

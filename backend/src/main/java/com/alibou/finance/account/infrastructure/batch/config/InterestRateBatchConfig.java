@@ -1,7 +1,7 @@
 package com.alibou.finance.account.infrastructure.batch.config;
 
-import com.alibou.finance.account.domain.agregate.AccountStatusEnum;
-import com.alibou.finance.account.infrastructure.adapter.out.persistence.entity.AccountEntity;
+import com.alibou.finance.shared.domain.enums.AccountStatusEnum;
+import com.alibou.finance.account.infrastructure.adapter.out.port.persistence.entity.AccountEntity;
 import com.alibou.finance.account.infrastructure.batch.processor.InterestItemProcessor;
 import com.alibou.finance.account.infrastructure.transactional.AddMonthlyInterestUseCaseProxy;
 import jakarta.persistence.EntityManagerFactory;
@@ -47,9 +47,7 @@ public class InterestRateBatchConfig {
                 .entityManagerFactory(entityManagerFactory)
                 .queryString(
                         "SELECT a FROM AccountEntity a " +
-                                "JOIN FETCH a.currencyEntity c " +
-                                "JOIN FETCH a.accountTypeEntity at " +
-                                "WHERE at.code IN :codes " +
+                                "WHERE a.accountTypeCode IN :codes " +
                                 "AND a.accountStatus =:status " +
                                 "ORDER BY a.id ASC")
                 .parameterValues(parameters)

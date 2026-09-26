@@ -1,9 +1,9 @@
 package com.alibou.finance.history.application.port.command;
 
-import com.alibou.finance.account.domain.vo.AccountId;
-import com.alibou.finance.history.domain.agregate.AccountStatusHistory;
+import com.alibou.finance.shared.domain.vo.account.AccountId;
 import com.alibou.finance.history.domain.vo.accountStatusHistory.*;
-import com.alibou.finance.shared.domain.Assert;
+import com.alibou.finance.shared.domain.validator.Assert;
+import com.alibou.finance.shared.domain.vo.history.Reason;
 import lombok.Builder;
 
 @Builder
@@ -23,16 +23,4 @@ public record AccountStatusHistoryCommand(
         Assert.notNull("newStatus", newStatus);
     }
 
-    public static AccountStatusHistory toAgregate(AccountStatusHistoryCommand input){
-        return AccountStatusHistory
-                .builder()
-                .accountStatusHistoryId(AccountStatusHistoryId.generate())
-                .accountId(input.accountId())
-                .doingAt(DoingAt.now())
-                .doingBy(input.doingBy())
-                .reason(input.reason)
-                .oldStatus(input.oldStatus)
-                .newStatus(input.newStatus)
-                .build();
-    }
 }

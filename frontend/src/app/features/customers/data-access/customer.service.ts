@@ -12,7 +12,8 @@ import {
   DetailCustomerWithAccount,
   UpdateStatusClientRequest,
 } from '../models/customer.model';
-import { Observable, catchError, tap } from 'rxjs';
+import { Observable, catchError, map, switchMap, tap } from 'rxjs';
+import { AccountResponse } from '../../accounts/model/account.model';
 
 @Injectable({
   providedIn: 'root',
@@ -21,6 +22,7 @@ export class CustomerService extends HandleErrorService {
   http = inject(HttpClient);
   adminClientUrl: string = '/api/v1/admin/clients';
   employeeClientUrl: string = '/api/v1/employees/clients';
+  accountsUrl: string = '/api/v1/accounts';
 
   private createClientSignal: WritableSignal<State<GlobalResponse, string>> =
     signal(State.builder<GlobalResponse, string>().forInit().build());
@@ -286,9 +288,23 @@ export class CustomerService extends HandleErrorService {
     customerId: string
   ): Observable<DetailCustomerWithAccount> {
     return this.http
-      .get<DetailCustomerWithAccount>(
-        `${this.employeeClientUrl}/find-details-with-accounts/${customerId}`
+      .get<CustomerMinResponse>(
+        `${this.employeeClientUrl}/find-customer-info/${customerId}`
       )
-      .pipe(catchError((err) => this.handleError(err)));
+      .pipe(
+        switchMap((customer) =>
+          this.http
+            .get<AccountResponse[]>(
+              `${this.accountsUrl}/find-accounts-by-customerId/${customer.id}`
+            )
+            .pipe(
+              map(
+                (accounts) =>
+                  ({ accounts, customer } as DetailCustomerWithAccount)
+              )
+            )
+        ),
+        catchError((err) => this.handleError(err))
+      );
   }
 }

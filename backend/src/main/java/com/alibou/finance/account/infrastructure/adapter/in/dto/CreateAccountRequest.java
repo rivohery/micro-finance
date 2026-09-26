@@ -1,11 +1,9 @@
 package com.alibou.finance.account.infrastructure.adapter.in.dto;
 
-import com.alibou.finance.account.domain.agregate.Account;
-import com.alibou.finance.accountType.domain.agregate.AccountType;
-import com.alibou.finance.accountType.domain.vo.AccountTypeCode;
-import com.alibou.finance.currency.domain.agregate.Currency;
-import com.alibou.finance.currency.domain.vo.CurrencyCode;
-import com.alibou.finance.customer.domain.vo.CustomerId;
+import com.alibou.finance.account.application.port.command.CreateAccountCommand;
+import com.alibou.finance.shared.domain.vo.accountType.AccountTypeCode;
+import com.alibou.finance.shared.domain.vo.currency.CurrencyCode;
+import com.alibou.finance.shared.domain.vo.user.CustomerId;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -19,14 +17,12 @@ public record CreateAccountRequest(
         UUID customerId
 ) {
 
-    public static Account toDomain(CreateAccountRequest request){
-        CurrencyCode currencyCode = new CurrencyCode(request.currencyCode());
-        return Account.builder()
-                .accountType(
-                        new AccountType(new AccountTypeCode(request.accountTypeCode()))
-                )
-                .currency(new Currency(currencyCode))
-                .customerId(new CustomerId(request.customerId()))
-                .build();
+    public static CreateAccountCommand toCreateAccountCommand(CreateAccountRequest request){
+        var accountCurrencyCode = (request.currencyCode != null && !request.currencyCode.isBlank()) ? request.currencyCode : "MGA";
+        return new CreateAccountCommand(
+            new AccountTypeCode(request.accountTypeCode()),
+            new CurrencyCode(accountCurrencyCode),
+            new CustomerId(request.customerId())
+        );
     }
 }

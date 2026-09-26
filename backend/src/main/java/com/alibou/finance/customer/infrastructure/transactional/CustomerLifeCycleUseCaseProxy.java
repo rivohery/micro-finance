@@ -1,8 +1,8 @@
 package com.alibou.finance.customer.infrastructure.transactional;
 
-import com.alibou.finance.customer.application.port.CustomerLifeCycleUseCase;
-import com.alibou.finance.customer.domain.agregate.CustomerStatus;
-import com.alibou.finance.customer.domain.vo.CustomerId;
+import com.alibou.finance.customer.application.usecase.CustomerLifeCycleUseCase;
+import com.alibou.finance.customer.domain.agregate.CustomerStatusEnum;
+import com.alibou.finance.shared.domain.vo.user.CustomerId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,13 +19,18 @@ public class CustomerLifeCycleUseCaseProxy {
     }
 
     @Transactional
-    public CustomerStatus updateStatusCustomer(CustomerId customerId, CustomerStatus status) {
-        return customerLifeCycleUseCase.updateStatusCustomer(customerId, status);
+    public void updateStatusCustomer(CustomerId customerId, CustomerStatusEnum status) {
+        if(status == CustomerStatusEnum.ACTIVE){
+            customerLifeCycleUseCase.activeCustomer(customerId);
+        }
+        if(status == CustomerStatusEnum.SUSPENDED){
+            customerLifeCycleUseCase.suspendCustomer(customerId);
+        }
     }
 
     @Transactional
-    public boolean closeCustomerAccount(CustomerId customerId) {
-        return customerLifeCycleUseCase.closeCustomerAccount(customerId);
+    public void closeCustomer(CustomerId customerId) {
+        customerLifeCycleUseCase.closeCustomer(customerId);
     }
 
 }

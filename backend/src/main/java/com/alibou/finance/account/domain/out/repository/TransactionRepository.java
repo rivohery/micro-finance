@@ -1,11 +1,12 @@
 package com.alibou.finance.account.domain.out.repository;
 
-import com.alibou.finance.account.domain.vo.AccountNumber;
-import com.alibou.finance.history.domain.vo.transaction.Reference;
-import com.alibou.finance.history.domain.agregate.Transaction;
-import com.alibou.finance.shared.application.PageResult;
+import com.alibou.finance.shared.domain.vo.account.AccountNumber;
+import com.alibou.finance.account.domain.vo.transaction.Reference;
+import com.alibou.finance.account.domain.agregate.Transaction;
+import com.alibou.finance.shared.application.result.PageResult;
 
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,7 @@ public interface TransactionRepository {
     PageResult<Transaction> findAllByCreatedDateBetween(LocalDateTime start, LocalDateTime end,int page,int size);
     List<Transaction> findAllByCreatedDateBetween(LocalDateTime start, LocalDateTime end);
 
-    List<Transaction>checkMonthlyTransactionOfAccount(AccountNumber accountNumber, LocalDateTime startMonth, LocalDateTime endMonth);
+    List<Transaction>findMonthlyTransactionsOfAccount(AccountNumber accountNumber, YearMonth month);
+
 
 }

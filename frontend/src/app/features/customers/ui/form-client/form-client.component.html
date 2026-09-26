@@ -78,6 +78,7 @@
             ]"
           ></app-input>
 
+          @if(mode() === 'create'){
           <app-input
             [label]="'Pseudo'"
             [control]="username"
@@ -88,6 +89,7 @@
               { value: 'required', message: 'Le pseudo du client est récquis' }
             ]"
           ></app-input>
+          }
 
           <mat-form-field appearance="outline">
             <mat-label>Date de naissance</mat-label>
@@ -140,6 +142,7 @@
             ]"
           ></app-input>
 
+          @if(mode() === 'create'){
           <app-input
             [label]="'Email'"
             [control]="email"
@@ -151,6 +154,7 @@
               { value: 'email', message: 'Email du client est invalide format' }
             ]"
           ></app-input>
+          }
 
           <app-input
             [label]="'Occupation / Métier'"

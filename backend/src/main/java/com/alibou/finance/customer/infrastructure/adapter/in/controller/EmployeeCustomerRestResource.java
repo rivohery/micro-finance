@@ -1,12 +1,11 @@
 package com.alibou.finance.customer.infrastructure.adapter.in.controller;
 
-import com.alibou.finance.account.infrastructure.adapter.in.dto.AccountResponse;
 import com.alibou.finance.customer.domain.agregate.Customer;
-import com.alibou.finance.customer.domain.vo.CustomerId;
+import com.alibou.finance.shared.domain.vo.user.CustomerId;
 import com.alibou.finance.customer.infrastructure.adapter.in.dto.CustomerMinResponse;
 import com.alibou.finance.customer.infrastructure.adapter.out.mapper.CustomerMapper;
 import com.alibou.finance.customer.infrastructure.transactional.CustomerConsultationUseCaseProxy;
-import com.alibou.finance.shared.application.PageResult;
+import com.alibou.finance.shared.application.result.PageResult;
 import com.alibou.finance.shared.infrastructure.dto.PageResponse;
 import com.alibou.finance.shared.infrastructure.mapper.PageMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,8 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -33,29 +30,28 @@ public class EmployeeCustomerRestResource {
     )
     @GetMapping("/find-all-enable")
     @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYE')")
-    public ResponseEntity<PageResponse<CustomerMinResponse>> findAllEnableCustomerBySearch(
+    public ResponseEntity<PageResponse<CustomerMinResponse>> searchOperableCustomer(
             @RequestParam(name = "search", defaultValue = "") String search,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "6") int size
     ) {
 
-        PageResult<Customer> pageOfCustomer = customerConsultationService.findAllEnableCustomerBySearch(search, page, size);
+        PageResult<Customer> pageOfCustomer = customerConsultationService.searchOperableCustomer(search, page, size);
         PageResponse<CustomerMinResponse> pagesResponse = PageMapper.toPageResponse(pageOfCustomer, CustomerMapper::domainToMinResponse);
         return ResponseEntity.ok(pagesResponse);
     }
 
     @Operation(
-            summary = "findCustomerWithAccounts",
-            description = "Pour récupérer les informations sur un client accompagner de ses comptes"
+            summary = "findCustomerInfo",
+            description = "Pour récupérer les informations minimum sur un client"
     )
-    @GetMapping("/find-details-with-accounts/{customerId}")
+    @GetMapping("/find-customer-info/{customerId}")
     @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYE')")
-    public ResponseEntity<Map<String, Object>>findCustomerWithAccounts(
+    public  ResponseEntity<CustomerMinResponse> findCustomerInfo(
             @PathVariable("customerId") UUID customerId
     ){
-        var detailCustomerWithAccount = customerConsultationService.findCustomerWithAccounts(CustomerId.from(customerId));
-        CustomerMinResponse customer = CustomerMapper.domainToMinResponse(detailCustomerWithAccount.customer());
-        List<AccountResponse> accounts = detailCustomerWithAccount.accounts().stream().map(AccountResponse::fromDomain).toList();
-        return ResponseEntity.ok(Map.of("customer", customer, "accounts", accounts));
+        var customer = customerConsultationService.findCustomerInfo(new CustomerId(customerId));
+        CustomerMinResponse customerInfo = CustomerMapper.domainToMinResponse(customer);
+        return ResponseEntity.ok(customerInfo);
     }
 }

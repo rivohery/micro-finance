@@ -1,15 +1,17 @@
 package com.alibou.finance.account.infrastructure.in;
 
+import com.alibou.finance.account.application.port.command.CreateAccountCommand;
 import com.alibou.finance.account.domain.agregate.Account;
-import com.alibou.finance.account.domain.agregate.AccountStatusEnum;
-import com.alibou.finance.account.domain.vo.AccountStatus;
+import com.alibou.finance.auth.UserProvider;
+import com.alibou.finance.shared.domain.enums.AccountStatusEnum;
+import com.alibou.finance.account.domain.vo.account.AccountStatus;
 import com.alibou.finance.account.infrastructure.adapter.in.controller.AccountRestResource;
 import com.alibou.finance.account.infrastructure.adapter.in.dto.CreateAccountRequest;
 import com.alibou.finance.account.infrastructure.handlers.AccountExceptionHandler;
 import com.alibou.finance.account.infrastructure.transactional.AccountConsultationUseCaseProxy;
 import com.alibou.finance.account.infrastructure.transactional.AccountLifeCycleUseCaseProxy;
 import com.alibou.finance.account.infrastructure.transactional.CreateNewAccountUseCaseProxy;
-import com.alibou.finance.shared.domain.OperationNotPermittedException;
+import com.alibou.finance.shared.domain.exception.OperationNotPermittedException;
 import com.alibou.finance.shared.infrastructure.error.GlobalExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,6 +41,8 @@ public class AccountRestResourceTest {
     private CreateNewAccountUseCaseProxy createNewAccountUseCase;
     @Mock
     private AccountConsultationUseCaseProxy accountConsultationService;
+    @Mock
+    private UserProvider userProvider;
     private Authentication mockAuthentication;
     @InjectMocks
     private AccountRestResource accountRestResource;
@@ -47,7 +51,7 @@ public class AccountRestResourceTest {
 
     @BeforeEach
     void setUp(){
-        accountRestResource = new AccountRestResource(accountLifeCycleService, createNewAccountUseCase, accountConsultationService);
+        accountRestResource = new AccountRestResource(accountLifeCycleService, createNewAccountUseCase, accountConsultationService, userProvider);
         mockAuthentication = mock(Authentication.class);
         mockMvc = MockMvcBuilders
                 .standaloneSetup(accountRestResource)
@@ -61,7 +65,7 @@ public class AccountRestResourceTest {
         var account = Account.builder()
                 .accountStatus(new AccountStatus(AccountStatusEnum.PENDING))
                 .build();
-        when(createNewAccountUseCase.execute(any(Account.class))).thenReturn(account);
+        when(createNewAccountUseCase.execute(any(CreateAccountCommand.class))).thenReturn(account);
 
         mockMvc.perform(post("/accounts/create")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -81,13 +85,13 @@ public class AccountRestResourceTest {
                 ).andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Client ID est obligatoire"));
 
-        verify(createNewAccountUseCase, never()).execute(any(Account.class));
+        verify(createNewAccountUseCase, never()).execute(any(CreateAccountCommand.class));
     }
 
     @Test
     void createAccount_shouldHandleServiceException() throws Exception {
         doThrow(new OperationNotPermittedException("Some exception was happen in service"))
-                .when(createNewAccountUseCase).execute(any(Account.class));
+                .when(createNewAccountUseCase).execute(any(CreateAccountCommand.class));
 
         mockMvc.perform(post("/accounts/create")
                         .contentType(MediaType.APPLICATION_JSON)

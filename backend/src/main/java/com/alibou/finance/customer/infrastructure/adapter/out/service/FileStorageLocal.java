@@ -1,7 +1,7 @@
 package com.alibou.finance.customer.infrastructure.adapter.out.service;
 
 import com.alibou.finance.customer.domain.out.service.FileStoragePort;
-import com.alibou.finance.shared.domain.FileUploadedException;
+import com.alibou.finance.shared.domain.exception.FileUploadedException;
 import org.springframework.stereotype.Service;
 
 import java.io.File;

@@ -1,12 +1,12 @@
 package com.alibou.finance.account.infrastructure.adapter.in.dto;
 
-import com.alibou.finance.account.application.port.dto.command.DepositCommand;
-import com.alibou.finance.account.application.port.dto.command.WithdrawCommand;
-import com.alibou.finance.account.domain.vo.AccountNumber;
-import com.alibou.finance.auth.domain.agregate.User;
-import com.alibou.finance.history.domain.vo.transaction.OriginalAmount;
-import com.alibou.finance.history.domain.vo.transaction.TransactionCurrencyCode;
-import com.alibou.finance.shared.vo.domain.Description;
+import com.alibou.finance.account.application.port.command.DepositCommand;
+import com.alibou.finance.account.application.port.command.WithdrawCommand;
+import com.alibou.finance.auth.UserInfo;
+import com.alibou.finance.shared.domain.vo.account.AccountNumber;
+import com.alibou.finance.account.domain.vo.transaction.OriginalAmount;
+import com.alibou.finance.account.domain.vo.transaction.TransactionCurrencyCode;
+import com.alibou.finance.shared.domain.vo.Description;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -24,23 +24,23 @@ public record TransactionRequest(
         String description
 
 ) {
-    public static DepositCommand toDepositCommand(TransactionRequest request, User user){
+    public static DepositCommand toDepositCommand(TransactionRequest request, UserInfo userInfo){
         return DepositCommand.builder()
                 .accountNumber(new AccountNumber(request.accountNumber()))
                 .description(new Description(request.description()))
                 .originalAmount(new OriginalAmount(request.amount()))
                 .transactionCurrencyCode(new TransactionCurrencyCode(request.currencyCode()))
-                .user(user)
+                .username(userInfo.username())
                 .build();
     }
 
-    public static WithdrawCommand toWithdrawCommand(TransactionRequest request, User user){
+    public static WithdrawCommand toWithdrawCommand(TransactionRequest request, UserInfo userInfo){
         return WithdrawCommand.builder()
                 .accountNumber(new AccountNumber(request.accountNumber()))
                 .description(new Description(request.description()))
                 .originalAmount(new OriginalAmount(request.amount()))
                 .transactionCurrencyCode(new TransactionCurrencyCode(request.currencyCode()))
-                .user(user)
+                .username(userInfo.username())
                 .build();
     }
 }

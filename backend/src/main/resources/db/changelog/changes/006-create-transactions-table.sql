@@ -1,8 +1,9 @@
 --liquibase formatted sql
 
---changeset alibou:create-table-transactions
+--changeset alibou:006-create-table-transactions
 CREATE TABLE transactions (
     id uuid NOT NULL PRIMARY KEY,
+    account_id uuid NOT NULL,
     account_number VARCHAR(50) NOT NULL,
     description VARCHAR(255) NOT NULL,
     original_amount numeric(19,4) NOT NULL,
@@ -16,7 +17,7 @@ CREATE TABLE transactions (
     created_date timestamp NOT NULL
 );
 
---changeset alibou:add-transactions-constraint
+--changeset alibou:006-add-transactions-constraint
 ALTER TABLE transactions ADD CONSTRAINT chk_transactions_type CHECK (transaction_type IN ('DEPOSIT', 'WITHDRAWAL', 'TRANSFERT'));
 ALTER TABLE transactions ADD CONSTRAINT uk_transactions_ref UNIQUE (reference);
-ALTER TABLE transactions ADD CONSTRAINT fk_transactions_account_number FOREIGN KEY (account_number) REFERENCES accounts(account_number);
+ALTER TABLE transactions ADD CONSTRAINT fk_transactions_account_id FOREIGN KEY (account_id) REFERENCES accounts(id);

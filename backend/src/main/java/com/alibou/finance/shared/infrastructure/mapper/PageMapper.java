@@ -1,6 +1,6 @@
 package com.alibou.finance.shared.infrastructure.mapper;
 
-import com.alibou.finance.shared.application.PageResult;
+import com.alibou.finance.shared.application.result.PageResult;
 import com.alibou.finance.shared.infrastructure.dto.PageResponse;
 import org.springframework.data.domain.Page;
 

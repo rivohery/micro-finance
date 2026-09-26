@@ -1,7 +1,6 @@
 package com.alibou.finance.customer.infrastructure.adapter.out.persistence.entity;
 
-import com.alibou.finance.auth.infrastructure.adapter.out.persistence.entity.UserEntity;
-import com.alibou.finance.customer.domain.agregate.CustomerStatus;
+import com.alibou.finance.customer.domain.agregate.CustomerStatusEnum;
 import com.alibou.finance.shared.infrastructure.entity.BaseAuditingEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -36,7 +36,7 @@ public class CustomerEntity extends BaseAuditingEntity {
     private String cin;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private CustomerStatus status;
+    private CustomerStatusEnum status;
     @Column(name = "address_value")
     private String addressValue;
 
@@ -53,9 +53,8 @@ public class CustomerEntity extends BaseAuditingEntity {
     @Column(nullable = false)
     private String imageUrl;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_id")
-    private UserEntity userEntity;
+    @Column(nullable = false, unique = true, name = "user_id")
+    private UUID userId;
 
 
 }

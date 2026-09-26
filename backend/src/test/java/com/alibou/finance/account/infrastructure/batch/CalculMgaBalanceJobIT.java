@@ -1,14 +1,14 @@
 package com.alibou.finance.account.infrastructure.batch;
 
 import com.alibou.finance.BaseServiceIT;
-import com.alibou.finance.account.domain.agregate.AccountStatusEnum;
-import com.alibou.finance.account.domain.out.service.CurrencyExchangePort;
-import com.alibou.finance.account.infrastructure.adapter.out.persistence.entity.AccountEntity;
-import com.alibou.finance.account.infrastructure.adapter.out.persistence.repository.AccountJpaRepository;
+import com.alibou.finance.shared.domain.enums.AccountStatusEnum;
+import com.alibou.finance.account.domain.out.linker.CurrencyExchangePort;
+import com.alibou.finance.account.infrastructure.adapter.out.port.persistence.entity.AccountEntity;
+import com.alibou.finance.account.infrastructure.adapter.out.port.persistence.repository.AccountJpaRepository;
 import com.alibou.finance.accountType.infrastructure.adapter.out.persistence.entity.AccountTypeEntity;
-import com.alibou.finance.accountType.infrastructure.adapter.out.persistence.repository.AccountTypeJpaRepository;
+import com.alibou.finance.shared.domain.vo.currency.CurrencyCode;
+import com.alibou.finance.shared.domain.vo.currency.CurrencyId;
 import com.alibou.finance.currency.infrastructure.adapter.out.entity.CurrencyEntity;
-import com.alibou.finance.currency.infrastructure.adapter.out.repository.CurrencyJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.*;
@@ -27,10 +27,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CalculMgaBalanceJobIT extends BaseServiceIT {
     @Autowired
-    private AccountTypeJpaRepository accountTypeJpaRepository;
-    @Autowired
-    private CurrencyJpaRepository currencyJpaRepository;
-    @Autowired
     private AccountJpaRepository accountJpaRepository;
     @MockBean
     private CurrencyExchangePort currencyExchangePort;
@@ -40,17 +36,20 @@ public class CalculMgaBalanceJobIT extends BaseServiceIT {
     @Qualifier("jobCalculMgaBalanceFinDeSemaine")
     private Job  job;
 
+    CurrencyCode eurCurrency = new CurrencyCode("EUR");
+    CurrencyCode mgaCurrency = new CurrencyCode("MGA");
+    CurrencyCode usdCurrency = new CurrencyCode("USD");
+
+    AccountTypeEntity checkingAccount;
+    AccountTypeEntity savingAccount;
+    AccountTypeEntity businessAccount;
+
     @BeforeEach
     void setUp(){
-        AccountTypeEntity checkingAccount = createMinType("10", "Compte courante");
-        AccountTypeEntity savingAccount = createMinType("20", "Compte épargne");
-        AccountTypeEntity businessAccount = createMinType("30", "Compte business");
-        accountTypeJpaRepository.saveAllAndFlush(Set.of(checkingAccount, savingAccount, businessAccount));
-
-        CurrencyEntity eurCurrency = createMinCurrency("EUR", "Euro");
-        CurrencyEntity mgaCurrency = createMinCurrency("MGA", "Ariary");
-        CurrencyEntity usdCurrency = createMinCurrency("USD", "Dollar");
-        currencyJpaRepository.saveAllAndFlush(Set.of(eurCurrency, mgaCurrency, usdCurrency));
+        accountJpaRepository.deleteAll();
+        checkingAccount = createMinType("10", "Compte courante");
+        savingAccount = createMinType("20", "Compte épargne");
+        businessAccount = createMinType("30", "Compte business");
 
         AccountEntity acc1 = createMinAccount(savingAccount, mgaCurrency, "101-20-6123456789", AccountStatusEnum.CLOSED);
         AccountEntity acc2 = createMinAccount(checkingAccount, eurCurrency, "101-10-6123456789", AccountStatusEnum.ACTIVE);
@@ -82,15 +81,19 @@ public class CalculMgaBalanceJobIT extends BaseServiceIT {
         assertThat(accounts).extracting(a -> a.getMgaBalance().doubleValue()).containsExactlyInAnyOrder(0.0, 9000000.0, 0.0, 9000000.0, 8000000.0);
     }
 
-    private AccountEntity createMinAccount(AccountTypeEntity accountType, CurrencyEntity currency, String accountNumber, AccountStatusEnum status){
+    private AccountEntity createMinAccount(AccountTypeEntity accountType, CurrencyCode currencyCode, String accountNumber, AccountStatusEnum status){
         return AccountEntity.builder()
                 .accountNumber(accountNumber)
                 .id(UUID.randomUUID())
                 .accountStatus(status)
                 .balance(new BigDecimal("2000.0"))
                 .mgaBalance(BigDecimal.ZERO)
-                .accountTypeEntity(accountType)
-                .currencyEntity(currency)
+                .accountTypeId(accountType.getId())
+                .accountTypeCode(accountType.getCode())
+                .accountTypeName(accountType.getName())
+                .annualInterestRate(new BigDecimal("3.65"))
+                .currencyCode(currencyCode.value())
+                .currencyId(CurrencyId.generate().value())
                 .customerId(UUID.randomUUID())
                 .createdBy(UUID.randomUUID())
                 .overdraftLimit(BigDecimal.ZERO)
@@ -109,13 +112,9 @@ public class CalculMgaBalanceJobIT extends BaseServiceIT {
 
     private AccountTypeEntity createMinType(String code, String name){
         return AccountTypeEntity.builder()
-                .accountFee(BigDecimal.ZERO)
                 .id(UUID.randomUUID())
-                .annualInterestRate(new BigDecimal("0.0001"))
-                .minimumBalance(BigDecimal.ZERO)
                 .code(code)
                 .name(name)
-                .createdBy(UUID.randomUUID())
                 .build();
     }
 }

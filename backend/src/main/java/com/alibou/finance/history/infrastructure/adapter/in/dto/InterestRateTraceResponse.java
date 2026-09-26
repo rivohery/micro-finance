@@ -18,6 +18,7 @@ public class InterestRateTraceResponse {
     private BigDecimal interestRate;
     private String currencyCode;
     private BigDecimal amount;
+    private BigDecimal mgaExchangeRate;
     private BigDecimal mgaAmount;
     //January, February, March, April, May, June, July, August, September, October, November and December.
     private String month;

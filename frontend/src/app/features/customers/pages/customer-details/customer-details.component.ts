@@ -76,8 +76,8 @@ export class CustomerDetailsComponent {
     this.customerService.findDetailsClientWithAccount(customerId).subscribe({
       next: (resp: DetailCustomerWithAccount) => {
         console.log(resp);
-        this.accounts.set(resp.accounts);
         this.customer.set(resp.customer);
+        this.accounts.set(resp.accounts);
         this.loading.set(false);
       },
       error: (err) => {
@@ -91,7 +91,7 @@ export class CustomerDetailsComponent {
     switch (status) {
       case 'ACTIVE':
         return 'bg-emerald-100 text-emerald-700 border-emerald-200';
-      case 'PENDING':
+      case 'PENDING_KYC':
         return 'bg-amber-100 text-amber-700 border-amber-200';
       case 'SUSPENDED':
         return 'bg-rose-100 text-rose-700 border-rose-200';

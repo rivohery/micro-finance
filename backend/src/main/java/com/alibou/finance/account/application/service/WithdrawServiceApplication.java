@@ -1,57 +1,51 @@
 package com.alibou.finance.account.application.service;
 
-import com.alibou.finance.account.application.port.dto.command.WithdrawCommand;
-import com.alibou.finance.account.application.port.dto.output.TransactionResult;
+import com.alibou.finance.account.application.port.command.WithdrawCommand;
+import com.alibou.finance.account.application.port.result.TransactionResult;
+import com.alibou.finance.account.application.port.usecase.CreateTransactionUseCase;
 import com.alibou.finance.account.application.port.usecase.WithdrawUseCase;
-import com.alibou.finance.account.application.utils.TransactionFactory;
+import com.alibou.finance.account.application.utils.TransactionOperationExecutor;
 import com.alibou.finance.account.domain.agregate.Account;
-import com.alibou.finance.account.domain.out.repository.AccountRepository;
-import com.alibou.finance.account.domain.out.repository.TransactionRepository;
-import com.alibou.finance.account.domain.out.service.CurrencyExchangePort;
-import com.alibou.finance.account.domain.out.service.ReferenceGenerator;
-import com.alibou.finance.history.domain.agregate.Transaction;
-import com.alibou.finance.history.domain.agregate.TransactionTypeEnum;
-import com.alibou.finance.history.domain.vo.transaction.FinalAmount;
-import com.alibou.finance.history.domain.vo.transaction.SoldBeforeTransaction;
+import com.alibou.finance.account.domain.vo.transaction.FinalAmount;
+import com.alibou.finance.account.domain.vo.transaction.SoldBeforeTransaction;
+import com.alibou.finance.account.application.port.command.CreateTransactionCommand;
+import com.alibou.finance.account.domain.agregate.Transaction;
+import com.alibou.finance.account.domain.agregate.TransactionTypeEnum;
 import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
 
 @RequiredArgsConstructor
 public class WithdrawServiceApplication implements WithdrawUseCase {
-
-    private final AccountRepository accountRepository;
-    private final CurrencyExchangePort currencyExchangePort;
-    private final ReferenceGenerator referenceGenerator;
-    private final TransactionRepository transactionRepository;
+    private final TransactionOperationExecutor transactionOperationExecutor;
+    private final CreateTransactionUseCase createTransactionUseCase;
 
     @Override
     public TransactionResult execute(WithdrawCommand input) {
-        Account account = TransactionFactory.getAccountByAccountNumber(accountRepository, input.accountNumber());
+        Account account = transactionOperationExecutor.getAccountByAccountNumber(input.accountNumber());
 
-        SoldBeforeTransaction soldBeforeTransaction = SoldBeforeTransaction.getFrom(account.getBalance().value());
+        SoldBeforeTransaction soldBeforeTransaction = SoldBeforeTransaction.buildFrom(account.getBalance().value());
 
-        BigDecimal exchangeRate = currencyExchangePort.getExchangeRate(input.transactionCurrencyCode().value(), account.getCurrency().getCode().value());
-        FinalAmount finalAmount = TransactionFactory.convertToFinalAmount(input.originalAmount().value(), exchangeRate);
+        BigDecimal exchangeRate = transactionOperationExecutor.getExchangeRate(
+                input.transactionCurrencyCode().value(), account.getCurrencyCode().value()
+        );
+        FinalAmount finalAmount = transactionOperationExecutor.convertToFinalAmount(input.originalAmount().value(), exchangeRate);
 
-        account.updateBalanceOfWithdraw(finalAmount);
-        TransactionFactory.updateMgaBalance(currencyExchangePort, account);
-        account = accountRepository.save(account);
+        account.makeWithdraw(finalAmount);
+        account = transactionOperationExecutor.updateAndSaveAccount(account);
 
-        Transaction withdraw = TransactionFactory.prepareTraceOfTransaction(
-                referenceGenerator,
-                account.getAccountNumber(),
+        CreateTransactionCommand transactionCommand = transactionOperationExecutor.prepareTransactionCommand(
+                account,
                 input.transactionCurrencyCode(),
                 TransactionTypeEnum.WITHDRAWAL,
-                finalAmount,
                 exchangeRate,
-                account.getCurrency().getCode().value(),
+                input.originalAmount(),
+                input.username(),
                 soldBeforeTransaction,
-                input.user(),
-                input.description(),
-                input.originalAmount()
+                input.description()
         );
-        withdraw = transactionRepository.save(withdraw);
+        Transaction withdraw = createTransactionUseCase.execute(transactionCommand);
+
         return TransactionResult.builder()
                 .account(account)
                 .transaction(withdraw)

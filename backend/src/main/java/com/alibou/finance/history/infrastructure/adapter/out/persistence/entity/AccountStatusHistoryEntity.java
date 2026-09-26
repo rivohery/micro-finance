@@ -1,6 +1,6 @@
 package com.alibou.finance.history.infrastructure.adapter.out.persistence.entity;
 
-import com.alibou.finance.account.domain.agregate.AccountStatusEnum;
+import com.alibou.finance.shared.domain.enums.AccountStatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
 

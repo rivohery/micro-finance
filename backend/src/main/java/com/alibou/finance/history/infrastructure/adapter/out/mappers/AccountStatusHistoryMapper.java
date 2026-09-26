@@ -3,15 +3,16 @@ package com.alibou.finance.history.infrastructure.adapter.out.mappers;
 import com.alibou.finance.history.domain.vo.accountStatusHistory.*;
 import com.alibou.finance.history.infrastructure.adapter.in.dto.AccountStatusHistoryResponse;
 import com.alibou.finance.history.infrastructure.adapter.out.persistence.entity.AccountStatusHistoryEntity;
-import com.alibou.finance.account.domain.vo.AccountId;
+import com.alibou.finance.shared.domain.vo.account.AccountId;
 import com.alibou.finance.history.domain.agregate.AccountStatusHistory;
+import com.alibou.finance.shared.domain.vo.history.Reason;
 
 public class AccountStatusHistoryMapper {
 
     public static AccountStatusHistory entityToDomain(AccountStatusHistoryEntity entity){
         return AccountStatusHistory.builder()
-                .accountStatusHistoryId(AccountStatusHistoryId.from(entity.getId()))
-                .accountId(AccountId.from(entity.getAccountId()))
+                .accountStatusHistoryId(new AccountStatusHistoryId(entity.getId()))
+                .accountId(new AccountId(entity.getAccountId()))
                 .newStatus(new NewStatus(entity.getNewStatus()))
                 .oldStatus(new OldStatus(entity.getOldStatus()))
                 .doingAt(new DoingAt(entity.getDoingAt()))
