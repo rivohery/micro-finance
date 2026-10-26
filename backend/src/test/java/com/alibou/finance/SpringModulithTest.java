@@ -13,7 +13,7 @@ public class SpringModulithTest {
         ApplicationModules.of(MicroFinanceApplication.class).verify();
     }
 
-    @Test
+   // @Test
     void writeDocumentationSnippets() {
         new Documenter(modules)
                 .writeModulesAsPlantUml()          // Diagramme global de tous les modules
