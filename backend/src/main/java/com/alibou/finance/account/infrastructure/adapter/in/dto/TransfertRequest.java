@@ -1,10 +1,10 @@
 package com.alibou.finance.account.infrastructure.adapter.in.dto;
 
-import com.alibou.finance.account.application.port.dto.command.TransferCommand;
-import com.alibou.finance.account.domain.vo.AccountNumber;
-import com.alibou.finance.auth.domain.agregate.User;
-import com.alibou.finance.history.domain.vo.transaction.OriginalAmount;
-import com.alibou.finance.shared.vo.domain.Description;
+import com.alibou.finance.account.application.port.command.TransferCommand;
+import com.alibou.finance.auth.UserInfo;
+import com.alibou.finance.shared.domain.vo.account.AccountNumber;
+import com.alibou.finance.account.domain.vo.transaction.OriginalAmount;
+import com.alibou.finance.shared.domain.vo.Description;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -26,13 +26,13 @@ public record TransfertRequest(
         BigDecimal transfertAmount
 ) {
 
-    public static TransferCommand toTransfertCommand(TransfertRequest request, User user){
+    public static TransferCommand toTransfertCommand(TransfertRequest request, UserInfo userInfo){
         return TransferCommand
                 .builder()
                 .sourceAccountNumber(new AccountNumber(request.sourceAccountNumber()))
                 .targetAccountNumber(new AccountNumber(request.targetAccountNumber()))
                 .description(new Description(request.description()))
-                .user(user)
+                .userInfo(userInfo)
                 .originalAmount(new OriginalAmount(request.transfertAmount()))
                 .build();
     }

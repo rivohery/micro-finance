@@ -1,54 +1,48 @@
 package com.alibou.finance.account.application.service;
 
-import com.alibou.finance.account.application.port.dto.command.DepositCommand;
-import com.alibou.finance.account.application.port.dto.output.TransactionResult;
+import com.alibou.finance.account.application.port.command.DepositCommand;
+import com.alibou.finance.account.application.port.result.TransactionResult;
+import com.alibou.finance.account.application.port.usecase.CreateTransactionUseCase;
 import com.alibou.finance.account.application.port.usecase.DepositUseCase;
-import com.alibou.finance.account.application.utils.TransactionFactory;
-import com.alibou.finance.account.domain.out.repository.AccountRepository;
-import com.alibou.finance.account.domain.out.repository.TransactionRepository;
-import com.alibou.finance.account.domain.out.service.CurrencyExchangePort;
-import com.alibou.finance.account.domain.out.service.ReferenceGenerator;
-import com.alibou.finance.history.domain.agregate.Transaction;
-import com.alibou.finance.history.domain.agregate.TransactionTypeEnum;
-import com.alibou.finance.history.domain.vo.transaction.*;
+import com.alibou.finance.account.application.utils.TransactionOperationExecutor;
+import com.alibou.finance.account.domain.vo.transaction.FinalAmount;
+import com.alibou.finance.account.domain.vo.transaction.SoldBeforeTransaction;
+import com.alibou.finance.account.application.port.command.CreateTransactionCommand;
+import com.alibou.finance.account.domain.agregate.Transaction;
+import com.alibou.finance.account.domain.agregate.TransactionTypeEnum;
 import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
 
 @RequiredArgsConstructor
 public class DepositServiceApplication implements DepositUseCase {
-    private final AccountRepository accountRepository;
-    private final CurrencyExchangePort currencyExchangePort;
-    private final ReferenceGenerator referenceGenerator;
-    private final TransactionRepository transactionRepository;
+
+    private final TransactionOperationExecutor transactionOperationExecutor;
+    private final CreateTransactionUseCase createTransactionUseCase;
 
     @Override
     public TransactionResult execute(DepositCommand input) {
-        var account = TransactionFactory.getAccountByAccountNumber(accountRepository, input.accountNumber());
+        var account = transactionOperationExecutor.getAccountByAccountNumber(input.accountNumber());
 
         /***Pour le calcul de taux d'intérêt***/
-        SoldBeforeTransaction soldBeforeTransaction = SoldBeforeTransaction.getFrom(account.getBalance().value());
+        SoldBeforeTransaction soldBeforeTransaction = SoldBeforeTransaction.buildFrom(account.getBalance().value());
 
-        BigDecimal exchangeRate = currencyExchangePort.getExchangeRate(input.transactionCurrencyCode().value(), account.getCurrency().getCode().value());
-        FinalAmount finalAmount = TransactionFactory.convertToFinalAmount(input.originalAmount().value(), exchangeRate);
-        account.updateBalanceOfDeposit(finalAmount);
-        TransactionFactory.updateMgaBalance(currencyExchangePort, account);
-        account = accountRepository.save(account);
+        BigDecimal exchangeRate = transactionOperationExecutor.getExchangeRate(input.transactionCurrencyCode().value(), account.getCurrencyCode().value());
+        FinalAmount finalAmount = transactionOperationExecutor.convertToFinalAmount(input.originalAmount().value(), exchangeRate);
+        account.makeDeposit(finalAmount);
+        account = transactionOperationExecutor.updateAndSaveAccount(account);
 
-        Transaction deposit = TransactionFactory.prepareTraceOfTransaction(
-                referenceGenerator,
-                account.getAccountNumber(),
+        CreateTransactionCommand transactionCommand = transactionOperationExecutor.prepareTransactionCommand(
+                account,
                 input.transactionCurrencyCode(),
                 TransactionTypeEnum.DEPOSIT,
-                finalAmount,
                 exchangeRate,
-                account.getCurrency().getCode().value(),
+                input.originalAmount(),
+                input.username(),
                 soldBeforeTransaction,
-                input.user(),
-                input.description(),
-                input.originalAmount()
+                input.description()
         );
-        deposit = transactionRepository.save(deposit);
+        Transaction deposit = createTransactionUseCase.execute(transactionCommand);
         return TransactionResult.builder()
                 .account(account)
                 .transaction(deposit)

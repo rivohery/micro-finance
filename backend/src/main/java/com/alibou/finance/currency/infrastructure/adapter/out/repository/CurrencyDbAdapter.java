@@ -2,10 +2,10 @@ package com.alibou.finance.currency.infrastructure.adapter.out.repository;
 
 import com.alibou.finance.currency.domain.agregate.Currency;
 import com.alibou.finance.currency.domain.repository.CurrencyRepository;
-import com.alibou.finance.currency.domain.vo.CurrencyCode;
-import com.alibou.finance.currency.domain.vo.CurrencyId;
+import com.alibou.finance.shared.domain.vo.currency.CurrencyCode;
+import com.alibou.finance.shared.domain.vo.currency.CurrencyId;
 import com.alibou.finance.currency.infrastructure.adapter.out.mapper.CurrencyMapper;
-import com.alibou.finance.shared.domain.OperationNotPermittedException;
+import com.alibou.finance.shared.domain.exception.OperationNotPermittedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

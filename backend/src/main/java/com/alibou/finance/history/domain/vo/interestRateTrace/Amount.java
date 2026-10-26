@@ -1,6 +1,6 @@
 package com.alibou.finance.history.domain.vo.interestRateTrace;
 
-import com.alibou.finance.shared.domain.Assert;
+import com.alibou.finance.shared.domain.validator.Assert;
 
 import java.math.BigDecimal;
 

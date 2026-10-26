@@ -1,9 +1,9 @@
 package com.alibou.finance.account.infrastructure.out.repository;
 
 import com.alibou.finance.BaseRepositoryIT;
-import com.alibou.finance.history.domain.agregate.TransactionTypeEnum;
-import com.alibou.finance.history.infrastructure.adapter.out.persistence.entity.TransactionEntity;
-import com.alibou.finance.history.infrastructure.adapter.out.persistence.repository.TransactionJpaRepository;
+import com.alibou.finance.account.domain.agregate.TransactionTypeEnum;
+import com.alibou.finance.account.infrastructure.adapter.out.port.persistence.entity.TransactionEntity;
+import com.alibou.finance.account.infrastructure.adapter.out.port.persistence.repository.TransactionJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigDecimal;

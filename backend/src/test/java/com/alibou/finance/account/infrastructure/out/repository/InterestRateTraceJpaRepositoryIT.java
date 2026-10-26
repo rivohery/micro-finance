@@ -55,6 +55,7 @@ public class InterestRateTraceJpaRepositoryIT extends BaseRepositoryIT {
                 .id(UUID.randomUUID())
                 .year("2026")
                 .month(month)
+                .mgaExchangeRate(BigDecimal.ONE)
                 .interestRate(BigDecimal.valueOf(0.12))
                 .currencyCode("USD")
                 .amount(amount)

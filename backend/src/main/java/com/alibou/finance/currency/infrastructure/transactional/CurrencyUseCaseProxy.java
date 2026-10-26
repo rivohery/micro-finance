@@ -3,8 +3,8 @@ package com.alibou.finance.currency.infrastructure.transactional;
 
 import com.alibou.finance.currency.application.port.CurrencyUseCase;
 import com.alibou.finance.currency.domain.agregate.Currency;
-import com.alibou.finance.currency.domain.vo.CurrencyCode;
-import com.alibou.finance.currency.domain.vo.CurrencyId;
+import com.alibou.finance.shared.domain.vo.currency.CurrencyCode;
+import com.alibou.finance.shared.domain.vo.currency.CurrencyId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

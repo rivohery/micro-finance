@@ -1,20 +1,19 @@
 package com.alibou.finance.auth.domain.agregate;
 
-import com.alibou.finance.auth.domain.service.PasswordHasher;
-import com.alibou.finance.auth.domain.vo.UserId;
-import com.alibou.finance.shared.vo.domain.Email;
+import com.alibou.finance.auth.domain.out.service.PasswordHasher;
+import com.alibou.finance.shared.domain.vo.user.UserId;
+import com.alibou.finance.shared.domain.vo.user.Email;
 import com.alibou.finance.auth.domain.vo.Password;
 import com.alibou.finance.auth.domain.vo.Role;
-import com.alibou.finance.auth.domain.vo.Username;
-import com.alibou.finance.shared.domain.IllegalArgumentException;
+import com.alibou.finance.shared.domain.vo.user.Username;
+import com.alibou.finance.shared.domain.exception.IllegalArgumentException;
 import lombok.*;
 
 import java.util.Objects;
-import java.util.UUID;
 
 @Builder
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE) // Pour le Builder uniquement
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class User {
     private UserId userId;
     private Username username;
@@ -23,32 +22,34 @@ public class User {
     private boolean enable;
     private Role role;
 
+    public boolean hasEmailChanged(Email newEmail){
+        return !Objects.equals(this.email, newEmail);
+    }
+
+    public boolean hasUsernameChanged(Username username){
+        return !Objects.equals(this.username, username);
+    }
+
+    public boolean isClient(){
+        return this.role.value().equals(RoleEnum.CLIENT);
+    }
+
     public void updateUsername(Username username){
-        if(Objects.equals(this.username.value(), username.value())){
-            return;
+        if(username != null){
+            this.username = username;
         }
-        this.username = username;
     }
 
     public void updateEmail(Email email){
-        if(Objects.equals(this.email.value(), email.value())){
-            return;
+        if(email != null){
+            this.email = email;
         }
-        this.email = email;
     }
 
     public void updatePassword(Password password){
-        if(Objects.isNull(password)){
-            throw new IllegalArgumentException("la value objet Password est nulle");
+        if(password != null){
+            this.password = password;
         }
-        this.password = password;
-    }
-
-    /* Utiliser pour la modification de l'objet User */
-    private User(UserId userId, Username username, Email email){
-        this.userId = userId;
-        this.username = username;
-        this.email = email;
     }
 
     public void initDBValue(){
@@ -57,36 +58,24 @@ public class User {
         this.enable = true;
     }
 
-    public static User create(String username, String email, RoleEnum roleEnum){
+    public static User create(Username username, Email email, RoleEnum roleEnum){
         Role role = (roleEnum == null) ? Role.employe() : new Role(roleEnum);
         return User.builder()
-                .username(new Username(username))
-                .email(new Email(email))
+                .username(username)
+                .email(email)
                 .role(role)
                 .build();
-    }
-
-    public static User update(UUID idValue, String usernameValue, String emailValue){
-        var userId = UserId.from(idValue);
-        var username = new Username(usernameValue);
-        var email = new Email(emailValue);
-        return new User(userId, username, email);
     }
 
     public void encodePassword(PasswordHasher passwordHasher){
         this.password = Password.hash(this.password.value(), passwordHasher);
     }
 
-    public void activate(){
-        this.enable = true;
-    }
-
-    public void changePassword(String oldPasswordPlain, String newPasswordPlain, PasswordHasher hasher) {
-        if (!hasher.matches(oldPasswordPlain, this.password.value())) {
+    public void changePassword(Password oldPassword, Password newPassword, PasswordHasher passwordHasher) {
+        if (!passwordHasher.matches(oldPassword.value(), this.password.value())) {
             throw new IllegalArgumentException("Mots de passe est incorrecte");
         }
-        Password newPassword = new Password(newPasswordPlain);
-        this.password = Password.hash(newPassword.value(), hasher);
+        this.password = Password.hash(newPassword.value(), passwordHasher);
     }
 
 }

@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset alibou:create-table-customer
+--changeset alibou:002-create-table-customer
 CREATE TABLE customers (
     id uuid NOT NULL PRIMARY KEY,
     created_by uuid NOT NULL,
@@ -23,10 +23,10 @@ CREATE TABLE customers (
     user_id uuid NOT NULL
 );
 
---changeset alibou:add-customer-constraint
+--changeset alibou:002-add-customer-constraint
 ALTER TABLE customers ADD CONSTRAINT uk_customer_email UNIQUE (email);
 ALTER TABLE customers ADD CONSTRAINT uk_customer_cin UNIQUE (cin);
 ALTER TABLE customers ADD CONSTRAINT uk_customer_phone_number UNIQUE (phone_number);
-ALTER TABLE customers ADD CONSTRAINT chk_customer_status CHECK (status IN ('ACTIVE', 'PENDING', 'SUSPENDED', 'CLOSED'));
+ALTER TABLE customers ADD CONSTRAINT chk_customer_status CHECK (status IN ('ACTIVE', 'PENDING_KYC', 'SUSPENDED', 'CLOSED'));
 ALTER TABLE customers ADD CONSTRAINT uk_customers_user_id UNIQUE (user_id);
 ALTER TABLE customers ADD CONSTRAINT fk_customers_user_id FOREIGN KEY (user_id) REFERENCES users(id);

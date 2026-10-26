@@ -1,14 +1,15 @@
 package com.alibou.finance.account.infrastructure.adapter.in.controller;
 
-import com.alibou.finance.account.application.port.dto.output.TransactionResult;
-import com.alibou.finance.account.application.port.dto.output.TransferResult;
+import com.alibou.finance.account.application.port.result.TransactionResult;
+import com.alibou.finance.account.application.port.result.TransferResult;
 import com.alibou.finance.account.infrastructure.adapter.in.dto.TransfertRequest;
 import com.alibou.finance.account.infrastructure.transactional.AccountTransactionUseCaseProxy;
-import com.alibou.finance.auth.infrastructure.model.UserPrincipal;
+import com.alibou.finance.auth.UserInfo;
+import com.alibou.finance.auth.UserProvider;
 import com.alibou.finance.account.infrastructure.adapter.in.dto.TransactionRequest;
-import com.alibou.finance.history.infrastructure.adapter.in.dto.TransactionResponse;
-import com.alibou.finance.history.infrastructure.adapter.out.mappers.TransactionMapper;
-import com.alibou.finance.history.domain.agregate.Transaction;
+import com.alibou.finance.account.infrastructure.adapter.in.dto.TransactionResponse;
+import com.alibou.finance.account.infrastructure.adapter.out.mapper.TransactionMapper;
+import com.alibou.finance.account.domain.agregate.Transaction;
 import com.alibou.finance.shared.infrastructure.dto.GlobalResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,6 +32,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AccountTransactionRestResource {
     private final AccountTransactionUseCaseProxy accountTransactionService;
+    private final UserProvider userProvider;
 
     @Operation(
             summary = "deposit",
@@ -42,8 +44,8 @@ public class AccountTransactionRestResource {
             @Valid @RequestBody TransactionRequest request,
             Authentication authentication
     ){
-        var user = ((UserPrincipal)authentication.getPrincipal()).getUser();
-        var transactionInput = TransactionRequest.toDepositCommand(request, user);
+        UserInfo userInfo = userProvider.getUserConnected(authentication);
+        var transactionInput = TransactionRequest.toDepositCommand(request, userInfo);
         TransactionResult result = accountTransactionService.deposit(transactionInput);
         if(result != null){
             Transaction transaction = result.transaction();
@@ -64,8 +66,8 @@ public class AccountTransactionRestResource {
             @Valid @RequestBody TransactionRequest request,
             Authentication authentication
     ){
-        var user = ((UserPrincipal)authentication.getPrincipal()).getUser();
-        var transactionInput = TransactionRequest.toWithdrawCommand(request, user);
+        UserInfo userInfo = userProvider.getUserConnected(authentication);
+        var transactionInput = TransactionRequest.toWithdrawCommand(request, userInfo);
         TransactionResult result = accountTransactionService.withdraw(transactionInput);
         if(result != null){
             Transaction transaction = result.transaction();
@@ -86,8 +88,8 @@ public class AccountTransactionRestResource {
             @Valid @RequestBody TransfertRequest request,
             Authentication authentication
     ){
-        var user = ((UserPrincipal)authentication.getPrincipal()).getUser();
-        var transactionInput = TransfertRequest.toTransfertCommand(request, user);
+        UserInfo userInfo = userProvider.getUserConnected(authentication);
+        var transactionInput = TransfertRequest.toTransfertCommand(request, userInfo);
         TransferResult result = accountTransactionService.transfert(transactionInput);
         if(result != null){
             return ResponseEntity.ok(

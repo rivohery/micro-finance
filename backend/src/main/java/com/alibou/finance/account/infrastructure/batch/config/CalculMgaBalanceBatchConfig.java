@@ -1,8 +1,8 @@
 package com.alibou.finance.account.infrastructure.batch.config;
 
 import com.alibou.finance.account.application.port.usecase.CalculMgaBalanceUseCase;
-import com.alibou.finance.account.domain.agregate.AccountStatusEnum;
-import com.alibou.finance.account.infrastructure.adapter.out.persistence.entity.AccountEntity;
+import com.alibou.finance.shared.domain.enums.AccountStatusEnum;
+import com.alibou.finance.account.infrastructure.adapter.out.port.persistence.entity.AccountEntity;
 import com.alibou.finance.account.infrastructure.batch.processor.CalculMgaBalanceProcessor;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.batch.core.Job;
@@ -45,8 +45,6 @@ public class CalculMgaBalanceBatchConfig {
                 .entityManagerFactory(entityManagerFactory)
                 // 2. Requête JPQL directe avec un tri STRICTEMENT UNIQUE (id)
                 .queryString("SELECT a FROM AccountEntity a " +
-                        "JOIN FETCH a.currencyEntity c " +
-                        "JOIN FETCH a.accountTypeEntity at " +
                         "WHERE a.accountStatus NOT IN :status " +
                         "ORDER BY a.id ASC")
                 .parameterValues(parameters)

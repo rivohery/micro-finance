@@ -1,7 +1,7 @@
 package com.alibou.finance.account.infrastructure.out.service;
 
-import com.alibou.finance.account.infrastructure.adapter.out.persistence.repository.AccountJpaRepository;
-import com.alibou.finance.account.infrastructure.adapter.out.service.AccountNumberGeneratorDbAdapter;
+import com.alibou.finance.account.infrastructure.adapter.out.port.persistence.repository.AccountJpaRepository;
+import com.alibou.finance.account.infrastructure.adapter.out.port.service.AccountNumberGeneratorDbAdapter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

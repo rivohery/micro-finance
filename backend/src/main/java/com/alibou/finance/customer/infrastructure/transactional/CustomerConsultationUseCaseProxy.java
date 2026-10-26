@@ -1,11 +1,10 @@
 package com.alibou.finance.customer.infrastructure.transactional;
 
-import com.alibou.finance.auth.domain.agregate.User;
-import com.alibou.finance.customer.application.output.DetailCustomerWithAccount;
-import com.alibou.finance.customer.application.port.CustomerConsultationUseCase;
+import com.alibou.finance.customer.application.result.CustomerDetails;
+import com.alibou.finance.customer.application.usecase.CustomerConsultationUseCase;
 import com.alibou.finance.customer.domain.agregate.Customer;
-import com.alibou.finance.customer.domain.vo.CustomerId;
-import com.alibou.finance.shared.application.PageResult;
+import com.alibou.finance.shared.domain.vo.user.CustomerId;
+import com.alibou.finance.shared.application.result.PageResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,28 +16,23 @@ public class CustomerConsultationUseCaseProxy {
     private final CustomerConsultationUseCase customerConsultationUseCase;
 
     @Transactional(readOnly = true)
-    public Customer findCustomerDetailsById(CustomerId customerId) {
+    public CustomerDetails findCustomerDetailsById(CustomerId customerId) {
         return customerConsultationUseCase.findCustomerDetailsById(customerId);
     }
 
     @Transactional(readOnly = true)
-    public PageResult<Customer> findAllEnableCustomerBySearch(String search, int page, int size) {
-        return customerConsultationUseCase.findAllEnableCustomerBySearch(search, page, size);
+    public PageResult<Customer> searchOperableCustomer(String search, int page, int size) {
+        return customerConsultationUseCase.searchOperableCustomer(search, page, size);
     }
 
     @Transactional(readOnly = true)
-    public PageResult<Customer> findAllCustomerBySearchStart(String search, int page, int size) {
-        return customerConsultationUseCase.findAllCustomerBySearchStart(search, page, size);
+    public PageResult<Customer> fetchAllCustomerBySearchStart(String search, int page, int size) {
+        return customerConsultationUseCase.fetchAllCustomerBySearchStart(search, page, size);
     }
 
     @Transactional(readOnly = true)
-    public CustomerId findCustomerIdByUser(User user) {
-        return customerConsultationUseCase.findCustomerIdByUser(user);
-    }
-
-    @Transactional(readOnly = true)
-    public DetailCustomerWithAccount findCustomerWithAccounts(CustomerId customerId) {
-        return customerConsultationUseCase.findCustomerWithAccounts(customerId);
+    public Customer findCustomerInfo(CustomerId customerId) {
+        return customerConsultationUseCase.findCustomerInfo(customerId);
     }
 
 }

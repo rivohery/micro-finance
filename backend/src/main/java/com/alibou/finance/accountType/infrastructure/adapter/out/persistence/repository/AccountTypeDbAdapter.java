@@ -1,9 +1,9 @@
 package com.alibou.finance.accountType.infrastructure.adapter.out.persistence.repository;
 
 import com.alibou.finance.accountType.domain.agregate.AccountType;
-import com.alibou.finance.accountType.domain.repository.AccountTypeRepository;
-import com.alibou.finance.accountType.domain.vo.AccountTypeCode;
-import com.alibou.finance.accountType.domain.vo.AccountTypeId;
+import com.alibou.finance.accountType.domain.out.repository.AccountTypeRepository;
+import com.alibou.finance.shared.domain.vo.accountType.AccountTypeCode;
+import com.alibou.finance.shared.domain.vo.accountType.AccountTypeId;
 import com.alibou.finance.accountType.infrastructure.adapter.out.mapper.AccountTypeMapper;
 import com.alibou.finance.accountType.infrastructure.adapter.out.persistence.entity.AccountTypeEntity;
 import lombok.RequiredArgsConstructor;
@@ -48,13 +48,16 @@ public class AccountTypeDbAdapter implements AccountTypeRepository {
     }
 
     @Override
-    public AccountTypeId deleteById(AccountTypeId accountTypeId) {
+    public void deleteById(AccountTypeId accountTypeId) {
         try{
             accountTypeJpaRepository.deleteById(accountTypeId.value());
-            return accountTypeId;
         }catch (Exception ex){
             throw new RuntimeException("La suppression est interrompu.Peut-être,il y a encore des comptes ayant ce type dans BD");
         }
     }
 
+    @Override
+    public boolean existsByCode(AccountTypeCode accountTypeCode) {
+        return accountTypeJpaRepository.existsByCode(accountTypeCode.value());
+    }
 }

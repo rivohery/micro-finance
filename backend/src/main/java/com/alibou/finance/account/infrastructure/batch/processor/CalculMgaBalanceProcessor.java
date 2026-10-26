@@ -3,7 +3,7 @@ package com.alibou.finance.account.infrastructure.batch.processor;
 import com.alibou.finance.account.application.port.usecase.CalculMgaBalanceUseCase;
 import com.alibou.finance.account.domain.agregate.Account;
 import com.alibou.finance.account.infrastructure.adapter.out.mapper.AccountMapper;
-import com.alibou.finance.account.infrastructure.adapter.out.persistence.entity.AccountEntity;
+import com.alibou.finance.account.infrastructure.adapter.out.port.persistence.entity.AccountEntity;
 import org.springframework.batch.item.ItemProcessor;
 
 public class CalculMgaBalanceProcessor implements ItemProcessor<AccountEntity, AccountEntity> {

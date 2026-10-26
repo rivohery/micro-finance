@@ -1,6 +1,7 @@
 package com.alibou.finance.account.infrastructure.handlers;
 
 import com.alibou.finance.account.domain.exception.*;
+import com.alibou.finance.account.infrastructure.email.exception.SendingEmailException;
 import com.alibou.finance.shared.infrastructure.error.HttpErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,15 @@ public class AccountExceptionHandler {
 
     @ExceptionHandler(AccountNotFoundException.class)
     public ResponseEntity<HttpErrorResponse> handleException(AccountNotFoundException exp) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(
+                        HttpErrorResponse.of(exp.getMessage(), HttpStatus.NOT_FOUND.value())
+                );
+    }
+
+    @ExceptionHandler(CustomerAccountLinkException.class)
+    public ResponseEntity<HttpErrorResponse> handleException(CustomerAccountLinkException exp) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(
@@ -58,6 +68,15 @@ public class AccountExceptionHandler {
                 .status(HttpStatus.NOT_ACCEPTABLE)
                 .body(
                         HttpErrorResponse.of(exp.getMessage(), HttpStatus.NOT_ACCEPTABLE.value())
+                );
+    }
+
+    @ExceptionHandler(SendingEmailException.class)
+    public ResponseEntity<HttpErrorResponse> handleException(SendingEmailException exp) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(
+                        HttpErrorResponse.of(exp.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value())
                 );
     }
 }

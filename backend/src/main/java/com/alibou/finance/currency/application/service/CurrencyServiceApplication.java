@@ -4,9 +4,9 @@ import com.alibou.finance.currency.application.port.CurrencyUseCase;
 import com.alibou.finance.currency.domain.agregate.Currency;
 import com.alibou.finance.currency.domain.exception.CurrencyNotFoundException;
 import com.alibou.finance.currency.domain.repository.CurrencyRepository;
-import com.alibou.finance.currency.domain.vo.CurrencyCode;
-import com.alibou.finance.currency.domain.vo.CurrencyId;
-import com.alibou.finance.shared.domain.ObjectInvalidException;
+import com.alibou.finance.shared.domain.vo.currency.CurrencyCode;
+import com.alibou.finance.shared.domain.vo.currency.CurrencyId;
+import com.alibou.finance.shared.domain.exception.ObjectInvalidException;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -53,10 +53,14 @@ public class CurrencyServiceApplication implements CurrencyUseCase {
 
     @Override
     public void deleteById(CurrencyId currencyId) {
+        ensureAvailableCurrency(currencyId);
+        currencyRepository.deleteById(currencyId);
+    }
+
+    private void ensureAvailableCurrency(CurrencyId currencyId){
         boolean isExists = currencyRepository.existsById(currencyId);
         if(!isExists){
             throw new ObjectInvalidException("Identifiant currencyId invalide");
         }
-        currencyRepository.deleteById(currencyId);
     }
 }

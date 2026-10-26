@@ -1,7 +1,7 @@
 package com.alibou.finance.currency.domain.agregate;
 
-import com.alibou.finance.currency.domain.vo.CurrencyCode;
-import com.alibou.finance.currency.domain.vo.CurrencyId;
+import com.alibou.finance.shared.domain.vo.currency.CurrencyCode;
+import com.alibou.finance.shared.domain.vo.currency.CurrencyId;
 import com.alibou.finance.currency.domain.vo.CurrencyName;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

@@ -1,11 +1,10 @@
 package com.alibou.finance.customer.infrastructure.adapter.out.persistence.repository;
 
 import com.alibou.finance.customer.infrastructure.adapter.out.persistence.entity.CustomerEntity;
-import com.alibou.finance.customer.domain.agregate.CustomerStatus;
+import com.alibou.finance.customer.domain.agregate.CustomerStatusEnum;
 import com.alibou.finance.customer.infrastructure.adapter.out.persistence.projection.RegistrationStatisticProj;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,39 +17,48 @@ import java.util.UUID;
 
 public interface CustomerJpaRepository extends JpaRepository<CustomerEntity, UUID> {
     Optional<CustomerEntity>findByCin(String cin);
-    boolean existsByCin(String cin);
-    Page<CustomerEntity> findAllByFirstNameStartingWithIgnoreCaseOrLastNameStartingWithIgnoreCaseOrCinStartingWith(
-            String firstName, String lastName, String cin, Pageable pageable
-    );
 
-    @EntityGraph(attributePaths = {"userEntity"})
+    boolean existsByCin(String cin);
+
+    boolean existsByPhoneNumber(String phoneNumber);
+
+    Optional<CustomerEntity>findByUserId(UUID userId);
+
+    @Query("""
+        Select ce from CustomerEntity ce 
+        where lower(ce.firstName) like lower(concat(:search, '%'))
+        or lower(ce.lastName) like lower(concat(:search, '%'))
+        or ce.cin like concat(:search, '%')
+    """)
+    Page<CustomerEntity> fetchAllCustomerBySearchStart(@Param("search")String search, Pageable pageable);
+
     Optional<CustomerEntity>findById(UUID id);
 
     @Query("""
-        select ce.id from CustomerEntity ce where ce.userEntity.id = :userId
+        select ce.id from CustomerEntity ce where ce.userId = :userId
     """)
     Optional<UUID>findIdByUserId(@Param("userId")UUID userId);
 
     @Query("""
-        Select ce from CustomerEntity ce
-        where ce.userEntity.enable = true and (
+        Select ce from CustomerEntity ce where ce.status <> com.alibou.finance.customer.domain.agregate.CustomerStatusEnum.CLOSED
+        and (
             lower(ce.firstName) like lower(concat(:search, '%')) 
             or lower(ce.lastName) like lower(concat(:search, '%')) 
             or ce.cin like concat(:search, '%')
         ) 
     """)
-    Page<CustomerEntity>fetchAllEnableCustomerBySearchBegin(@Param("search")String search, Pageable pageable);
+    Page<CustomerEntity>searchOperableCustomer(@Param("search")String search, Pageable pageable);
 
     @Modifying(clearAutomatically = true)
     @Query("""
         update CustomerEntity ce set ce.status = :status where ce.id = :id 
     """)
-    int updateCustomerStatus(@Param("id") UUID id,@Param("status") CustomerStatus status);
+    int updateCustomerStatus(@Param("id") UUID id,@Param("status") CustomerStatusEnum status);
 
     @Query("""
-        select count(c.id) from CustomerEntity c where c.status != :status
+        select count(c.id) from CustomerEntity c where c.status <> 'CLOSED'
     """)
-    Long getNbrTotalOfCustomerNoClosed(@Param("status") CustomerStatus status);
+    Long getNbrTotalOfCustomerNoClosed();
 
     @Query("""
         SELECT c.createdDate AS createdDate, 

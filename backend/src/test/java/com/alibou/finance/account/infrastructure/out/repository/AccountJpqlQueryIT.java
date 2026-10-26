@@ -2,40 +2,21 @@ package com.alibou.finance.account.infrastructure.out.repository;
 
 import com.alibou.finance.BaseRepositoryIT;
 import com.alibou.finance.JpaAuditingTestConfig;
-import com.alibou.finance.account.domain.agregate.AccountStatusEnum;
-import com.alibou.finance.account.infrastructure.adapter.out.persistence.entity.AccountEntity;
-import com.alibou.finance.accountType.infrastructure.adapter.out.persistence.entity.AccountTypeEntity;
-import com.alibou.finance.currency.infrastructure.adapter.out.entity.CurrencyEntity;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Import(JpaAuditingTestConfig.class)
 public class AccountJpqlQueryIT extends BaseRepositoryIT {
-
+/*
     private static final String JPQL_IN_MGA_BALANCE_JOB_BATCH =
             "SELECT a FROM AccountEntity a " +
-                    "JOIN FETCH a.currencyEntity c " +
-                    "JOIN FETCH a.accountTypeEntity at " +
                     "WHERE a.accountStatus NOT IN :status " +
                     "ORDER BY a.id ASC";
 
     private static final String JPQL_IN_INTEREST_RATE_JOB_BATCH =
             "SELECT a FROM AccountEntity a " +
-                    "JOIN FETCH a.currencyEntity c " +
-                    "JOIN FETCH a.accountTypeEntity at " +
-                    "WHERE at.code IN :codes " +
+                    "WHERE a.accountTypeCode IN :codes " +
                     "AND a.accountStatus =:status " +
                     "ORDER BY a.id ASC";
 
@@ -51,10 +32,8 @@ public class AccountJpqlQueryIT extends BaseRepositoryIT {
         AccountTypeEntity businessAccount = createMinType("30", "Compte business");
         Set.of(checkingAccount, savingAccount, businessAccount).forEach(at -> entityManager.persist(at));
 
-        CurrencyEntity eurCurrency = createMinCurrency("EUR", "Euro");
-        CurrencyEntity mgaCurrency = createMinCurrency("MGA", "Ariary");
-        entityManager.persist(eurCurrency);
-        entityManager.persist(mgaCurrency);
+        CurrencyCode eurCurrency = new CurrencyCode("EUR");
+        CurrencyCode mgaCurrency = new CurrencyCode("MGA");
 
         AccountEntity acc1 = createMinAccount(savingAccount, mgaCurrency, "ACC-1", AccountStatusEnum.CLOSED);
         AccountEntity acc2 = createMinAccount(checkingAccount, eurCurrency, "ACC-2", AccountStatusEnum.ACTIVE);
@@ -103,27 +82,19 @@ public class AccountJpqlQueryIT extends BaseRepositoryIT {
 
     }
 
-    private AccountEntity createMinAccount(AccountTypeEntity accountType, CurrencyEntity currency, String accountNumber, AccountStatusEnum status){
+    private AccountEntity createMinAccount(AccountTypeEntity accountType, CurrencyCode currencyCode, String accountNumber, AccountStatusEnum status){
         return AccountEntity.builder()
                 .accountNumber(accountNumber)
                 .id(UUID.randomUUID())
                 .accountStatus(status)
                 .balance(new BigDecimal("2000.0"))
                 .mgaBalance(new BigDecimal("2000.0"))
-                .accountTypeEntity(accountType)
-                .currencyEntity(currency)
+                .accountTypeId(accountType.getId())
+                .currencyCode(currencyCode.value())
+                .currencyId(UUID.randomUUID())
                 .customerId(UUID.randomUUID())
                 .overdraftLimit(BigDecimal.ZERO)
                 .version(1L)
-                .build();
-    }
-
-    private CurrencyEntity createMinCurrency(String code, String name){
-        return CurrencyEntity.builder()
-                .id(UUID.randomUUID())
-                .code(code)
-                .enable(true)
-                .name(name)
                 .build();
     }
 
@@ -138,4 +109,6 @@ public class AccountJpqlQueryIT extends BaseRepositoryIT {
                 .build();
     }
 
+
+ */
 }

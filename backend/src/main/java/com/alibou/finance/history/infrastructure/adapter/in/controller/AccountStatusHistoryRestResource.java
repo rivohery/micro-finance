@@ -4,9 +4,9 @@ import com.alibou.finance.history.infrastructure.adapter.in.dto.AccountStatusHis
 import com.alibou.finance.history.infrastructure.adapter.out.mappers.AccountStatusHistoryMapper;
 import com.alibou.finance.history.domain.agregate.AccountStatusHistory;
 import com.alibou.finance.history.infrastructure.transactional.AccountStatusHistoryUseCaseProxy;
-import com.alibou.finance.shared.application.PageResult;
+import com.alibou.finance.shared.application.result.PageResult;
 import com.alibou.finance.shared.infrastructure.dto.PageResponse;
-import com.alibou.finance.account.domain.vo.AccountId;
+import com.alibou.finance.shared.domain.vo.account.AccountId;
 import com.alibou.finance.shared.infrastructure.mapper.PageMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

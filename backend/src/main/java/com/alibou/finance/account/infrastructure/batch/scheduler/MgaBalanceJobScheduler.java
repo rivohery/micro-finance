@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.temporal.TemporalAdjusters;
 
 @Service
 public class MgaBalanceJobScheduler {
@@ -31,8 +30,7 @@ public class MgaBalanceJobScheduler {
     public void runEndOfWeekJob() {
         LocalDate today = LocalDate.now(ZONE);
 
-        // Pas la fin du mois pour ne pas surcharger la resource (2 jobs # simultanés)
-        if (isLastWeek(today)  && !isLastMonthly(today)) {
+        if (isLastWeek(today)) {
             try {
                 System.out.println("Lancement du Job de fin de semaine...");
 
@@ -52,10 +50,5 @@ public class MgaBalanceJobScheduler {
     private boolean isLastWeek(LocalDate date) {
         DayOfWeek dayOfWeek = date.getDayOfWeek();
         return dayOfWeek == DayOfWeek.SUNDAY;
-    }
-
-    private boolean isLastMonthly(LocalDate date) {
-        LocalDate lastDay = date.with(TemporalAdjusters.lastDayOfMonth());
-        return date.equals(lastDay);
     }
 }

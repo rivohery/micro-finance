@@ -1,7 +1,5 @@
 package com.alibou.finance.account.infrastructure.email.service;
 
-import com.alibou.finance.account.domain.out.service.dto.TransfertConfirmationInfo;
-import com.alibou.finance.account.infrastructure.email.enums.EmailTemplateName;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.UTF_8;

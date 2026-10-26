@@ -1,12 +1,15 @@
 package com.alibou.finance.auth.infrastructure.adapter.out.persistence.repository;
 
 import com.alibou.finance.auth.domain.agregate.User;
-import com.alibou.finance.auth.domain.repository.UserRepository;
-import com.alibou.finance.auth.domain.vo.UserId;
+import com.alibou.finance.auth.domain.out.repository.UserRepository;
+import com.alibou.finance.auth.domain.vo.Password;
+import com.alibou.finance.shared.domain.vo.user.UserId;
+import com.alibou.finance.shared.domain.vo.user.Username;
 import com.alibou.finance.auth.infrastructure.adapter.out.mapper.UserMapper;
 import com.alibou.finance.auth.infrastructure.adapter.out.persistence.entity.UserEntity;
-import com.alibou.finance.shared.application.PageResult;
+import com.alibou.finance.shared.application.result.PageResult;
 import com.alibou.finance.shared.infrastructure.mapper.PageMapper;
+import com.alibou.finance.shared.domain.vo.user.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,8 +24,8 @@ public class UserDbAdapter implements UserRepository {
     private final UserJpaRepository userJpaRepository;
 
     @Override
-    public Optional<User> findByUsername(String username) {
-        return userJpaRepository.findByUsername(username).map(UserMapper::entityToDomain);
+    public Optional<User> findByUsername(Username username) {
+        return userJpaRepository.findByUsername(username.value()).map(UserMapper::entityToDomain);
     }
 
     @Override
@@ -49,18 +52,18 @@ public class UserDbAdapter implements UserRepository {
     }
 
     @Override
-    public void changePassword(UserId userId, String password) {
-        userJpaRepository.changePassword(userId.value(), password);
+    public void changePassword(UserId userId, Password newPassword) {
+        userJpaRepository.changePassword(userId.value(), newPassword.value());
     }
 
     @Override
-    public boolean existsByUsername(String username) {
-        return userJpaRepository.existsByUsername(username);
+    public boolean existsByUsername(Username username) {
+        return userJpaRepository.existsByUsername(username.value());
     }
 
     @Override
-    public boolean existsByEmail(String email) {
-        return userJpaRepository.existsByEmail(email);
+    public boolean existsByEmail(Email email) {
+        return userJpaRepository.existsByEmail(email.value());
     }
 
     @Override

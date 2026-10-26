@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset alibou:create-table-users
+--changeset alibou:001-create-table-users
 CREATE TABLE users (
     id uuid NOT NULL PRIMARY KEY,
     email VARCHAR(255) NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE users (
     username VARCHAR(50) NOT NULL
 );
 
---changeset alibou:add-users-constraint
+--changeset alibou:001-add-users-constraint
 ALTER TABLE users ADD CONSTRAINT uk_user_email UNIQUE (email);
 ALTER TABLE users ADD CONSTRAINT uk_user_username UNIQUE (username);
 ALTER TABLE users ADD CONSTRAINT chk_user_role CHECK (role IN ('EMPLOYE', 'ADMIN', 'CLIENT'));

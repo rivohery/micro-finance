@@ -1,27 +1,25 @@
 package com.alibou.finance.accountType.application.service;
 
+import com.alibou.finance.accountType.application.command.AccountTypeCommand;
 import com.alibou.finance.accountType.application.port.AccountTypeUseCase;
+import com.alibou.finance.accountType.application.utils.AccountTypeApplicationHelper;
 import com.alibou.finance.accountType.domain.agregate.AccountType;
-import com.alibou.finance.accountType.domain.exception.AccountTypeNotFoundException;
-import com.alibou.finance.accountType.domain.repository.AccountTypeRepository;
-import com.alibou.finance.accountType.domain.vo.AccountTypeCode;
-import com.alibou.finance.accountType.domain.vo.AccountTypeId;
-import com.alibou.finance.shared.domain.ObjectInvalidException;
+import com.alibou.finance.accountType.domain.out.repository.AccountTypeRepository;
+import com.alibou.finance.shared.domain.vo.accountType.AccountTypeCode;
+import com.alibou.finance.shared.domain.vo.accountType.AccountTypeId;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 
 @RequiredArgsConstructor
 public class AccountTypeServiceApplication implements AccountTypeUseCase {
-
     private final AccountTypeRepository accountTypeRepository;
+    private final AccountTypeApplicationHelper accountTypeApplicationHelper;
 
     @Override
     public AccountType findByCode(AccountTypeCode code) {
-        return accountTypeRepository.findByCode(code).orElseThrow(
-                () -> new AccountTypeNotFoundException("Type de compte introuvable")
-        );
+        return accountTypeApplicationHelper.getAccountTypeByCode(code);
     }
 
     @Override
@@ -30,29 +28,43 @@ public class AccountTypeServiceApplication implements AccountTypeUseCase {
     }
 
     @Override
-    public AccountTypeId deleteById(AccountTypeId accountTypeId) {
-        boolean accountTypeExist = accountTypeRepository.existsById(accountTypeId);
-        if(!accountTypeExist){
-            throw new ObjectInvalidException("Identifiant accountTypeId invalide");
+    public void deleteById(AccountTypeId accountTypeId) {
+        accountTypeApplicationHelper.verifyIfAccountTypeExist(accountTypeId);
+
+        accountTypeRepository.deleteById(accountTypeId);
+
+    }
+
+    @Override
+    public AccountType create(AccountTypeCommand cmd) {
+        accountTypeApplicationHelper.verifyUniquenessCode(cmd.accountTypeCode());
+        AccountType newAccountType = AccountType.createFrom(cmd);
+        AccountType created =  accountTypeRepository.save(newAccountType);
+        if(created != null){
+            accountTypeApplicationHelper.publishAccountTypeSavedEvent(created);
+            return created;
         }
-        return accountTypeRepository.deleteById(accountTypeId);
+        return null;
     }
 
-    @Override
-    public AccountType create(AccountType accountType) {
-        accountType.buildAccountTypeIdFrom(UUID.randomUUID());
-        return accountTypeRepository.save(accountType);
-    }
 
     @Override
-    public AccountType update(AccountType accountType) {
-        return accountTypeRepository.save(accountType);
+    public AccountType update(AccountTypeCommand cmd, AccountTypeId accountTypeId) {
+        AccountType actual = accountTypeApplicationHelper.getAccountTypeById(accountTypeId);
+        Set<String> updatedField = actual.updateFrom(cmd);
+        if(!updatedField.isEmpty()){
+            AccountType updated = accountTypeRepository.save(actual);
+            if(updated != null && updatedField.contains("annualInterestRate")){
+                accountTypeApplicationHelper.publishAccountTypeSavedEvent(updated);
+                accountTypeApplicationHelper.publishAnnualInterestRateChangeEvent(updated);
+            }
+            return updated;
+        }
+        return actual;
     }
 
     @Override
     public AccountType findById(AccountTypeId accountTypeId) {
-        return accountTypeRepository.findById(accountTypeId).orElseThrow(
-                () -> new AccountTypeNotFoundException("Type de compte inexistant")
-        );
+        return accountTypeApplicationHelper.getAccountTypeById(accountTypeId);
     }
 }

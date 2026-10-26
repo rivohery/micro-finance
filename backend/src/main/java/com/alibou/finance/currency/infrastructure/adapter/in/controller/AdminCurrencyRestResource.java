@@ -1,7 +1,7 @@
 package com.alibou.finance.currency.infrastructure.adapter.in.controller;
 
 import com.alibou.finance.currency.domain.agregate.Currency;
-import com.alibou.finance.currency.domain.vo.CurrencyId;
+import com.alibou.finance.shared.domain.vo.currency.CurrencyId;
 import com.alibou.finance.currency.infrastructure.adapter.in.dto.CreateCurrencyRequest;
 import com.alibou.finance.currency.infrastructure.adapter.in.dto.CurrencyResponse;
 import com.alibou.finance.currency.infrastructure.adapter.in.dto.UpdateCurrencyRequest;

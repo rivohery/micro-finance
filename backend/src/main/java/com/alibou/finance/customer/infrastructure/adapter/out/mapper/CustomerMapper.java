@@ -1,16 +1,58 @@
 package com.alibou.finance.customer.infrastructure.adapter.out.mapper;
 
-import com.alibou.finance.auth.domain.vo.Address;
-import com.alibou.finance.auth.infrastructure.adapter.out.mapper.UserMapper;
+import com.alibou.finance.auth.UserInfo;
+import com.alibou.finance.customer.domain.vo.Address;
+import com.alibou.finance.shared.domain.vo.user.UserId;
+import com.alibou.finance.shared.domain.vo.user.Username;
+import com.alibou.finance.customer.application.command.CreateCustomerCommand;
+import com.alibou.finance.customer.application.command.UpdateCustomerCommand;
 import com.alibou.finance.customer.domain.vo.*;
 import com.alibou.finance.customer.infrastructure.adapter.in.dto.CustomerMinResponse;
+import com.alibou.finance.customer.infrastructure.adapter.in.dto.CustomerRequest;
 import com.alibou.finance.customer.infrastructure.adapter.in.dto.CustomerResponse;
 import com.alibou.finance.customer.infrastructure.adapter.out.persistence.entity.CustomerEntity;
 import com.alibou.finance.customer.infrastructure.utils.FileUtils;
 import com.alibou.finance.customer.domain.agregate.Customer;
-import com.alibou.finance.shared.vo.domain.Email;
+import com.alibou.finance.shared.domain.vo.user.CustomerId;
+import com.alibou.finance.shared.domain.vo.user.Email;
+
+import java.util.UUID;
 
 public class CustomerMapper {
+
+    public static CreateCustomerCommand dtoToCreateCustomerCommand(CustomerRequest request){
+        return new CreateCustomerCommand(
+              new FirstName(request.firstName()),
+              new LastName(request.lastName()),
+              new Username(request.username()),
+              new DateOfBirth(request.dateOfBirth()),
+              new PhoneNumber(request.phoneNumber()),
+              new Email(request.email()),
+              new Cin(request.cin()),
+              new Occupation(request.occupation()),
+              request.addressValue(),
+              request.addressCity(),
+              request.addressZipCode(),
+              request.addressCountry()
+        );
+    }
+
+    public static UpdateCustomerCommand dtoToUpdateCustomerCommand(CustomerRequest request, UUID customerId){
+        return new UpdateCustomerCommand(
+                new CustomerId(customerId),
+                new UserId(request.userId()),
+                new FirstName(request.firstName()),
+                new LastName(request.lastName()),
+                new DateOfBirth(request.dateOfBirth()),
+                new PhoneNumber(request.phoneNumber()),
+                new Cin(request.cin()),
+                new Occupation(request.occupation()),
+                request.addressValue(),
+                request.addressCity(),
+                request.addressZipCode(),
+                request.addressCountry()
+        );
+    }
 
     public static CustomerEntity domainToEntity(Customer customer){
         return CustomerEntity.builder()
@@ -27,8 +69,8 @@ public class CustomerMapper {
                 .occupation(customer.getOccupation().value())
                 .phoneNumber(customer.getPhoneNumber().value())
                 .email(customer.getEmail().value())
-                .status(customer.getStatus().value())
-                .userEntity(UserMapper.domainToEntity(customer.getUser()))
+                .status(customer.getCustomerStatus().value())
+                .userId(customer.getUserId().value())
                 .build();
     }
 
@@ -54,12 +96,12 @@ public class CustomerMapper {
                 .occupation(new Occupation(customerEntity.getOccupation()))
                 .phoneNumber(new PhoneNumber(customerEntity.getPhoneNumber()))
                 .email(new Email(customerEntity.getEmail()))
-                .status(new Status(customerEntity.getStatus()))
-                .user(UserMapper.entityToDomain(customerEntity.getUserEntity()))
+                .customerStatus(new CustomerStatus(customerEntity.getStatus()))
+                .userId(new UserId(customerEntity.getUserId()))
                 .build();
     }
 
-    public static CustomerResponse domainToCustomerFullResponse(Customer customer){
+    public static CustomerResponse domainToCustomerFullResponse(Customer customer, UserInfo user){
         return CustomerResponse.builder()
                 .id(customer.getCustomerId().value())
                 .addressCity(customer.getAddress().city())
@@ -72,11 +114,11 @@ public class CustomerMapper {
                 .firstName(customer.getFirstName().value())
                 .photo(FileUtils.readFileFromLocation(customer.getImageUrl().value()))
                 .lastName(customer.getLastName().value())
-                .username(customer.getUser().getUsername().value())
-                .userId(customer.getUser().getUserId().value())
+                .username(user.username().value())
+                .userId(user.userId().value())
                 .occupation(customer.getOccupation().value())
                 .phoneNumber(customer.getPhoneNumber().value())
-                .status(customer.getStatus().value())
+                .status(customer.getCustomerStatus().value())
                 .createdDate(customer.getCreatedDate())
                 .createdBy(customer.getCreatedBy())
                 .lastModifiedDate(customer.getLastModifiedDate())
@@ -93,7 +135,7 @@ public class CustomerMapper {
                 .phoneNumber(customer.getPhoneNumber().value())
                 .photo(FileUtils.readFileFromLocation(customer.getImageUrl().value()))
                 .dateOfBirth(customer.getDateOfBirth().value())
-                .status(customer.getStatus().value())
+                .status(customer.getCustomerStatus().value())
                 .createdDate(customer.getCreatedDate())
                 .lastModifiedDate(customer.getLastModifiedDate())
                 .build();

@@ -1,6 +1,6 @@
 package com.alibou.finance.customer.infrastructure.adapter.in.dto;
 
-import com.alibou.finance.customer.domain.agregate.CustomerStatus;
+import com.alibou.finance.customer.domain.agregate.CustomerStatusEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
@@ -22,7 +22,7 @@ public class CustomerResponse {
     private String phoneNumber;
     private String email;
     private String cin;
-    private CustomerStatus status;
+    private CustomerStatusEnum status;
     private String addressValue;
     private String addressCity;
     private String addressZipCode;

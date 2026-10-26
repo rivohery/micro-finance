@@ -24,7 +24,7 @@ public class AccountTypeResponse {
     private LocalDate createdDate;
     private LocalDate lastModifiedDate;
 
-    public static AccountTypeResponse from(AccountType accountType){
+    public static AccountTypeResponse fromDomain(AccountType accountType){
         return AccountTypeResponse.builder()
                 .id(accountType.getAccountTypeId().value())
                 .name(accountType.getName().value())

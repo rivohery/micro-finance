@@ -1,7 +1,7 @@
 package com.alibou.finance.customer.domain.vo;
 
-import com.alibou.finance.shared.domain.Assert;
-import com.alibou.finance.shared.domain.IllegalArgumentException;
+import com.alibou.finance.shared.domain.validator.Assert;
+import com.alibou.finance.shared.domain.exception.IllegalArgumentException;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -19,7 +19,7 @@ public record DateOfBirth(LocalDate value) {
 
         int age = Period.between(value, now).getYears();
         if(age < AGE_MAJEUR){
-            throw new IllegalArgumentException("Nos services sont réservés uniquement pour le majeur ");
+            throw new IllegalArgumentException("Nos services sont réservés uniquement pour le majeur");
         }
     }
 

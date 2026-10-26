@@ -1,11 +1,13 @@
 package com.alibou.finance.auth.infrastructure.adapter.in.controller;
 
+import com.alibou.finance.auth.application.command.ChangePasswordCommand;
+import com.alibou.finance.auth.application.command.CreateUserCommand;
 import com.alibou.finance.auth.domain.agregate.User;
-import com.alibou.finance.auth.domain.vo.UserId;
+import com.alibou.finance.shared.domain.vo.user.UserId;
 import com.alibou.finance.auth.infrastructure.adapter.in.dto.*;
 import com.alibou.finance.auth.infrastructure.adapter.out.mapper.UserMapper;
 import com.alibou.finance.auth.infrastructure.transactional.UserUseCaseProxy;
-import com.alibou.finance.shared.application.PageResult;
+import com.alibou.finance.shared.application.result.PageResult;
 import com.alibou.finance.shared.infrastructure.dto.GlobalResponse;
 import com.alibou.finance.shared.infrastructure.dto.PageResponse;
 import com.alibou.finance.shared.infrastructure.mapper.PageMapper;
@@ -35,13 +37,13 @@ public class UserRestResource {
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<GlobalResponse>create(@Valid @RequestBody UserRequest request){
-        var user = UserRequest.toDomain(request);
-        var created = userService.create(user);
+        CreateUserCommand cud = UserMapper.dtoToCreateUserCommand(request);
+        var created = userService.create(cud);
         if(created != null){
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(GlobalResponse.builder()
-                            .message(String.format("Le nouveau employé: %s est ajouté avec success", user.getUsername().value()))
+                            .message(String.format("Le nouveau employé: %s est ajouté avec success", created.getUsername().value()))
                             .status(HttpStatus.CREATED.value())
                             .build()
                     );
@@ -121,7 +123,8 @@ public class UserRestResource {
     )
     @PostMapping("/change-password")
     public ResponseEntity<GlobalResponse>changePassword(@Valid @RequestBody ChangePasswordRequest request){
-        userService.changePassword(request.username(), request.oldPasswordPlain(), request.newPasswordPlain());
+        ChangePasswordCommand cmd = ChangePasswordRequest.toCommand(request);
+        userService.changePassword(cmd);
         return ResponseEntity.ok(
                 GlobalResponse.builder()
                         .status(HttpStatus.OK.value())
@@ -132,18 +135,18 @@ public class UserRestResource {
 
     @Operation(
             summary = "changeProfileUser",
-            description = "Permet à l'utilisateur de modifier son pseudo, son email ou son mots de passe"
+            description = "Permet à l'employé de la micro-finance de modifier son pseudo, son email ou son mots de passe"
     )
     @PatchMapping("/change-profile")
     public ResponseEntity<GlobalResponse>changeProfileUser(
        @Valid @RequestBody ChangeProfileRequest request
     ){
-        var user = ChangeProfileRequest.toDomain(request);
-        userService.update(user);
+        var updateUserCommand = UserMapper.dtotoUpdateUserCommand(request);
+        userService.updateProfil(updateUserCommand);
         return ResponseEntity.ok(
                 GlobalResponse.builder()
                         .status(HttpStatus.OK.value())
-                        .message("Le profile de l'utilisateur a été bien modifié avec success")
+                        .message("Votre profil a été bien modifié avec success")
                         .build()
         );
     }

@@ -24,8 +24,10 @@ public class InterestRateTraceEntity {
     private BigDecimal amount;
     @Column(nullable = false, name="currency_code")
     private String currencyCode;
+    @Column(nullable = false, name="mga_exchange_rate", precision = 19, scale = 4)
+    private BigDecimal mgaExchangeRate;
 
-    @Column(nullable = false, precision = 19, scale = 4)
+    @Column(nullable = false, name="mga_amount", precision = 19, scale = 4)
     private BigDecimal mgaAmount;
 
     //January, February, March, April, May, June, July, August, September, October, November and December.

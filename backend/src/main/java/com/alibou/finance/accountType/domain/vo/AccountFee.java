@@ -1,6 +1,6 @@
 package com.alibou.finance.accountType.domain.vo;
 
-import com.alibou.finance.shared.domain.Assert;
+import com.alibou.finance.shared.domain.validator.Assert;
 
 import java.math.BigDecimal;
 

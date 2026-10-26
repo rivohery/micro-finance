@@ -1,19 +1,20 @@
 package com.alibou.finance.account.infrastructure.adapter.in.controller;
 
-import com.alibou.finance.account.application.port.dto.command.AccountLifeCycleCommand;
-import com.alibou.finance.account.application.port.dto.output.AccountLifeCycleResult;
-import com.alibou.finance.account.domain.vo.AccountId;
-import com.alibou.finance.account.application.port.dto.vo.ChangedBy;
+import com.alibou.finance.account.infrastructure.adapter.in.dto.AccountResponse;
+import com.alibou.finance.account.application.port.command.AccountLifeCycleCommand;
+import com.alibou.finance.account.application.port.command.CreateAccountCommand;
+import com.alibou.finance.account.application.port.result.AccountLifeCycleResult;
 import com.alibou.finance.account.domain.agregate.Account;
-import com.alibou.finance.account.domain.vo.AccountNumber;
+import com.alibou.finance.auth.UserInfo;
+import com.alibou.finance.auth.UserProvider;
+import com.alibou.finance.shared.domain.vo.account.AccountNumber;
 import com.alibou.finance.account.infrastructure.adapter.in.dto.*;
+import com.alibou.finance.account.infrastructure.adapter.out.mapper.AccountMapper;
 import com.alibou.finance.account.infrastructure.transactional.AccountLifeCycleUseCaseProxy;
 import com.alibou.finance.account.infrastructure.transactional.AccountConsultationUseCaseProxy;
 import com.alibou.finance.account.infrastructure.transactional.CreateNewAccountUseCaseProxy;
-import com.alibou.finance.auth.domain.agregate.User;
-import com.alibou.finance.auth.infrastructure.model.UserPrincipal;
-import com.alibou.finance.history.domain.vo.accountStatusHistory.Reason;
-import com.alibou.finance.shared.application.PageResult;
+import com.alibou.finance.shared.application.result.PageResult;
+import com.alibou.finance.shared.domain.vo.user.CustomerId;
 import com.alibou.finance.shared.infrastructure.dto.GlobalResponse;
 import com.alibou.finance.shared.infrastructure.dto.PageResponse;
 import com.alibou.finance.shared.infrastructure.mapper.PageMapper;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/accounts")
@@ -39,6 +41,7 @@ public class AccountRestResource {
     private final AccountLifeCycleUseCaseProxy accountLifeCycleService;
     private final CreateNewAccountUseCaseProxy createNewAccountUseCase;
     private final AccountConsultationUseCaseProxy accountConsultationService;
+    private final UserProvider userProvider;
 
     @Operation(
             summary = "createNewAccount",
@@ -49,8 +52,8 @@ public class AccountRestResource {
     public ResponseEntity<GlobalResponse>createNewAccount(
        @Valid @RequestBody CreateAccountRequest request
     ){
-        Account newAccount = CreateAccountRequest.toDomain(request);
-        Account created = createNewAccountUseCase.execute(newAccount);
+        CreateAccountCommand createAccountCommand = CreateAccountRequest.toCreateAccountCommand(request);
+        Account created = createNewAccountUseCase.execute(createAccountCommand);
         if(created != null){
             return ResponseEntity
                     .status(HttpStatus.CREATED)
@@ -75,20 +78,26 @@ public class AccountRestResource {
           @Valid @RequestBody AccountLifeCycleRequest request,
           Authentication authentication
     ){
-        User user =  ((UserPrincipal)authentication.getPrincipal()).getUser();
-        var accountLifeCycleInput = buildAccountLifeCycleInput(user, request);
-        AccountLifeCycleResult result = accountLifeCycleService.activateAccount(accountLifeCycleInput);
-        return ResponseEntity.ok(
-                    GlobalResponse.builder()
-                        .message("Le compte est maintenant activé")
-                        .status(HttpStatus.OK.value())
-                        .data(Map.of(
-                                "accountId", result.account().getAccountId().value(),
-                                  "newStatus", result.account().getAccountStatus().value().name(),
-                                "accountHistoryId", result.history().getAccountStatusHistoryId().value()
-                        ))
-                        .build()
-        );
+        UserInfo userInfo = userProvider.getUserConnected(authentication);
+        AccountLifeCycleCommand accountLifeCycleCommand = AccountMapper.buildAccountLifeCycleCommand(userInfo, request);
+        AccountLifeCycleResult result = accountLifeCycleService.activateAccount(accountLifeCycleCommand);
+        return buildLifeCycleResponse(result, "Le compte est activé");
+    }
+
+    @Operation(
+            summary = "reactivateAccount",
+            description = "Réactiver un compte par un employé  du micro-finance."
+    )
+    @PatchMapping("/reactivate-account")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYE')")
+    public ResponseEntity<GlobalResponse>reactivateAccount(
+            @Valid @RequestBody AccountLifeCycleRequest request,
+            Authentication authentication
+    ){
+        UserInfo userInfo = userProvider.getUserConnected(authentication);
+        AccountLifeCycleCommand accountLifeCycleCommand = AccountMapper.buildAccountLifeCycleCommand(userInfo, request);
+        AccountLifeCycleResult result  = accountLifeCycleService.reactivateAccount(accountLifeCycleCommand);
+        return buildLifeCycleResponse(result, "Le compte est réactivé de nouveau");
     }
 
     @Operation(
@@ -101,20 +110,10 @@ public class AccountRestResource {
             @Valid @RequestBody AccountLifeCycleRequest request,
             Authentication authentication
     ){
-        var user =  ((UserPrincipal)authentication.getPrincipal()).getUser();
-        var accountLifeCycleInput = buildAccountLifeCycleInput(user, request);
-        AccountLifeCycleResult result  = accountLifeCycleService.suspendAccount(accountLifeCycleInput);
-        return ResponseEntity.ok(
-                GlobalResponse.builder()
-                        .message("Le compte est maintenant suspendu")
-                        .status(HttpStatus.OK.value())
-                        .data(Map.of(
-                                "accountId", result.account().getAccountId().value(),
-                                "newStatus", result.account().getAccountStatus().value().name(),
-                                "accountHistoryId", result.history().getAccountStatusHistoryId().value()
-                        ))
-                        .build()
-        );
+        UserInfo userInfo = userProvider.getUserConnected(authentication);
+        AccountLifeCycleCommand accountLifeCycleCommand = AccountMapper.buildAccountLifeCycleCommand(userInfo, request);
+        AccountLifeCycleResult result  = accountLifeCycleService.suspendAccount(accountLifeCycleCommand);
+        return buildLifeCycleResponse(result, "Ce compte est maintenant en suspension");
     }
 
     @Operation(
@@ -127,17 +126,22 @@ public class AccountRestResource {
             @Valid @RequestBody AccountLifeCycleRequest request,
             Authentication authentication
     ){
-        var user =  ((UserPrincipal)authentication.getPrincipal()).getUser();
-        var accountLifeCycleInput = buildAccountLifeCycleInput(user, request);
-        AccountLifeCycleResult result = accountLifeCycleService.closeAccount(accountLifeCycleInput);
+        UserInfo userInfo = userProvider.getUserConnected(authentication);
+        AccountLifeCycleCommand accountLifeCycleCommand = AccountMapper.buildAccountLifeCycleCommand(userInfo, request);
+        AccountLifeCycleResult result = accountLifeCycleService.closeAccount(accountLifeCycleCommand);
+        return buildLifeCycleResponse(result, "Le clôture compte est réalisé avec succès");
+    }
+
+    private ResponseEntity<GlobalResponse> buildLifeCycleResponse(
+            AccountLifeCycleResult result, String message
+    ) {
         return ResponseEntity.ok(
                 GlobalResponse.builder()
-                        .message("Le compte est maintenant clôturé définitivement")
+                        .message(message)
                         .status(HttpStatus.OK.value())
                         .data(Map.of(
-                                "accountId", result.account().getAccountId().value(),
-                                "newStatus", result.account().getAccountStatus().value().name(),
-                                "accountHistoryId", result.history().getAccountStatusHistoryId().value()
+                                "accountId", result.accountId().value(),
+                                "newStatus", result.accountStatus().value().name()
                         ))
                         .build()
         );
@@ -152,7 +156,7 @@ public class AccountRestResource {
         AccountNumber accountNumberVo = AccountNumber.from(accountNumber);
         var account = accountConsultationService.findByAccountNumber(accountNumberVo);
         if(account != null){
-            return ResponseEntity.ok(AccountResponse.fromDomain(account));
+            return ResponseEntity.ok(AccountMapper.domainToAccountResponse(account));
         }
         return ResponseEntity.internalServerError().build();
     }
@@ -169,8 +173,16 @@ public class AccountRestResource {
            @RequestParam(name = "size", defaultValue = "10")int size
     ){
         PageResult<Account> pages = accountConsultationService.findAllAccountBySearch(search, page, size);
-        PageResponse<AccountResponse>pageResponse = PageMapper.toPageResponse(pages, AccountResponse::fromDomain);
+        PageResponse<AccountResponse>pageResponse = PageMapper.toPageResponse(pages, AccountMapper::domainToAccountResponse);
         return ResponseEntity.ok(pageResponse);
+    }
+
+    @GetMapping("/find-accounts-by-customerId/{customerId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYE')")
+    public ResponseEntity<List<AccountResponse>>getAccountsByCustomerId(@PathVariable("customerId") UUID customerId){
+        CustomerId customerIdVo = new CustomerId(customerId);
+        List<AccountResponse> accounts = accountConsultationService.findAllByCustomerId(customerIdVo);
+        return ResponseEntity.ok(accounts);
     }
 
     @Operation(
@@ -181,22 +193,16 @@ public class AccountRestResource {
     public ResponseEntity<List<AccountResponse>>findMyAccounts(
             Authentication authentication
     ){
-        User user = ((UserPrincipal)authentication.getPrincipal()).getUser();
-        List<Account>accounts = accountConsultationService.findAllByUserConnected(user);
+        UserInfo userInfo = userProvider.getUserConnected(authentication);
+        List<Account>accounts = accountConsultationService.findAllByUserConnected(userInfo.userId());
         return ResponseEntity.ok(
                     accounts
                         .stream()
-                        .map(AccountResponse::fromDomain)
+                        .map(AccountMapper::domainToAccountResponse)
                         .toList()
         );
     }
 
-    private AccountLifeCycleCommand buildAccountLifeCycleInput(User user, AccountLifeCycleRequest request){
-        return AccountLifeCycleCommand.builder()
-                .accountId(AccountId.from(request.accountId()))
-                .changedBy(ChangedBy.from(user.getUserId().value()))
-                .reason(new Reason(request.reason()))
-                .build();
-    }
+
 
 }

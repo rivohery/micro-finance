@@ -1,8 +1,8 @@
 package com.alibou.finance.statistic.application;
 
-import com.alibou.finance.statistic.domain.agregate.NumberAccountStatistic;
-import com.alibou.finance.statistic.domain.agregate.RegistrationStatistic;
-import com.alibou.finance.statistic.domain.agregate.SoldeAccountStatistic;
+import com.alibou.finance.shared.infrastructure.dto.NumberAccountStatistic;
+import com.alibou.finance.shared.infrastructure.dto.RegistrationStatistic;
+import com.alibou.finance.shared.infrastructure.dto.SoldeAccountStatistic;
 
 import java.math.BigDecimal;
 import java.util.List;

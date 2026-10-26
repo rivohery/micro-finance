@@ -1,6 +1,6 @@
 package com.alibou.finance.history.infrastructure.adapter.in.dto;
 
-import com.alibou.finance.account.domain.agregate.AccountStatusEnum;
+import com.alibou.finance.shared.domain.enums.AccountStatusEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 

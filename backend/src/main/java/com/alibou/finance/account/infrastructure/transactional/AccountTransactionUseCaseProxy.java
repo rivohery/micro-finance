@@ -1,10 +1,10 @@
 package com.alibou.finance.account.infrastructure.transactional;
 
-import com.alibou.finance.account.application.port.dto.command.DepositCommand;
-import com.alibou.finance.account.application.port.dto.command.TransferCommand;
-import com.alibou.finance.account.application.port.dto.command.WithdrawCommand;
-import com.alibou.finance.account.application.port.dto.output.TransactionResult;
-import com.alibou.finance.account.application.port.dto.output.TransferResult;
+import com.alibou.finance.account.application.port.command.DepositCommand;
+import com.alibou.finance.account.application.port.command.TransferCommand;
+import com.alibou.finance.account.application.port.command.WithdrawCommand;
+import com.alibou.finance.account.application.port.result.TransactionResult;
+import com.alibou.finance.account.application.port.result.TransferResult;
 import com.alibou.finance.account.application.port.usecase.DepositUseCase;
 import com.alibou.finance.account.application.port.usecase.TransferUseCase;
 import com.alibou.finance.account.application.port.usecase.WithdrawUseCase;

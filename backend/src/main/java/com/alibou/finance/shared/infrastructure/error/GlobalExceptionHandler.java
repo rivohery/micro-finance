@@ -1,10 +1,7 @@
 package com.alibou.finance.shared.infrastructure.error;
 
-import com.alibou.finance.account.infrastructure.email.exception.SendingEmailException;
-import com.alibou.finance.shared.domain.IllegalArgumentException;
-import com.alibou.finance.shared.domain.IllegalOperationException;
-import com.alibou.finance.shared.domain.ObjectInvalidException;
-import com.alibou.finance.shared.domain.OperationNotPermittedException;
+import com.alibou.finance.shared.domain.exception.*;
+import com.alibou.finance.shared.domain.exception.IllegalArgumentException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,12 +57,14 @@ public class GlobalExceptionHandler {
                 );
     }
 
-    @ExceptionHandler(SendingEmailException.class)
-    public ResponseEntity<HttpErrorResponse> handleException(SendingEmailException exp) {
+
+
+    @ExceptionHandler(DuplicateValueException.class)
+    public ResponseEntity<HttpErrorResponse> handleException(DuplicateValueException exp) {
         return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .status(HttpStatus.BAD_REQUEST)
                 .body(
-                        HttpErrorResponse.of(exp.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value())
+                        HttpErrorResponse.of(exp.getMessage(), HttpStatus.BAD_REQUEST.value())
                 );
     }
 
@@ -90,6 +89,7 @@ public class GlobalExceptionHandler {
                         HttpErrorResponse.of(errorMsg, HttpStatus.BAD_REQUEST.value())
                 );
     }
+
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<HttpErrorResponse> handleException(Exception exp) {

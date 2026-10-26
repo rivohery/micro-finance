@@ -1,26 +1,24 @@
 package com.alibou.finance.account.application.service;
 
-import com.alibou.finance.account.application.port.dto.command.TransferCommand;
-import com.alibou.finance.account.application.port.dto.output.TransactionResult;
-import com.alibou.finance.account.application.port.dto.output.TransferResult;
+import com.alibou.finance.account.application.port.command.TransferCommand;
+import com.alibou.finance.account.application.port.result.TransactionResult;
+import com.alibou.finance.account.application.port.result.TransferResult;
+import com.alibou.finance.account.application.port.usecase.CreateTransactionUseCase;
 import com.alibou.finance.account.application.port.usecase.TransferUseCase;
-import com.alibou.finance.account.application.utils.TransactionFactory;
+import com.alibou.finance.account.application.utils.TransactionOperationExecutor;
 import com.alibou.finance.account.domain.agregate.Account;
-import com.alibou.finance.account.domain.out.repository.AccountRepository;
-import com.alibou.finance.account.domain.out.repository.TransactionRepository;
-import com.alibou.finance.account.domain.out.service.CurrencyExchangePort;
-import com.alibou.finance.account.domain.out.service.ReferenceGenerator;
-import com.alibou.finance.account.domain.out.service.TransfertConfirmationPort;
-import com.alibou.finance.account.domain.out.service.dto.TransfertConfirmationInfo;
-import com.alibou.finance.auth.domain.agregate.User;
-import com.alibou.finance.customer.application.port.CustomerConsultationUseCase;
-import com.alibou.finance.customer.domain.vo.CustomerId;
-import com.alibou.finance.history.domain.agregate.Transaction;
-import com.alibou.finance.history.domain.agregate.TransactionTypeEnum;
-import com.alibou.finance.history.domain.vo.transaction.FinalAmount;
-import com.alibou.finance.history.domain.vo.transaction.SoldBeforeTransaction;
-import com.alibou.finance.history.domain.vo.transaction.TransactionCurrencyCode;
-import com.alibou.finance.shared.domain.OperationNotPermittedException;
+import com.alibou.finance.account.domain.out.linker.CustomerLinkerPort;
+import com.alibou.finance.account.domain.vo.transaction.FinalAmount;
+import com.alibou.finance.account.domain.vo.transaction.SoldBeforeTransaction;
+import com.alibou.finance.account.application.port.command.CreateTransactionCommand;
+import com.alibou.finance.account.domain.out.service.TransfertConfirmationExecutor;
+import com.alibou.finance.account.domain.out.service.TransfertConfirmationInfo;
+import com.alibou.finance.account.domain.vo.transaction.TransactionCurrencyCode;
+import com.alibou.finance.shared.domain.vo.user.CustomerId;
+import com.alibou.finance.account.domain.agregate.Transaction;
+import com.alibou.finance.account.domain.agregate.TransactionTypeEnum;
+import com.alibou.finance.shared.domain.exception.OperationNotPermittedException;
+import com.alibou.finance.shared.domain.vo.user.UserId;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,13 +28,10 @@ import java.util.Objects;
 @Slf4j
 @RequiredArgsConstructor
 public class TransferServiceApplication implements TransferUseCase {
-
-    private final TransactionRepository transactionRepository;
-    private final AccountRepository accountRepository;
-    private final CurrencyExchangePort currencyExchangePort;
-    private final CustomerConsultationUseCase customerService;
-    private final ReferenceGenerator referenceGenerator;
-    private final TransfertConfirmationPort transfertConfirmationService;
+    private final TransactionOperationExecutor transactionOperationExecutor;
+    private final CustomerLinkerPort customerLinkerPort;
+    private final CreateTransactionUseCase createTransactionUseCase;
+    private final TransfertConfirmationExecutor transfertConfirmationPort;
 
     @Override
     public TransferResult execute(TransferCommand input) {
@@ -44,7 +39,7 @@ public class TransferServiceApplication implements TransferUseCase {
         Account sourceAccount = withdrawResult.account();
         Transaction withdrawTransaction = withdrawResult.transaction();
 
-        TransactionCurrencyCode transactionCurrencyCode = new TransactionCurrencyCode(sourceAccount.getCurrency().getCode().value());
+        TransactionCurrencyCode transactionCurrencyCode = new TransactionCurrencyCode(sourceAccount.getCurrencyCode().value());
 
         TransactionResult depositResult = processDepositOfTransfert(input, transactionCurrencyCode);
         Account targetAccount = depositResult.account();
@@ -54,16 +49,15 @@ public class TransferServiceApplication implements TransferUseCase {
         TransfertConfirmationInfo transfertConfirmation = TransfertConfirmationInfo.initializeNewInfo(
                 sourceAccount.getAccountNumber().value(),
                 targetAccount.getAccountNumber().value(),
-                sourceAccount.getCurrency().getCode().value(),
-                targetAccount.getCurrency().getCode().value(),
+                sourceAccount.getCurrencyCode().value(),
+                targetAccount.getCurrencyCode().value(),
                 depositTransaction.getExchangeRate().value(),
                 depositTransaction.getFinalAmount().value(),
                 withdrawTransaction.getOriginalAmount().value(),
-                input.user()
+                input.userInfo()
         );
 
-        int resp = transfertConfirmationService.sendTransactionConfirmation(transfertConfirmation);
-        log.info("Email confirmation sent : {}", resp);
+        transfertConfirmationPort.sendTransactionConfirmation(transfertConfirmation);
 
         return TransferResult.builder()
                 .sourceAccount(sourceAccount)
@@ -73,70 +67,66 @@ public class TransferServiceApplication implements TransferUseCase {
                 .build();
     }
 
-    private TransactionResult processWithdrawOfTransfert(TransferCommand input){
-        Account sourceAccount = TransactionFactory.getAccountByAccountNumber(accountRepository, input.sourceAccountNumber());
+    private TransactionResult processWithdrawOfTransfert(TransferCommand cmd){
+        Account sourceAccount = transactionOperationExecutor.getAccountByAccountNumber(cmd.sourceAccountNumber());
 
         SoldBeforeTransaction soldBeforeTransaction = new SoldBeforeTransaction(sourceAccount.getBalance().value());
 
         //On vérifie si le compte source appartient bien à l'utilisateur connecté
-        verifySourceAccountProperty(input.user(), sourceAccount);
+        verifySourceAccountProperty(cmd.userInfo().userId(), sourceAccount);
 
         // => exchangeRate = 1(la monnaie de la transaction est celle de la monnaie source)
         BigDecimal exchangeRate = BigDecimal.ONE;
         // => finalAmount : identique au montant du transfert
 
-        FinalAmount finalAmount = new FinalAmount(input.originalAmount().value());
-        sourceAccount.updateBalanceOfWithdraw(finalAmount);
-        TransactionFactory.updateMgaBalance(currencyExchangePort, sourceAccount);
-        sourceAccount = accountRepository.save(sourceAccount);
+        FinalAmount finalAmount = new FinalAmount(cmd.originalAmount().value());
+        sourceAccount.makeWithdraw(finalAmount);
+        sourceAccount = transactionOperationExecutor.updateAndSaveAccount(sourceAccount);
 
-        TransactionCurrencyCode transactionCurrencyCode = new TransactionCurrencyCode(sourceAccount.getCurrency().getCode().value());
-        Transaction withdrawTransaction = TransactionFactory.prepareTraceOfTransaction(
-                referenceGenerator,
-                sourceAccount.getAccountNumber(),
+        TransactionCurrencyCode transactionCurrencyCode = new TransactionCurrencyCode(
+                sourceAccount.getCurrencyCode().value()
+        );
+        CreateTransactionCommand transactionCommand = transactionOperationExecutor.prepareTransactionCommand(
+                sourceAccount,
                 transactionCurrencyCode,
                 TransactionTypeEnum.WITHDRAWAL,
-                finalAmount,
                 exchangeRate,
-                sourceAccount.getCurrency().getCode().value(),
+                cmd.originalAmount(),
+                cmd.userInfo().username(),
                 soldBeforeTransaction,
-                input.user(),
-                input.description(),
-                input.originalAmount()
+                cmd.description()
         );
-        withdrawTransaction = transactionRepository.save(withdrawTransaction);
+        Transaction withdraw = createTransactionUseCase.execute(transactionCommand);
+
         return TransactionResult.builder()
                 .account(sourceAccount)
-                .transaction(withdrawTransaction)
+                .transaction(withdraw)
                 .build();
     }
 
-    private TransactionResult processDepositOfTransfert(TransferCommand input, TransactionCurrencyCode transactionCurrencyCode){
-        Account targetAccount = TransactionFactory.getAccountByAccountNumber(accountRepository, input.targetAccountNumber());
+    private TransactionResult processDepositOfTransfert(TransferCommand cmd, TransactionCurrencyCode transactionCurrencyCode){
+        Account targetAccount = transactionOperationExecutor.getAccountByAccountNumber(cmd.targetAccountNumber());
 
         SoldBeforeTransaction soldBeforeTransaction = new SoldBeforeTransaction(targetAccount.getBalance().value());
 
-        BigDecimal exchangeRate = currencyExchangePort.getExchangeRate(transactionCurrencyCode.value(), targetAccount.getCurrency().getCode().value());
-        FinalAmount finalAmount = TransactionFactory.convertToFinalAmount(input.originalAmount().value(), exchangeRate);
-        targetAccount.updateBalanceOfDeposit(finalAmount);
-        TransactionFactory.updateMgaBalance(currencyExchangePort, targetAccount);
-        targetAccount = accountRepository.save(targetAccount);
+        BigDecimal exchangeRate = transactionOperationExecutor.getExchangeRate(
+                transactionCurrencyCode.value(), targetAccount.getCurrencyCode().value()
+        );
+        FinalAmount finalAmount = transactionOperationExecutor.convertToFinalAmount(cmd.originalAmount().value(), exchangeRate);
+        targetAccount.makeDeposit(finalAmount);
+        targetAccount = transactionOperationExecutor.updateAndSaveAccount(targetAccount);
 
-        Transaction depositTransaction = TransactionFactory.prepareTraceOfTransaction(
-                referenceGenerator,
-                targetAccount.getAccountNumber(),
+        CreateTransactionCommand transactionCommand = transactionOperationExecutor.prepareTransactionCommand(
+                targetAccount,
                 transactionCurrencyCode,
                 TransactionTypeEnum.DEPOSIT,
-                finalAmount,
                 exchangeRate,
-                targetAccount.getCurrency().getCode().value(),
+                cmd.originalAmount(),
+                cmd.userInfo().username(),
                 soldBeforeTransaction,
-                input.user(),
-                input.description(),
-                input.originalAmount()
+                cmd.description()
         );
-
-        depositTransaction = transactionRepository.save(depositTransaction);
+        Transaction depositTransaction = createTransactionUseCase.execute(transactionCommand);
 
         return TransactionResult.builder()
                 .account(targetAccount)
@@ -144,9 +134,9 @@ public class TransferServiceApplication implements TransferUseCase {
                 .build();
     }
 
-    private void verifySourceAccountProperty(User connectedUser, Account sourceAccount){
-        CustomerId connectedCustomerId = customerService.findCustomerIdByUser(connectedUser);
-        if(Objects.isNull(connectedCustomerId) || !Objects.equals(sourceAccount.getCustomerId().value(), connectedCustomerId.value())){
+    private void verifySourceAccountProperty(UserId userId, Account sourceAccount){
+        CustomerId connectedCustomerId = customerLinkerPort.findCustomerIdByUserId(userId);
+        if(Objects.isNull(connectedCustomerId) || !Objects.equals(sourceAccount.getCustomerId(), connectedCustomerId)){
             throw new OperationNotPermittedException("Transfert interrompue: le compte source ne vous appartient pas");
         }
     }

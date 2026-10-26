@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset alibou:create-table-currencies
+--changeset alibou:003-create-table-currencies
 CREATE TABLE currencies (
     id uuid NOT NULL PRIMARY KEY,
     code VARCHAR(10) NOT NULL,

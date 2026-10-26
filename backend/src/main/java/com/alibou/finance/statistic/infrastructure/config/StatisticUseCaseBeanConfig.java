@@ -2,8 +2,8 @@ package com.alibou.finance.statistic.infrastructure.config;
 
 import com.alibou.finance.statistic.application.StatisticServiceApplication;
 import com.alibou.finance.statistic.application.StatisticUseCase;
-import com.alibou.finance.statistic.domain.service.AccountServicePort;
-import com.alibou.finance.statistic.domain.service.CustomerServicePort;
+import com.alibou.finance.statistic.domain.out.AccountStatisticLinker;
+import com.alibou.finance.statistic.domain.out.CustomerStatisticLinker;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,7 +11,10 @@ import org.springframework.context.annotation.Configuration;
 public class StatisticUseCaseBeanConfig {
 
     @Bean
-    public StatisticUseCase createStatisticUseCaseBean(AccountServicePort accountServicePort, CustomerServicePort customerServicePort){
-        return new StatisticServiceApplication(accountServicePort, customerServicePort);
+    public StatisticUseCase createStatisticUseCaseBean(
+            AccountStatisticLinker accountStatisticLinker,
+            CustomerStatisticLinker customerStatisticLinker
+    ){
+        return new StatisticServiceApplication(accountStatisticLinker, customerStatisticLinker);
     }
 }

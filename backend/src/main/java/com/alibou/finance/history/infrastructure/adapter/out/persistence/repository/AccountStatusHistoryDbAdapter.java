@@ -4,8 +4,8 @@ import com.alibou.finance.history.infrastructure.adapter.out.mappers.AccountStat
 import com.alibou.finance.history.infrastructure.adapter.out.persistence.entity.AccountStatusHistoryEntity;
 import com.alibou.finance.history.domain.agregate.AccountStatusHistory;
 import com.alibou.finance.history.domain.out.repository.AccountStatusHistoryRepository;
-import com.alibou.finance.account.domain.vo.AccountId;
-import com.alibou.finance.shared.application.PageResult;
+import com.alibou.finance.shared.domain.vo.account.AccountId;
+import com.alibou.finance.shared.application.result.PageResult;
 import com.alibou.finance.shared.infrastructure.mapper.PageMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

@@ -1,60 +1,62 @@
 # Système de Micro-Finance Multi-Monétaire (Fullstack Portfolio)
 
-Application web fullstack de **Microfinance Multi-devises** conçue pour illustrer les bonnes pratiques d'ingénierie logicielle : **Architecture Hexagonale**, **traitements par lots (Spring Batch)**, **sécurité renforcée (JWT via Cookies HttpOnly + CSRF)** et **composants réactifs Angular 19 (Signals) et **Standalone**.
-
+Application web fullstack de **microfinance multi-devises** conçue pour illustrer les bonnes pratiques d'ingénierie logicielle : **architecture hexagonale**, **traitements par lots (Spring Batch)**, **sécurité renforcée (JWT via cookies HttpOnly + CSRF)** et **composants réactifs Angular 19 (Signals) et Standalone**.
 
 **Démo rapide des fonctionnalités** : `./screenshots/demo.gif`
 
-
 ---
-
 
 ## 🛠️ Stack Technique
 
 ### Backend (Java / Spring Boot)
-* **Architecture & Core** : Java 17, Spring Boot 3.x, Architecture Hexagonale (Ports & Adapters).
-* **Sécurité** : Spring Security, JWT stocké dans un Cookie `HttpOnly` (protection XSS) avec validation active de tokens CSRF.
+
+* **Architecture & Core** : Java 17, Spring Boot 3.x, architecture hexagonale (Ports & Adapters) associée à Spring Modulith.
+* **Sécurité** : Spring Security, JWT stocké dans un cookie `HttpOnly` (protection XSS) avec validation active des tokens CSRF.
 * **Persistance & Données** : PostgreSQL, Spring Data JPA, Liquibase (versioning et migrations de schémas).
 * **Batchs & Automatisation** : Spring Batch orchestré par `@Scheduled` pour :
-  * le calcul et la capitalisation automatique mensuelle des intérêts sur grand volume de comptes ;
+  * le calcul et la capitalisation automatique mensuelle des intérêts sur un grand volume de comptes ;
   * le recalcul hebdomadaire du solde consolidé en MGA.
 * **Résilience & Services Tiers** : `RestClient` sécurisé avec **Resilience4j** (Retry, Circuit Breaker) pour la consommation d'API externes.
 * **Notification** : `spring-boot-starter-mail` pour l'envoi d'emails transactionnels.
 * **Documentation & DevOps** : Swagger UI (OpenAPI 3), Docker & Docker Compose.
-* **Tests** : JUnit 5, Mockito, AssertJ, H2 (tests locaux), Testcontainers (CI GitHub Actions), `@DataJpaTest` pour la validation des repositories JPA et requêtes personnalisées.
+* **Tests** : JUnit 5, Mockito, AssertJ, H2 (tests locaux), Testcontainers (CI GitHub Actions), `@DataJpaTest` pour la validation des repositories JPA et des requêtes personnalisées.
 
 ### Frontend (Angular 19)
-* **Core Architecture** : Angular v19, Composants Standalone, Architecture par fonctionnalités (Feature modules).
-* **Gestion d'État** : **Angular Signals** pour l'état local réactif, **NgRx** pour la centralisation du flux d'authentification (Session/Tokens).
+
+* **Core Architecture** : Angular v19, composants Standalone, architecture par fonctionnalités (feature modules).
+* **Gestion d'État** : **Angular Signals** pour l'état local réactif, **NgRx** pour la centralisation du flux d'authentification (session/tokens).
 * **Design & UI** : Tailwind CSS v4 & Angular Material.
 
-
 ---
-
 
 ## ✨ Fonctionnalités Principales
 
 ### 🔓 Authentification & Sécurité
-* Connexion/Déconnexion sécurisées gérées via NgRx et cookies sécurisés.
+
+* Connexion/déconnexion sécurisées gérées via NgRx et cookies sécurisés.
 * Changement de mot de passe et gestion du profil utilisateur.
 
 ### ⚙️ Administration & Paramétrage
-* **Gestion des employés** : Administration des statuts et rôles.
-* **Configuration Multi-Devises** : Paramétrage des monnaies prises en charge et des taux de change.
-* **Types de Comptes** : Définition des règles de gestion, plafonds et taux d'intérêt.
+
+* **Gestion des employés** : administration des statuts et des rôles.
+* **Configuration multi-devises** : paramétrage des monnaies prises en charge et des taux de change.
+* **Types de comptes** : définition des règles de gestion, plafonds et taux d'intérêt.
 
 ### 👥 Gestion de la Clientèle
+
 * Immatriculation et création de fiches clients.
 * Data tables avec tri, recherche textuelle, pagination et vue détaillée.
 
 ### 💳 Gestion des Comptes & Opérations
+
 * Ouverture de comptes multi-devises.
 * Suivi strict du cycle de vie d'un compte : `Création ➡️ Activation ➡️ Suspension ➡️ Fermeture`.
-* Dépôts, Retraits et Transferts de compte à compte.
+* Dépôts, retraits et transferts de compte à compte.
 * Historique des transactions avec export de relevés au format PDF.
 
 ### 📊 Tableau de Bord (Dashboard)
-* KPI clés : Nombre de clients, nombre de comptes actifs.
+
+* KPI clés : nombre de clients, nombre de comptes actifs.
 * Consolidation du solde global en monnaie nationale (MGA).
 * Répartition visuelle par type de compte et suivi graphique des nouvelles adhésions.
 
@@ -62,8 +64,26 @@ Application web fullstack de **Microfinance Multi-devises** conçue pour illustr
 
 ---
 
+## 📐 Architecture Backend
 
-## 📐 Architecture Backend : Focus Hexagonal & Isolation Transactionnelle
+Backend en **architecture hexagonale** avec **Spring Modulith** : chaque agrégat (`Account`, `AccountType`, `Currency`, `Customer`, `History`, `Auth`, `Statistic`) est un module indépendant. Le module `shared` contient les éléments partagés par les modules.
+
+### Communication inter-modules
+
+Aucun module ne dépend directement d'un autre. Toute communication passe par un **port de sortie** défini dans le domaine du module appelant, implémenté par un **adapter** en infrastructure qui injecte soit :
+
+* un **Provider** (API publique du module cible) — appels synchrones ;
+* un **ApplicationEventPublisher** (Spring) — événements asynchrones.
+
+**Exemple synchrone :** `Account` → `AccountTypeLinkerPort` → `AccountTypeLinkerAdapter` → `AccountTypeProvider` → use case métier.
+
+**Exemple asynchrone :** `Account` publie `AccountStatusChangeEvent` via `AccountStatusEventPublisher` (port) → `ApplicationEventPublisher` → listener dans `history` → use case history.
+
+### Bénéfice
+
+Le domaine ne connaît que ses propres ports. Chaque module est extractible en microservice sans modification du domaine : il suffit de remplacer l'adapter par un client REST ou un producteur/consommateur de messages.
+
+### Focus Hexagonal & Isolation Transactionnelle
 
 L'application applique les principes de l'**Architecture Hexagonale / Clean Architecture** pour maintenir le noyau métier totalement isolé de dépendances techniques ou de frameworks.
 
@@ -112,7 +132,7 @@ Pour résoudre le défi du découplage vis-à-vis du framework Spring tout en co
   * *Inbound Ports :* Interfaces définissant les contrats d'utilisation du système (Use Cases).
   * *UseCaseImpl :* Implémentations concrètes des Use Cases. Ce sont des POJOs pur Java sans aucune annotation Spring (pas de `@Service`, `@Transactional`, etc.), garantissant une isolation totale et une testabilité unitaire ultra-rapide.
 * **INFRASTRUCTURE (Adaptateurs & Framework) :**
-  * *Driving Adapters :* Contrôleurs REST Spring MVC, Jobs Spring Batch.
+  * *Driving Adapters :* Contrôleurs REST Spring MVC, Jobs Spring Batch, ou Listener.
   * *Driven Adapters :* Implémentations des Repositories Spring Data JPA, adaptateurs REST (`RestClient` pour services tiers).
   * *transactional (Pattern UseCaseProxy) :* Composants de la couche infrastructure annotés `@Service` et `@Transactional`. Ils encapsulent l'appel aux Use Cases pour gérer les frontières de transaction au niveau de l'infrastructure Web sans polluer le noyau applicatif.
   * *config :* Configurations du framework (Spring Security, Spring Batch, RestClient) et instanciation explicite des beans `UseCaseImpl` via des méthodes `@Bean` pour les injecter dans le conteneur IoC.
@@ -121,6 +141,9 @@ Pour résoudre le défi du découplage vis-à-vis du framework Spring tout en co
 ---
 
 ## 📐 Règles métier
+
+### Profil utilisateur
+Tous utilisateurs: 'ADMIN', 'EMPLOYE' et 'CLIENT' sont crées avec le mots de passe '0000'. Un utilisateur peut ensuite changer son mots de passe par la page "change-pswd" ou "user-profil". 
 
 ### Statuts de compte et éligibilité aux intérêts
 
@@ -151,7 +174,10 @@ Le calcul suit la méthode **des soldes moyens pondérés par le temps** :
 3. Le total est ajouté au solde du compte (capitalisation).
 4. Une trace `InterestRateTrace` est créée avec le montant et sa conversion en MGA.
 
-**Convention de jours** : `ChronoUnit.DAYS.between()` — convention Actual/Actual (à titre indicatif, à paramétrer pour une mise en production réelle).
+**Convention de jours** :
+
+- **Calcul des intérêts** : convention bancaire — le jour de début est inclus, le jour de fin est exclu (`ChronoUnit.DAYS.between()`).
+- **Base de calcul** : `Actual/365` — nombre réel de jours divisé par 365, sans ajustement pour les années bissextiles. 
 
 ### Conversion de devise
 
@@ -195,7 +221,7 @@ Recalcule le solde consolidé de chaque compte en MGA (devise de référence), p
 
 > **Note** : les deux jobs sont indépendants et peuvent être relancés séparément. Le `JobRepository` persistant garantit la traçabilité des exécutions et la reprise après incident.
 
-> **Note sur la conversion de devise** : le job hebdomadaire `JobCalculSoldeMgaFinDeSemaine` utilise le port `CurrencyExchangePort`, implémenté par un adaptateur qui interroge une **API publique gratuite**. Ce choix est acceptable pour un projet portfolio, mais ne conviendrait pas en production (voir [Limitations connues](#limitations-connues)).
+> **Note sur la conversion de devise** : le job hebdomadaire `JobCalculSoldeMgaFinDeSemaine` utilise le port `CurrencyExchangePort`, implémenté par un adaptateur qui interroge une **API publique gratuite**.
 
 ---
 
@@ -263,16 +289,15 @@ Cette section documente les choix de périmètre assumés et les fonctionnalité
 
 - **Service de taux de change gratuit** : l'adaptateur `CurrencyExchangePort` interroge une **API publique gratuite** pour récupérer les taux de change. En production, il faudrait une source fiable avec SLA (banque centrale, fournisseur payant), une gestion de cache, et une gestion d'erreur robuste.
 - Les **taux de change sont mockés** dans les tests. En production, l'adaptateur réel interroge l'API publique.
-- La **convention de calcul des jours** est `Actual/Actual`. En microfinance réelle, les conventions `Actual/365`, `Actual/360` ou `30/360` sont fréquentes et devraient être configurables par type de compte.
-- Le **taux d'intérêt est stocké sur le type de compte** et non historisé. Un vrai système conserverait un historique des taux par période.
+- La **convention de calcul des jours** est `Actual/365`. En microfinance réelle, les conventions `Actual/365`, `Actual/360` ou `30/360` sont fréquentes et devraient être configurables par type de compte.
+- Historique des taux d'intérêt : une table account_type_interest_rate conserve les taux par type de compte et par période. En production, on y ajouterait des dates de validité (effective_from / effective_to) pour garantir la traçabilité et éviter toute ambiguïté lors des recalculs.
 
 ### Pistes d'amélioration
 
 1. Ajouter un test de rollback : forcer une exception au milieu d'un chunk et vérifier via `StepExecution` (`getReadCount()`, `getWriteCount()`, `getCommitCount()`, `getRollbackCount()`) et en base que seuls les chunks précédents sont commités.
 2. Ajouter un test de restart : relancer le job avec des `JobParameters` identiques après un échec et vérifier que la lecture reprend au-delà du dernier chunk commité.
 3. Paramétrer les conventions de calcul de jours (`daysInYear`, `daysInMonth`) sur `AccountTypeEntity`.
-4. Historiser les taux d'intérêt par période.
-5. Remplacer l'API publique de taux de change par un fournisseur fiable (SLA, cache, gestion d'erreur).
+4. Remplacer l'API publique de taux de change par un fournisseur fiable (SLA, cache, gestion d'erreur).
 
 ---
 
@@ -327,5 +352,5 @@ ng serve
 ## 🔑 Compte Administrateur par défaut
 
 Pour tester l'application après le démarrage, utilisez l'identifiant administrateur pré-configuré :
-* **Identifiant** : `alibou`
+* **Identifiant** : `admin`
 * **Mot de passe** : `0000`

@@ -71,7 +71,7 @@
                     [ngClass]="
                       client.status === 'ACTIVE'
                         ? 'bg-green-500'
-                        : client.status === 'PENDING'
+                        : client.status === 'PENDING_KYC'
                         ? 'bg-amber-500'
                         : client.status === 'SUSPENDED'
                         ? 'bg-red-500'
@@ -100,7 +100,7 @@
                   [ngClass]="
                     client.status === 'ACTIVE'
                       ? 'bg-green-500'
-                      : client.status === 'PENDING'
+                      : client.status === 'PENDING_KYC'
                       ? 'bg-amber-500'
                       : client.status === 'SUSPENDED'
                       ? 'bg-red-500'

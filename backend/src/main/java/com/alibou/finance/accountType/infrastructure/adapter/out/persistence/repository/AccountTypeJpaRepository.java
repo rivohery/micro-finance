@@ -10,4 +10,6 @@ public interface AccountTypeJpaRepository extends JpaRepository<AccountTypeEntit
     Optional<AccountTypeEntity>findByCode(String code);
     boolean existsByName(String name);
 
+    boolean existsByCode(String code);
+
 }

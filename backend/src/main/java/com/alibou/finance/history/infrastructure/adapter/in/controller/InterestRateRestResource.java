@@ -1,11 +1,11 @@
 package com.alibou.finance.history.infrastructure.adapter.in.controller;
 
 import com.alibou.finance.history.domain.agregate.InterestRateTrace;
-import com.alibou.finance.account.infrastructure.adapter.in.dto.InterestRateSummaryResp;
+import com.alibou.finance.history.infrastructure.adapter.in.dto.InterestRateSummaryResp;
 import com.alibou.finance.history.infrastructure.adapter.in.dto.InterestRateTraceResponse;
 import com.alibou.finance.history.infrastructure.adapter.out.mappers.InterestRateTraceMapper;
 import com.alibou.finance.history.infrastructure.transactional.InterestRateUseCaseProxy;
-import com.alibou.finance.shared.application.PageResult;
+import com.alibou.finance.shared.application.result.PageResult;
 import com.alibou.finance.shared.infrastructure.dto.PageResponse;
 import com.alibou.finance.shared.infrastructure.mapper.PageMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,8 +35,7 @@ public class InterestRateRestResource {
 
         PageResult<InterestRateTrace> pages = interestRateService.findAllMonthlyInterestRateTrace(month, page, size);
         PageResponse<InterestRateTraceResponse>interestRateTraces = PageMapper.toPageResponse(pages, InterestRateTraceMapper::domainToResponse);
-        BigDecimal totalInterestRateMonthly = interestRateService.getTotalMonthlyInterestRate(month) != null ?
-                interestRateService.getTotalMonthlyInterestRate(month) : BigDecimal.ZERO;
+        BigDecimal totalInterestRateMonthly = interestRateService.getTotalMonthlyInterestRate(month);
         return ResponseEntity.ok(
                 InterestRateSummaryResp.builder()
                         .interestRateTraces(interestRateTraces)

@@ -66,7 +66,7 @@ export class UpdateStatusClientComponent {
   }
 
   onConfirm(): void {
-    if (this.selectedStatus === 'PENDING') {
+    if (this.selectedStatus === 'PENDING_KYC') {
       this.toastr.show('On ne peut pas modifier le status en PENDING', 'ERROR');
       return;
     }
