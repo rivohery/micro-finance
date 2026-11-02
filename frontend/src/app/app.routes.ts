@@ -1,14 +1,8 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './features/auths/pages/login/login.component';
-import { UserProfilComponent } from './features/auths/pages/user-profil/user-profil.component';
 import { authsGuard } from './core/auth/guards/auths.guard';
-import { CustomersComponent } from './features/customers/pages/customers/customers.component';
-import { CustomerDetailsComponent } from './features/customers/pages/customer-details/customer-details.component';
-import { AccountDetailsComponent } from './features/accounts/pages/account-details/account-details.component';
-import { AccountListComponent } from './features/accounts/pages/account-list/account-list.component';
 import { roleGuard } from './core/auth/guards/role.guard';
 import { AppMainLayoutComponent } from './layouts/app-main-layout/app-main-layout.component';
-import { CashOperationComponent } from './features/transactions/pages/cash-operation/cash-operation.component';
 
 export const routes: Routes = [
   {
@@ -29,7 +23,10 @@ export const routes: Routes = [
     children: [
       {
         path: 'user-profil',
-        component: UserProfilComponent,
+        loadComponent: () =>
+          import(
+            './features/auths/pages/user-profil/user-profil.component'
+          ).then((m) => m.UserProfilComponent),
       },
       {
         path: 'unauthorized',
@@ -119,28 +116,43 @@ export const routes: Routes = [
         children: [
           {
             path: 'account-details/:accountNumber',
-            component: AccountDetailsComponent,
             canActivate: [authsGuard],
+            loadComponent: () =>
+              import(
+                './features/accounts/pages/account-details/account-details.component'
+              ).then((m) => m.AccountDetailsComponent),
           },
           {
             path: 'customers',
-            component: CustomersComponent,
             canActivate: [roleGuard(['EMPLOYE', 'ADMIN'])],
+            loadComponent: () =>
+              import(
+                './features/customers/pages/customers/customers.component'
+              ).then((m) => m.CustomersComponent),
           },
           {
             path: 'customer-details/:customerId',
-            component: CustomerDetailsComponent,
             canActivate: [roleGuard(['EMPLOYE', 'ADMIN'])],
+            loadComponent: () =>
+              import(
+                './features/customers/pages/customer-details/customer-details.component'
+              ).then((m) => m.CustomerDetailsComponent),
           },
           {
             path: 'operation-cash',
-            component: CashOperationComponent,
             canActivate: [roleGuard(['EMPLOYE', 'ADMIN'])],
+            loadComponent: () =>
+              import(
+                './features/transactions/pages/cash-operation/cash-operation.component'
+              ).then((m) => m.CashOperationComponent),
           },
           {
             path: 'account-list',
-            component: AccountListComponent,
             canActivate: [roleGuard(['EMPLOYE', 'ADMIN'])],
+            loadComponent: () =>
+              import(
+                './features/accounts/pages/account-list/account-list.component'
+              ).then((m) => m.AccountListComponent),
           },
         ],
       },

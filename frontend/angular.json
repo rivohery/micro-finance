@@ -33,7 +33,29 @@
             "prerender": true,
             "ssr": {
               "entry": "src/server.ts"
-            }
+            },
+            "allowedCommonJsDependencies": [
+              "jspdf",
+              "es.promise.js",
+              "es.string.match.js",
+              "es.string.replace.js",
+              "es.string.starts-with.js",
+              "es.array.iterator.js",
+              "web.dom-collections.iterator.js",
+              "es.array.reduce.js",
+              "es.string.ends-with.js",
+              "es.string.split.js",
+              "raf",
+              "es.string.trim.js",
+              "rgbcolor",
+              "es.array.index-of.js",
+              "es.string.includes.js",
+              "es.array.reverse.js",
+              "es.regexp.to-string.js",
+              "html2canvas",
+              "dompurify",
+              "canvg"
+            ]
           },
           "configurations": {
             "production": {
