@@ -86,7 +86,8 @@ public class InterestRateBatchConfig {
             PlatformTransactionManager transactionManager,
             @Qualifier("interestReader") ItemReader<AccountEntity> reader,
             @Qualifier("interestProcessor") ItemProcessor<AccountEntity, AccountEntity> processor,
-            @Qualifier("interestWriter") JpaItemWriter<AccountEntity> writer) {
+            @Qualifier("interestWriter") JpaItemWriter<AccountEntity> writer
+    ) {
 
         return new StepBuilder("stepCalculInterest", jobRepository)
                 .<AccountEntity, AccountEntity>chunk(100, transactionManager)

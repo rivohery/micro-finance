@@ -20,6 +20,7 @@ Application web fullstack de **microfinance multi-devises** conçue pour illustr
 * **Notification** : `spring-boot-starter-mail` pour l'envoi d'emails transactionnels.
 * **Documentation & DevOps** : Swagger UI (OpenAPI 3), Docker & Docker Compose.
 * **Tests** : JUnit 5, Mockito, AssertJ, H2 (tests locaux), Testcontainers (CI GitHub Actions), `@DataJpaTest` pour la validation des repositories JPA et des requêtes personnalisées.
+* **Pipeline CI** : Un workflow qui vérifie que le backend compile, que les tests unitaires et d'intégration (Testcontainers) passent, et que les Dockerfiles frontend/backend se construisent. Le déploiement n'est pas couvert."
 
 ### Frontend (Angular 19)
 
